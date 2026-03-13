@@ -81,6 +81,17 @@ body {
   isolation: isolate;
 }
 
+.hero-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 240px;
+  gap: 22px;
+  align-items: center;
+}
+
+.hero-copy {
+  min-width: 0;
+}
+
 .hero::before {
   content: "";
   position: absolute;
@@ -115,7 +126,7 @@ h1 {
 
 .bio {
   margin: 0;
-  max-width: 760px;
+  max-width: 100%;
   font-size: clamp(1.08rem, 2.2vw, 2rem);
   line-height: 1.4;
   font-weight: 500;
@@ -127,7 +138,28 @@ h1 {
   display: flex;
   flex-wrap: wrap;
   gap: 10px;
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+.hero-photo {
+  margin: 0;
+  width: 240px;
+  aspect-ratio: 1 / 1;
+  border-radius: 22px;
+  overflow: hidden;
+  border: 1px solid rgba(236, 201, 255, 0.35);
+  box-shadow:
+    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
+    0 18px 36px rgba(0, 0, 0, 0.46),
+    0 0 28px rgba(230, 90, 255, 0.2);
+  justify-self: end;
+}
+
+.hero-photo img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
 }
 
 .socials a {
@@ -282,6 +314,16 @@ h1 {
 
   .hero {
     padding: 22px 16px 18px;
+  }
+
+  .hero-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .hero-photo {
+    width: min(220px, 70vw);
+    justify-self: center;
+    margin-bottom: 8px;
   }
 
   h1 {

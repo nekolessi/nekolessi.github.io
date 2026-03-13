@@ -1,5 +1,7 @@
 const DISCORD_USER_ID = "1116207043544612985";
 const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
+const HERO_PROFILE_IMAGE =
+  "https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=800&q=80";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -17,6 +19,7 @@ const PROFILE_LINKS = [
   { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
 ];
 
+const heroProfileImage = document.getElementById("heroProfileImage");
 const socialLinksRoot = document.getElementById("socialLinks");
 const statusLink = document.getElementById("discordStatusLink");
 const statusAvatar = document.getElementById("statusAvatar");
@@ -34,6 +37,10 @@ const progressFill = document.getElementById("progressFill");
 
 let progressState = null;
 let progressTimer = null;
+
+if (heroProfileImage) {
+  heroProfileImage.src = HERO_PROFILE_IMAGE;
+}
 
 function normalizeHref(link) {
   const rawHref = (link.href || "").trim();
@@ -93,6 +100,12 @@ activityArt.onerror = () => {
     activityArt.src = DEFAULT_ACTIVITY_ART;
   }
 };
+
+if (heroProfileImage) {
+  heroProfileImage.onerror = () => {
+    heroProfileImage.style.opacity = "0.45";
+  };
+}
 
 function isUserIdSet() {
   return /^\d{17,20}$/.test(DISCORD_USER_ID);
