@@ -1,5 +1,6 @@
 const DISCORD_USER_ID = "1116207043544612985";
 const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
+const VIEW_COUNTER_BASE = "https://api.counterapi.dev/v1";
 const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
@@ -143,7 +144,7 @@ async function updateProfileViews() {
   }
 
   try {
-    const response = await fetch(`https://api.countapi.xyz/hit/${VIEW_COUNTER_NAMESPACE}/${VIEW_COUNTER_KEY}`, {
+    const response = await fetch(`${VIEW_COUNTER_BASE}/${VIEW_COUNTER_NAMESPACE}/${VIEW_COUNTER_KEY}/up`, {
       cache: "no-store"
     });
     if (!response.ok) {
@@ -151,11 +152,11 @@ async function updateProfileViews() {
     }
 
     const payload = await response.json();
-    if (typeof payload.value === "number") {
-      profileViews.textContent = String(payload.value);
+    if (typeof payload.count === "number") {
+      profileViews.textContent = String(payload.count);
     }
   } catch {
-    // Keep fallback value if the external counter is unavailable.
+    // Leave blank if the counter endpoint is unavailable.
   }
 }
 
