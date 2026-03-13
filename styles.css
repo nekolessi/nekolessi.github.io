@@ -257,6 +257,7 @@ h1 {
   display: flex;
   align-items: center;
   gap: 16px;
+  font-family: "Silkscreen", sans-serif;
   background:
     linear-gradient(120deg, rgba(40, 36, 44, 0.48), rgba(25, 22, 30, 0.48)),
     rgba(58, 53, 60, 0.34);
@@ -305,16 +306,18 @@ h1 {
   align-items: center;
   gap: 10px;
   font-size: clamp(1.3rem, 3vw, 2rem);
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: #f0e9f8;
 }
 
 .status-text,
 .activity-sub {
   margin: 0;
+  font-family: "Silkscreen", sans-serif;
   color: var(--text-soft);
   font-size: 1rem;
+  letter-spacing: 0.04em;
 }
 
 .status-dot {
@@ -331,15 +334,17 @@ h1 {
 .status-dot.offline { color: var(--offline); background: var(--offline); }
 
 .external {
+  font-family: "Silkscreen", sans-serif;
   color: #bda8d8;
   font-size: 0.92rem;
 }
 
 .activity-title {
   margin: 4px 0 2px;
+  font-family: "Silkscreen", sans-serif;
   font-size: clamp(1.4rem, 3.4vw, 2rem);
-  font-weight: 800;
-  letter-spacing: 0.04em;
+  font-weight: 700;
+  letter-spacing: 0.06em;
   color: #f0e9f8;
   overflow: hidden;
   text-overflow: ellipsis;
@@ -359,6 +364,7 @@ h1 {
 
 .time {
   min-width: 34px;
+  font-family: "Silkscreen", sans-serif;
   color: #dfd1ee;
   font-size: 0.95rem;
   font-weight: 700;
