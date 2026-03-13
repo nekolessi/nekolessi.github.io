@@ -277,19 +277,62 @@ h1 {
   box-shadow: 0 16px 42px rgba(0, 0, 0, 0.5), 0 0 22px rgba(184, 152, 212, 0.2);
 }
 
-.status-avatar,
-.activity-art {
+.fancy-avatar-wrap {
+  position: relative;
   width: 82px;
   height: 82px;
   border-radius: 16px;
-  object-fit: cover;
-  border: 1px solid rgba(224, 185, 255, 0.35);
+  flex-shrink: 0;
+  overflow: visible;
   background: #140a23;
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.35);
+}
+
+.fancy-avatar-wrap::before {
+  content: "";
+  position: absolute;
+  inset: -2px;
+  border-radius: inherit;
+  background: conic-gradient(
+    from 0deg,
+    rgba(255, 84, 208, 0.95),
+    rgba(199, 116, 255, 0.9),
+    rgba(103, 230, 255, 0.92),
+    rgba(255, 84, 208, 0.95)
+  );
+  z-index: 0;
+}
+
+.fancy-avatar-wrap::after {
+  content: "";
+  position: absolute;
+  inset: -5px;
+  border-radius: inherit;
+  z-index: 0;
+  background: radial-gradient(circle, rgba(237, 159, 255, 0.34), rgba(103, 230, 255, 0.05) 66%, transparent 76%);
+  filter: blur(6px);
+  opacity: 0.7;
+}
+
+.status-avatar,
+.activity-art {
+  position: relative;
+  z-index: 1;
+  width: 82px;
+  height: 82px;
+  border-radius: 16px;
+  padding: 2px;
+  border: none;
+  object-fit: cover;
+  background: linear-gradient(145deg, rgba(255, 255, 255, 0.3), rgba(28, 18, 40, 0.55));
 }
 
 .status-avatar-wrap {
-  position: relative;
-  flex-shrink: 0;
+  z-index: 1;
+}
+
+.activity-art-wrap {
+  z-index: 1;
 }
 
 .status-copy,
@@ -342,6 +385,7 @@ h1 {
   border-radius: 50%;
   border: 3px solid rgba(20, 10, 35, 0.96);
   box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
+  z-index: 3;
 }
 
 .status-dot::before {
@@ -511,10 +555,17 @@ h1 {
     overflow: hidden;
   }
 
+  .fancy-avatar-wrap {
+    width: 72px;
+    height: 72px;
+    border-radius: 14px;
+  }
+
   .status-avatar,
   .activity-art {
     width: 72px;
     height: 72px;
+    border-radius: 14px;
   }
 
   .status-dot {
