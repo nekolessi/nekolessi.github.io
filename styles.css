@@ -287,6 +287,11 @@ h1 {
   background: #140a23;
 }
 
+.status-avatar-wrap {
+  position: relative;
+  flex-shrink: 0;
+}
+
 .status-copy,
 .activity-copy {
   min-width: 0;
@@ -305,7 +310,6 @@ h1 {
   margin: 4px 0 3px;
   display: flex;
   align-items: center;
-  gap: 10px;
   font-size: clamp(1.05rem, 2.2vw, 1.58rem);
   font-weight: 700;
   letter-spacing: 0.06em;
@@ -327,17 +331,61 @@ h1 {
 }
 
 .status-dot {
-  width: 12px;
-  height: 12px;
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 20px;
+  height: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
   border-radius: 50%;
-  border: 1px solid rgba(0, 0, 0, 0.3);
-  box-shadow: 0 0 12px currentColor;
+  border: 3px solid rgba(20, 10, 35, 0.96);
+  box-shadow: 0 0 12px rgba(0, 0, 0, 0.4);
 }
 
-.status-dot.online { color: var(--online); background: var(--online); }
-.status-dot.idle { color: var(--idle); background: var(--idle); }
-.status-dot.dnd { color: var(--dnd); background: var(--dnd); }
-.status-dot.offline { color: var(--offline); background: var(--offline); }
+.status-dot::before {
+  content: "";
+  display: block;
+}
+
+.status-dot.online {
+  background: #23a55a;
+}
+
+.status-dot.idle {
+  background: #f0b232;
+}
+
+.status-dot.idle::before {
+  width: 10px;
+  height: 10px;
+  border-radius: 50%;
+  background: rgba(20, 10, 35, 0.95);
+  transform: translate(2px, -2px);
+}
+
+.status-dot.dnd {
+  background: #f23f43;
+}
+
+.status-dot.dnd::before {
+  width: 10px;
+  height: 3px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.98);
+}
+
+.status-dot.offline {
+  background: #7f8494;
+}
+
+.status-dot.offline::before {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: rgba(54, 58, 68, 0.95);
+}
 
 .external {
   font-family: "Silkscreen", sans-serif;
@@ -454,6 +502,14 @@ h1 {
   .activity-art {
     width: 72px;
     height: 72px;
+  }
+
+  .status-dot {
+    width: 18px;
+    height: 18px;
+    right: -3px;
+    bottom: -3px;
+    border-width: 2.5px;
   }
 
   .status-line,
