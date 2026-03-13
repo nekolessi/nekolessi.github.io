@@ -2,6 +2,7 @@
   --bg-0: #08040f;
   --bg-1: #12071f;
   --bg-2: #24103f;
+  --bg-photo: url("images/thighs.jpg");
   --card: rgba(19, 10, 32, 0.74);
   --card-edge: rgba(222, 157, 255, 0.28);
   --text-main: #f7efff;
@@ -24,7 +25,10 @@ body {
   min-height: 100vh;
   font-family: "Outfit", sans-serif;
   color: var(--text-main);
-  background: radial-gradient(circle at 0% 0%, #35125d 0%, var(--bg-0) 42%), var(--bg-0);
+  background:
+    linear-gradient(rgba(15, 12, 20, 0.58), rgba(15, 12, 20, 0.68)),
+    var(--bg-photo) center center / cover no-repeat fixed,
+    var(--bg-0);
   overflow-x: hidden;
 }
 
@@ -37,10 +41,10 @@ body {
 
 .atmosphere {
   background:
-    radial-gradient(circle at 85% 16%, rgba(255, 84, 208, 0.24), transparent 31%),
-    radial-gradient(circle at 18% 70%, rgba(103, 230, 255, 0.2), transparent 30%),
-    linear-gradient(160deg, rgba(49, 18, 80, 0.5), rgba(10, 4, 19, 0.92));
-  filter: contrast(1.1) saturate(1.15);
+    radial-gradient(circle at 80% 15%, rgba(255, 84, 208, 0.08), transparent 34%),
+    radial-gradient(circle at 22% 78%, rgba(103, 230, 255, 0.07), transparent 34%),
+    linear-gradient(165deg, rgba(18, 12, 26, 0.28), rgba(8, 5, 14, 0.64));
+  filter: contrast(1.06) saturate(0.96);
 }
 
 .grain {
@@ -49,7 +53,7 @@ body {
     linear-gradient(90deg, rgba(255, 255, 255, 0.02) 1px, transparent 1px);
   background-size: 28px 28px;
   mix-blend-mode: soft-light;
-  opacity: 0.75;
+  opacity: 0.28;
 }
 
 .shell {
@@ -346,6 +350,10 @@ h1 {
 }
 
 @media (max-width: 760px) {
+  body {
+    background-attachment: scroll;
+  }
+
   .shell {
     width: min(620px, calc(100% - 20px));
     margin: 86px auto 34px;
