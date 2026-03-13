@@ -30,15 +30,17 @@ Without a valid Discord ID, the middle/bottom cards show placeholder text.
 This repo includes a tiny Worker at `cloudflare-worker/src/index.js`.
 
 1. Install and login:
-   - `npm i -g wrangler`
-   - `wrangler login`
+   - `npx wrangler login`
+   - `npx wrangler whoami`
 2. Create KV namespace:
-   - `wrangler kv namespace create PROFILE_COUNTER_KV`
+   - `npx wrangler kv namespace create PROFILE_COUNTER_KV`
 3. Copy the returned namespace `id` into:
    - `cloudflare-worker/wrangler.toml` (`id = "..."`)
 4. Deploy from the worker folder:
    - `cd cloudflare-worker`
-   - `wrangler deploy`
+   - `npx wrangler deploy`
 5. Copy your Worker URL and set in `script.js`:
    - `const VIEW_COUNTER_WORKER_URL = "https://your-worker.workers.dev/views";`
 6. Commit/push site changes.
+
+Note: this counter increments on each page load/refresh request (it is not unique-visitor tracking).
