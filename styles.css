@@ -201,6 +201,21 @@ h1 {
   gap: 7px;
 }
 
+.profile-views-live {
+  width: 32px;
+  height: 14px;
+  overflow: hidden;
+  display: inline-flex;
+  align-items: center;
+}
+
+.profile-views-live img {
+  height: 14px;
+  width: auto;
+  transform: translateX(-50px);
+  filter: grayscale(100%) brightness(1.45);
+}
+
 .hero-divider {
   opacity: 0.6;
 }

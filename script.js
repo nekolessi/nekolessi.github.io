@@ -1,15 +1,9 @@
 const DISCORD_USER_ID = "1116207043544612985";
 const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
-const VIEW_COUNTER_BASE = "https://counterapi.com/api";
-const VIEW_COUNTER_ACTION = "view";
-const VIEW_COUNTER_CALLBACK = "__profileViewCounterCb";
 const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
-const VIEW_COUNTER_NAMESPACE = "nekolessi";
-const VIEW_COUNTER_KEY = "maincardviews";
-const LOCAL_VIEW_COUNTER_KEY = "nekolessi_local_maincardviews";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -28,7 +22,6 @@ const PROFILE_LINKS = [
 ];
 
 const heroProfileImage = document.getElementById("heroProfileImage");
-const profileViews = document.getElementById("profileViews");
 const profileLocation = document.getElementById("profileLocation");
 const socialLinksRoot = document.getElementById("socialLinks");
 const statusLink = document.getElementById("discordStatusLink");
@@ -139,63 +132,6 @@ function resolveSpotifyArtUrl(input) {
   }
 
   return `https://i.scdn.co/image/${input}`;
-}
-
-async function updateProfileViews() {
-  if (!profileViews) {
-    return;
-  }
-
-  const useLocalFallback = () => {
-    try {
-      const currentRaw = localStorage.getItem(LOCAL_VIEW_COUNTER_KEY) || "0";
-      const current = Number(currentRaw);
-      const safe = Number.isFinite(current) ? current : 0;
-      const next = safe + 1;
-      localStorage.setItem(LOCAL_VIEW_COUNTER_KEY, String(next));
-      profileViews.textContent = String(next);
-    } catch {
-      profileViews.textContent = "1";
-    }
-  };
-
-  const callbackName = VIEW_COUNTER_CALLBACK;
-  let settled = false;
-
-  window[callbackName] = (payload) => {
-    settled = true;
-    const candidate = payload?.value ?? payload?.count ?? payload?.data;
-    const normalized = typeof candidate === "string" ? Number(candidate) : candidate;
-    if (typeof normalized === "number" && Number.isFinite(normalized)) {
-      profileViews.textContent = String(normalized);
-      return;
-    }
-    useLocalFallback();
-  };
-
-  const script = document.createElement("script");
-  script.src = `${VIEW_COUNTER_BASE}/${encodeURIComponent(VIEW_COUNTER_NAMESPACE)}/${encodeURIComponent(VIEW_COUNTER_ACTION)}/${encodeURIComponent(VIEW_COUNTER_KEY)}?callback=${callbackName}&cb=${Date.now()}`;
-  script.async = true;
-  script.onerror = () => {
-    if (!settled) {
-      settled = true;
-      useLocalFallback();
-    }
-    if (window[callbackName]) {
-      delete window[callbackName];
-    }
-  };
-  document.head.appendChild(script);
-
-  setTimeout(() => {
-    if (!settled) {
-      settled = true;
-      useLocalFallback();
-      if (window[callbackName]) {
-        delete window[callbackName];
-      }
-    }
-  }, 3000);
 }
 
 function formatMs(ms) {
@@ -378,6 +314,5 @@ async function fetchPresence() {
 }
 
 renderSocialLinks();
-updateProfileViews();
 fetchPresence();
 setInterval(fetchPresence, 20000);
