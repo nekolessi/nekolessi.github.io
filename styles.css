@@ -404,7 +404,9 @@ h1 {
 .status-text-content {
   display: inline-flex;
   align-items: center;
+  flex-wrap: wrap;
   gap: 0.38rem;
+  overflow-wrap: anywhere;
 }
 
 .status-emoji {

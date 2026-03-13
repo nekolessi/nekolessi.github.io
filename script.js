@@ -42,6 +42,20 @@ const timeline = document.getElementById("activityTimeline");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const progressFill = document.getElementById("progressFill");
+const hasPresenceElements = Boolean(
+  statusLink &&
+  statusAvatar &&
+  discordName &&
+  statusDot &&
+  statusText &&
+  activityArt &&
+  activityTitle &&
+  activitySubtitle &&
+  timeline &&
+  currentTime &&
+  totalTime &&
+  progressFill
+);
 
 let progressState = null;
 let progressTimer = null;
@@ -218,22 +232,27 @@ function renderSocialLinks() {
 
     const icon = document.createElement("i");
     icon.className = link.icon;
+    icon.setAttribute("aria-hidden", "true");
     anchor.appendChild(icon);
     socialLinksRoot.appendChild(anchor);
   });
 }
 
-statusAvatar.onerror = () => {
-  if (statusAvatar.src !== DEFAULT_STATUS_AVATAR) {
-    statusAvatar.src = DEFAULT_STATUS_AVATAR;
-  }
-};
+if (statusAvatar) {
+  statusAvatar.onerror = () => {
+    if (statusAvatar.src !== DEFAULT_STATUS_AVATAR) {
+      statusAvatar.src = DEFAULT_STATUS_AVATAR;
+    }
+  };
+}
 
-activityArt.onerror = () => {
-  if (activityArt.src !== DEFAULT_ACTIVITY_ART) {
-    activityArt.src = DEFAULT_ACTIVITY_ART;
-  }
-};
+if (activityArt) {
+  activityArt.onerror = () => {
+    if (activityArt.src !== DEFAULT_ACTIVITY_ART) {
+      activityArt.src = DEFAULT_ACTIVITY_ART;
+    }
+  };
+}
 
 if (heroProfileImage) {
   heroProfileImage.onerror = () => {
@@ -270,6 +289,9 @@ function formatMs(ms) {
 }
 
 function setStatusDot(status) {
+  if (!statusDot) {
+    return;
+  }
   statusDot.classList.remove("online", "idle", "dnd", "offline", "streaming");
   statusDot.classList.add(status || "offline");
 }
@@ -284,6 +306,10 @@ function customEmojiUrl(emoji) {
 }
 
 function setStatusText(customStatus, fallbackText) {
+  if (!statusText) {
+    return;
+  }
+
   const fallback = fallbackText || "Offline";
   statusText.textContent = "";
 
@@ -463,6 +489,10 @@ function renderPresence(data) {
 }
 
 async function fetchPresence() {
+  if (!hasPresenceElements) {
+    return;
+  }
+
   if (typeof document !== "undefined" && document.hidden) {
     return;
   }
