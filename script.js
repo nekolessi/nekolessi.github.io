@@ -274,6 +274,53 @@ function setStatusDot(status) {
   statusDot.classList.add(status || "offline");
 }
 
+function customEmojiUrl(emoji) {
+  if (!emoji || typeof emoji !== "object" || !emoji.id) {
+    return "";
+  }
+
+  const extension = emoji.animated ? "gif" : "png";
+  return `https://cdn.discordapp.com/emojis/${emoji.id}.${extension}?size=64&quality=lossless`;
+}
+
+function setStatusText(customStatus, fallbackText) {
+  const fallback = fallbackText || "Offline";
+  statusText.textContent = "";
+
+  const statusState = (customStatus?.state || "").trim();
+  const emoji = customStatus?.emoji;
+  const emojiUrl = customEmojiUrl(emoji);
+
+  if (!statusState && !emoji && !emojiUrl) {
+    statusText.textContent = fallback;
+    return;
+  }
+
+  const wrapper = document.createElement("span");
+  wrapper.className = "status-text-content";
+
+  if (emojiUrl) {
+    const img = document.createElement("img");
+    img.className = "status-emoji";
+    img.src = emojiUrl;
+    img.alt = emoji?.name || "status emoji";
+    wrapper.appendChild(img);
+  } else if (emoji?.name) {
+    const emojiSpan = document.createElement("span");
+    emojiSpan.className = "status-emoji status-emoji-unicode";
+    emojiSpan.textContent = emoji.name;
+    wrapper.appendChild(emojiSpan);
+  }
+
+  if (statusState) {
+    const textNode = document.createElement("span");
+    textNode.textContent = statusState;
+    wrapper.appendChild(textNode);
+  }
+
+  statusText.appendChild(wrapper);
+}
+
 function startProgress(startMs, endMs) {
   stopProgress();
 
@@ -318,7 +365,7 @@ function stopProgress() {
 
 function setDisconnectedState(message) {
   discordName.textContent = "NEKOLESSI";
-  statusText.textContent = message;
+  setStatusText(null, message);
   setStatusDot("offline");
   statusAvatar.src = DEFAULT_STATUS_AVATAR;
 
@@ -367,7 +414,7 @@ function renderPresence(data) {
     : DEFAULT_STATUS_AVATAR;
 
   const customStatus = Array.isArray(data.activities)
-    ? data.activities.find((item) => item.type === 4 && item.state)
+    ? data.activities.find((item) => item.type === 4)
     : null;
 
   const statusMap = {
@@ -382,7 +429,7 @@ function renderPresence(data) {
   discordName.textContent = displayName.toUpperCase();
   statusAvatar.src = avatarUrl;
   setStatusDot(isStreaming ? "streaming" : data.discord_status || "offline");
-  statusText.textContent = customStatus?.state || statusMap[data.discord_status] || "Offline";
+  setStatusText(customStatus, statusMap[data.discord_status] || "Offline");
 
   if (data.listening_to_spotify && data.spotify) {
     const spotify = data.spotify;

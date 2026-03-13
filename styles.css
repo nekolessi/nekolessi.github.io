@@ -373,6 +373,25 @@ h1 {
   letter-spacing: 0.04em;
 }
 
+.status-text-content {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.38rem;
+}
+
+.status-emoji {
+  width: 1.04em;
+  height: 1.04em;
+  object-fit: contain;
+  display: inline-block;
+  flex: 0 0 auto;
+}
+
+.status-emoji-unicode {
+  line-height: 1;
+  font-size: 1.08em;
+}
+
 .status-dot {
   position: absolute;
   right: 3px;
