@@ -311,6 +311,11 @@ h1 {
   color: #f0e9f8;
 }
 
+#discordName {
+  overflow-wrap: anywhere;
+  word-break: break-word;
+}
+
 .status-text,
 .activity-sub {
   margin: 0;
@@ -391,18 +396,20 @@ h1 {
   }
 
   .shell {
-    width: min(620px, calc(100% - 20px));
+    width: min(560px, calc(100% - 24px));
     margin: 86px auto 34px;
     gap: 14px;
   }
 
   .hero {
-    padding: 22px 16px 18px;
+    padding: 22px 14px 18px;
   }
 
   .hero-topline {
     top: 16px;
-    right: 14px;
+    right: 12px;
+    max-width: calc(100% - 112px);
+    justify-content: flex-end;
     font-size: 0.62rem;
     gap: 8px;
   }
@@ -428,6 +435,7 @@ h1 {
     font-size: 0.83rem;
     max-width: 100%;
     letter-spacing: 0.04em;
+    overflow-wrap: anywhere;
   }
 
   .socials a {
@@ -438,6 +446,7 @@ h1 {
   .activity-card {
     padding: 13px;
     gap: 12px;
+    overflow: hidden;
   }
 
   .status-avatar,
@@ -449,6 +458,11 @@ h1 {
   .status-line,
   .activity-title {
     font-size: 1.15rem;
+    line-height: 1.2;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: clip;
+    overflow-wrap: anywhere;
   }
 
   .status-text,
