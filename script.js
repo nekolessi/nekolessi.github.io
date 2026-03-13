@@ -4,6 +4,7 @@ const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
+const VIEW_COUNTER_WORKER_URL = ""; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
 const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
@@ -108,6 +109,35 @@ function parseViewCountFromSvg(svgText) {
 }
 
 async function fetchViewCount() {
+  if (VIEW_COUNTER_WORKER_URL.trim()) {
+    return fetchViewCountFromWorker();
+  }
+
+  return fetchViewCountFromBadgeProxy();
+}
+
+async function fetchViewCountFromWorker() {
+  const response = await withTimeout(
+    fetch(VIEW_COUNTER_WORKER_URL, {
+      cache: "no-store"
+    }),
+    VIEW_FETCH_TIMEOUT_MS
+  );
+
+  if (!response.ok) {
+    throw new Error(`Worker counter request failed (${response.status})`);
+  }
+
+  const payload = await response.json();
+  const count = String(payload?.count ?? "").replace(/\D/g, "");
+  if (!count) {
+    throw new Error("Worker counter payload missing count");
+  }
+
+  return count;
+}
+
+async function fetchViewCountFromBadgeProxy() {
   const url = `${VIEW_BADGE_PROXY_BASE}${encodeURIComponent(VIEW_BADGE_URL)}`;
   const response = await withTimeout(
     fetch(url, {
