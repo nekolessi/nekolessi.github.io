@@ -5,12 +5,7 @@ const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
-const VIEW_BADGE_PROXY_BASES = [
-  "https://api.allorigins.win/raw?url=",
-  "https://api.allorigins.win/get?url="
-];
-const VIEW_CACHE_KEY = "nekolessi_cached_profile_views";
-const VIEW_CACHE_TTL_MS = 120000;
+const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/raw?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
@@ -49,6 +44,7 @@ const progressFill = document.getElementById("progressFill");
 
 let progressState = null;
 let progressTimer = null;
+let profileViewsFetchInFlight = false;
 
 if (heroProfileImage) {
   heroProfileImage.src = HERO_PROFILE_IMAGE;
@@ -62,24 +58,25 @@ async function updateProfileViews() {
   if (!profileViews) {
     return;
   }
-
-  const cached = readCachedViews();
-  if (cached?.value) {
-    profileViews.textContent = cached.value;
-  }
-
-  if (cached && Date.now() - cached.ts < VIEW_CACHE_TTL_MS) {
+  if (profileViewsFetchInFlight) {
     return;
   }
 
+  profileViewsFetchInFlight = true;
+  const currentLabel = profileViews.textContent.trim();
+  if (!/^\d+$/.test(currentLabel)) {
+    profileViews.textContent = "...";
+  }
+
   try {
-    const count = await fetchFastestViewCount();
+    const count = await fetchViewCount();
     if (count) {
       profileViews.textContent = count;
-      writeCachedViews(count);
     }
   } catch {
     // Keep existing label if counter fetch fails.
+  } finally {
+    profileViewsFetchInFlight = false;
   }
 }
 
@@ -110,11 +107,11 @@ function parseViewCountFromSvg(svgText) {
   return "";
 }
 
-async function fetchViewsViaProxy(proxyBase) {
-  const url = `${proxyBase}${encodeURIComponent(VIEW_BADGE_URL)}`;
+async function fetchViewCount() {
+  const url = `${VIEW_BADGE_PROXY_BASE}${encodeURIComponent(VIEW_BADGE_URL)}`;
   const response = await withTimeout(
     fetch(url, {
-      cache: "default"
+      cache: "no-store"
     }),
     VIEW_FETCH_TIMEOUT_MS
   );
@@ -124,11 +121,6 @@ async function fetchViewsViaProxy(proxyBase) {
   }
 
   let bodyText = await response.text();
-
-  if (proxyBase.includes("/get?url=")) {
-    const payload = JSON.parse(bodyText);
-    bodyText = payload?.contents || "";
-  }
 
   const base64Prefix = "data:image/svg+xml;base64,";
   if (bodyText.startsWith(base64Prefix)) {
@@ -141,61 +133,6 @@ async function fetchViewsViaProxy(proxyBase) {
   }
 
   return count;
-}
-
-async function fetchFastestViewCount() {
-  const attempts = VIEW_BADGE_PROXY_BASES.map((proxyBase) => fetchViewsViaProxy(proxyBase));
-
-  if (Promise.any) {
-    return Promise.any(attempts);
-  }
-
-  // Browser fallback for environments without Promise.any.
-  return new Promise((resolve, reject) => {
-    let pending = attempts.length;
-    attempts.forEach((attempt) => {
-      attempt
-        .then(resolve)
-        .catch((error) => {
-          pending -= 1;
-          if (!pending) {
-            reject(error);
-          }
-        });
-    });
-  });
-}
-
-function readCachedViews() {
-  const raw = localStorage.getItem(VIEW_CACHE_KEY);
-  if (!raw) {
-    return null;
-  }
-
-  // Backwards compatibility: old cache stored only the numeric string.
-  if (/^\d+$/.test(raw)) {
-    return { value: raw, ts: 0 };
-  }
-
-  try {
-    const parsed = JSON.parse(raw);
-    if (!parsed || !/^\d+$/.test(parsed.value) || typeof parsed.ts !== "number") {
-      return null;
-    }
-    return parsed;
-  } catch {
-    return null;
-  }
-}
-
-function writeCachedViews(value) {
-  localStorage.setItem(
-    VIEW_CACHE_KEY,
-    JSON.stringify({
-      value,
-      ts: Date.now()
-    })
-  );
 }
 
 function normalizeHref(link) {
