@@ -105,81 +105,12 @@ body {
 
 h1 {
   margin: 0 0 12px;
-  display: inline-block;
-  position: relative;
+  display: block;
   font-family: "Silkscreen", sans-serif;
   font-size: clamp(1.8rem, 4.3vw, 2.9rem);
   letter-spacing: 0.08em;
-  color: #ffe0f7;
-  -webkit-text-stroke: 0.32px rgba(255, 219, 246, 0.38);
-  text-shadow:
-    0 1px 0 rgba(8, 5, 13, 0.54),
-    0 0 10px rgba(255, 111, 224, 0.34),
-    0 0 18px rgba(191, 105, 255, 0.26);
-  filter: drop-shadow(0 2px 8px rgba(10, 7, 16, 0.46));
-}
-
-h1::before,
-h1::after {
-  content: attr(data-text);
-  position: absolute;
-  inset: 0;
-  pointer-events: none;
-  opacity: 0;
-}
-
-h1::before {
-  color: rgba(255, 84, 208, 0.65);
-  text-shadow: -1px 0 rgba(255, 84, 208, 0.6);
-  animation: hero-title-glitch-a 9.6s infinite steps(1, end);
-}
-
-h1::after {
-  color: rgba(103, 230, 255, 0.6);
-  text-shadow: 1px 0 rgba(103, 230, 255, 0.58);
-  animation: hero-title-glitch-b 9.6s infinite steps(1, end);
-}
-
-@keyframes hero-title-glitch-a {
-  0%,
-  2.6%,
-  54.8%,
-  100% {
-    opacity: 0;
-    transform: translate(0, 0);
-    clip-path: inset(0 0 0 0);
-  }
-  2.1% {
-    opacity: 0.55;
-    transform: translate(1px, -1px);
-    clip-path: inset(8% 0 62% 0);
-  }
-  55.2% {
-    opacity: 0.45;
-    transform: translate(-1px, 1px);
-    clip-path: inset(60% 0 10% 0);
-  }
-}
-
-@keyframes hero-title-glitch-b {
-  0%,
-  2.8%,
-  55.1%,
-  100% {
-    opacity: 0;
-    transform: translate(0, 0);
-    clip-path: inset(0 0 0 0);
-  }
-  2.2% {
-    opacity: 0.48;
-    transform: translate(-1px, 0);
-    clip-path: inset(46% 0 24% 0);
-  }
-  55.6% {
-    opacity: 0.4;
-    transform: translate(1px, 0);
-    clip-path: inset(16% 0 56% 0);
-  }
+  color: #d966d3;
+  text-shadow: 0 0 10px rgba(217, 102, 211, 0.24);
 }
 
 .bio {
@@ -543,12 +474,5 @@ h1::after {
   .eyebrow {
     font-size: 0.67rem;
     letter-spacing: 0.14em;
-  }
-}
-
-@media (prefers-reduced-motion: reduce) {
-  h1::before,
-  h1::after {
-    animation: none;
   }
 }
