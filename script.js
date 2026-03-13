@@ -5,8 +5,8 @@ const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
-const VIEW_COUNTER_NAMESPACE = "nekolessi_github";
-const VIEW_COUNTER_KEY = "main_card_views";
+const VIEW_COUNTER_NAMESPACE = "nekolessi";
+const VIEW_COUNTER_KEY = "maincardviews";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -152,8 +152,10 @@ async function updateProfileViews() {
     }
 
     const payload = await response.json();
-    if (typeof payload.count === "number") {
-      profileViews.textContent = String(payload.count);
+    const candidate = payload?.count ?? payload?.value ?? payload?.data;
+    const normalized = typeof candidate === "string" ? Number(candidate) : candidate;
+    if (typeof normalized === "number" && Number.isFinite(normalized)) {
+      profileViews.textContent = String(normalized);
     }
   } catch {
     // Leave blank if the counter endpoint is unavailable.
