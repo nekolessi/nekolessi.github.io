@@ -1,6 +1,6 @@
 # GitHub Pages Profile Template
 
-Spicy purple-goth profile page with live Discord presence blocks.
+Fancy purple profile page with live Discord presence blocks.
 
 ## Files
 - `index.html` - page structure
