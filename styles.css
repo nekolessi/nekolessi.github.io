@@ -1,0 +1,353 @@
+:root {
+  --bg: #504b4f;
+  --overlay: rgba(23, 21, 24, 0.54);
+  --glass: rgba(53, 48, 53, 0.52);
+  --glass-border: rgba(255, 255, 255, 0.14);
+  --text-main: #efedf0;
+  --text-soft: #c7c2c8;
+  --pink: #ff3ba4;
+  --cyan: #7ceeff;
+  --line: rgba(235, 230, 237, 0.6);
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  font-family: "Silkscreen", sans-serif;
+  color: var(--text-main);
+  background: var(--bg);
+  overflow-x: hidden;
+}
+
+.bg-photo,
+.bg-overlay {
+  position: fixed;
+  inset: 0;
+  pointer-events: none;
+}
+
+.bg-photo {
+  background-image:
+    linear-gradient(to bottom right, rgba(22, 21, 24, 0.42), rgba(15, 14, 17, 0.66)),
+    url("https://images.unsplash.com/photo-1519710164239-da123dc03ef4?auto=format&fit=crop&w=1800&q=80");
+  background-size: cover;
+  background-position: center;
+  filter: grayscale(100%) contrast(0.85) brightness(0.72);
+  transform: scale(1.05);
+}
+
+.bg-overlay {
+  background-image:
+    radial-gradient(circle at 15% 20%, rgba(240, 240, 240, 0.09), transparent 28%),
+    radial-gradient(circle at 80% 70%, rgba(240, 240, 240, 0.08), transparent 30%),
+    linear-gradient(rgba(255, 255, 255, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: auto, auto, 26px 26px, 26px 26px;
+  mix-blend-mode: soft-light;
+}
+
+.shell {
+  position: relative;
+  z-index: 1;
+  width: min(920px, calc(100% - 48px));
+  margin: 70px auto;
+  display: grid;
+  gap: 22px;
+}
+
+.card {
+  background: var(--glass);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  backdrop-filter: blur(11px);
+  -webkit-backdrop-filter: blur(11px);
+  box-shadow: 0 16px 45px rgba(0, 0, 0, 0.26);
+}
+
+.hero {
+  padding: 26px 32px 30px;
+  position: relative;
+}
+
+.hero-top {
+  display: flex;
+  justify-content: flex-end;
+  gap: 18px;
+  color: var(--text-soft);
+  font-size: 0.8rem;
+  margin-bottom: 8px;
+}
+
+.stats {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.avatar-wrap {
+  position: absolute;
+  top: -56px;
+  left: 28px;
+  width: 108px;
+  height: 108px;
+}
+
+.avatar-wrap img {
+  width: 100%;
+  height: 100%;
+  border-radius: 50%;
+  border: 2px solid rgba(255, 255, 255, 0.28);
+  object-fit: cover;
+}
+
+.heart {
+  position: absolute;
+  color: var(--pink);
+  font-size: 0.95rem;
+  filter: drop-shadow(0 0 7px rgba(255, 59, 164, 0.7));
+  animation: float 3s ease-in-out infinite;
+}
+
+.heart-1 {
+  top: 8px;
+  left: -6px;
+}
+
+.heart-2 {
+  top: 72px;
+  left: -4px;
+  animation-delay: 0.8s;
+}
+
+.heart-3 {
+  top: 58px;
+  right: -10px;
+  animation-delay: 1.4s;
+}
+
+h1 {
+  margin: 40px 0 12px;
+  letter-spacing: 3px;
+  font-size: clamp(1.7rem, 4vw, 2.4rem);
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+  text-shadow: 0 0 6px rgba(255, 255, 255, 0.21);
+}
+
+.orb {
+  display: inline-grid;
+  place-items: center;
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
+  color: var(--cyan);
+  background: radial-gradient(circle at 35% 25%, rgba(150, 255, 255, 0.5), rgba(94, 215, 227, 0.14));
+  border: 1px solid rgba(136, 241, 255, 0.5);
+  box-shadow: inset 0 0 12px rgba(141, 252, 255, 0.3), 0 0 16px rgba(117, 235, 255, 0.25);
+  font-size: 1rem;
+}
+
+.bio {
+  margin: 0;
+  max-width: 680px;
+  font-size: clamp(0.8rem, 2vw, 1rem);
+  line-height: 1.65;
+  color: var(--text-soft);
+  letter-spacing: 1px;
+}
+
+.socials {
+  margin-top: 24px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}
+
+.socials a {
+  color: #fff;
+  font-size: 1.8rem;
+  opacity: 0.9;
+  transition: transform 180ms ease, opacity 180ms ease, filter 220ms ease;
+}
+
+.socials a:hover {
+  transform: translateY(-2px) scale(1.06);
+  opacity: 1;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.3));
+}
+
+.socials a:nth-child(1) { color: #f2f2f2; }
+.socials a:nth-child(2) { color: #9d4edd; }
+.socials a:nth-child(3) { color: #c8c8c8; }
+.socials a:nth-child(4) { color: #2de074; }
+.socials a:nth-child(5) { color: #5b7fff; }
+.socials a:nth-child(6) { color: #30baf8; }
+
+.status,
+.player {
+  display: flex;
+  align-items: center;
+  padding: 16px 24px;
+}
+
+.status {
+  gap: 14px;
+}
+
+.status-avatar {
+  width: 72px;
+  height: 72px;
+  border-radius: 16px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.25);
+}
+
+.status-name {
+  margin: 0;
+  font-size: 1.3rem;
+  letter-spacing: 2px;
+}
+
+.check {
+  color: #9ec8ff;
+  font-size: 0.9rem;
+}
+
+.status-note {
+  margin: 8px 0 0;
+  color: var(--text-soft);
+  letter-spacing: 1.5px;
+  font-size: 0.85rem;
+}
+
+.status-note i {
+  color: #a970ff;
+}
+
+.player {
+  gap: 16px;
+}
+
+.album {
+  width: 78px;
+  height: 78px;
+  border-radius: 12px;
+  object-fit: cover;
+  border: 1px solid rgba(255, 255, 255, 0.26);
+}
+
+.track {
+  flex: 1;
+}
+
+.track-name {
+  margin: 0 0 12px;
+  font-size: 1.45rem;
+  letter-spacing: 4px;
+}
+
+.timeline {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.time {
+  font-family: "Chakra Petch", sans-serif;
+  color: var(--text-soft);
+  font-size: 1.2rem;
+}
+
+.bar {
+  flex: 1;
+  height: 4px;
+  border-radius: 30px;
+  background: rgba(237, 231, 239, 0.3);
+  overflow: hidden;
+}
+
+.bar-fill {
+  width: 51%;
+  height: 100%;
+  border-radius: inherit;
+  background: var(--line);
+}
+
+.controls {
+  display: flex;
+  gap: 12px;
+  color: var(--text-soft);
+  font-size: 1.1rem;
+}
+
+@keyframes float {
+  0%,
+  100% { transform: translateY(0); }
+  50% { transform: translateY(-4px); }
+}
+
+@media (max-width: 700px) {
+  .shell {
+    width: min(620px, calc(100% - 28px));
+    margin: 84px auto 28px;
+  }
+
+  .hero {
+    padding: 22px 16px 22px;
+  }
+
+  .hero-top {
+    justify-content: flex-start;
+    margin-top: 50px;
+  }
+
+  .avatar-wrap {
+    top: -38px;
+    left: 16px;
+    width: 88px;
+    height: 88px;
+  }
+
+  h1 {
+    margin-top: 14px;
+    font-size: 1.42rem;
+  }
+
+  .socials a {
+    font-size: 1.5rem;
+  }
+
+  .status,
+  .player {
+    padding: 14px;
+  }
+
+  .status-name {
+    font-size: 1.05rem;
+  }
+
+  .status-note {
+    font-size: 0.72rem;
+    letter-spacing: 1px;
+  }
+
+  .player {
+    flex-wrap: wrap;
+  }
+
+  .controls {
+    width: 100%;
+    justify-content: flex-end;
+  }
+
+  .track-name {
+    font-size: 1.15rem;
+    letter-spacing: 3px;
+  }
+}
