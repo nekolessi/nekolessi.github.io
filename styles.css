@@ -202,17 +202,21 @@ h1 {
 }
 
 .profile-views-live {
-  width: 32px;
+  width: 34px;
   height: 14px;
   overflow: hidden;
-  display: inline-flex;
-  align-items: center;
+  display: inline-block;
+  position: relative;
+  vertical-align: middle;
 }
 
 .profile-views-live img {
+  position: absolute;
+  right: 0;
+  top: 0;
   height: 14px;
   width: auto;
-  transform: translateX(-50px);
+  transform: none;
   filter: grayscale(100%) brightness(1.45);
 }
 
