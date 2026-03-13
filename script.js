@@ -5,7 +5,7 @@ const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
-const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/raw?url=";
+const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
@@ -120,7 +120,18 @@ async function fetchViewCount() {
     throw new Error(`Counter request failed (${response.status})`);
   }
 
-  let bodyText = await response.text();
+  const bodyTextRaw = await response.text();
+  let bodyText = bodyTextRaw;
+
+  // allorigins /get returns JSON with the upstream body in `contents`.
+  try {
+    const payload = JSON.parse(bodyTextRaw);
+    if (typeof payload?.contents === "string" && payload.contents.length) {
+      bodyText = payload.contents;
+    }
+  } catch {
+    // If it's not JSON, continue with raw body as-is.
+  }
 
   const base64Prefix = "data:image/svg+xml;base64,";
   if (bodyText.startsWith(base64Prefix)) {
