@@ -12,7 +12,7 @@ Spicy purple-goth profile page with live Discord presence blocks.
 2. Replace `images/profile.png` if you want to change the default right-side photo.
 3. Optional: set `HERO_PROFILE_IMAGE_URL` in `script.js` if you want to use an external image link instead of local file.
 4. Edit `PROFILE_LOCATION` if you want to customize the top-right hero stats.
-   Profile views are shown via the live image counter URL in `index.html`.
+   Profile views are pulled live from the visitor badge source in `script.js` (`VIEW_BADGE_URL`).
 5. Edit `DISCORD_USER_ID` if you need to change your Discord account.
 6. Edit the `PROFILE_LINKS` array to add/remove/reorder social icons and links.
 7. Commit and push.

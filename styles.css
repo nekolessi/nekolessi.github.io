@@ -203,24 +203,13 @@ h1 {
 }
 
 .profile-views-live {
-  width: 28px;
-  height: 15px;
-  overflow: hidden;
   display: inline-block;
-  position: relative;
-  vertical-align: middle;
-  border-radius: 999px;
-}
-
-.profile-views-live img {
-  position: absolute;
-  right: 0;
-  top: 50%;
-  height: 15px;
-  width: auto;
-  transform: translateY(-50%) scale(0.93);
-  transform-origin: right center;
-  filter: brightness(1.1);
+  min-width: 20px;
+  font-family: "Silkscreen", sans-serif;
+  font-size: 0.78rem;
+  letter-spacing: 0.04em;
+  color: #efeaf5;
+  text-align: center;
 }
 
 .hero-divider {

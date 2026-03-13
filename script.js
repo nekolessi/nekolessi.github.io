@@ -4,6 +4,8 @@ const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
+const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
+const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -22,6 +24,7 @@ const PROFILE_LINKS = [
 ];
 
 const heroProfileImage = document.getElementById("heroProfileImage");
+const profileViews = document.getElementById("profileViews");
 const profileLocation = document.getElementById("profileLocation");
 const socialLinksRoot = document.getElementById("socialLinks");
 const statusLink = document.getElementById("discordStatusLink");
@@ -47,6 +50,41 @@ if (heroProfileImage) {
 
 if (profileLocation) {
   profileLocation.textContent = PROFILE_LOCATION;
+}
+
+async function updateProfileViews() {
+  if (!profileViews) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`${VIEW_BADGE_PROXY_BASE}${encodeURIComponent(VIEW_BADGE_URL)}`, {
+      cache: "no-store"
+    });
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = await response.json();
+    const raw = payload?.contents;
+    if (typeof raw !== "string" || !raw.length) {
+      return;
+    }
+
+    let svgText = raw;
+    const base64Prefix = "data:image/svg+xml;base64,";
+    if (svgText.startsWith(base64Prefix)) {
+      svgText = atob(svgText.slice(base64Prefix.length));
+    }
+
+    const matches = [...svgText.matchAll(/>(\d+)<\/text>/g)];
+    const count = matches.length ? matches[matches.length - 1][1] : "";
+    if (count) {
+      profileViews.textContent = count;
+    }
+  } catch {
+    // Keep existing label if counter fetch fails.
+  }
 }
 
 function normalizeHref(link) {
@@ -314,5 +352,6 @@ async function fetchPresence() {
 }
 
 renderSocialLinks();
+updateProfileViews();
 fetchPresence();
 setInterval(fetchPresence, 20000);
