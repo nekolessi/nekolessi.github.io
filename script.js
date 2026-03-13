@@ -7,7 +7,6 @@ const PROFILE_LOCATION = "USA";
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
 const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const VIEW_CACHE_KEY = "nekolessi_cached_profile_views";
-const VIEW_FETCH_TIMEOUT_MS = 1800;
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -65,13 +64,9 @@ async function updateProfileViews() {
     profileViews.textContent = cached;
   }
 
-  const controller = new AbortController();
-  const timeoutId = setTimeout(() => controller.abort(), VIEW_FETCH_TIMEOUT_MS);
-
   try {
     const response = await fetch(`${VIEW_BADGE_PROXY_BASE}${encodeURIComponent(VIEW_BADGE_URL)}`, {
-      cache: "no-store",
-      signal: controller.signal
+      cache: "no-store"
     });
     if (!response.ok) {
       return;
@@ -97,8 +92,6 @@ async function updateProfileViews() {
     }
   } catch {
     // Keep existing label if counter fetch fails.
-  } finally {
-    clearTimeout(timeoutId);
   }
 }
 
