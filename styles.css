@@ -109,17 +109,24 @@ h1 {
   font-family: "Silkscreen", sans-serif;
   font-size: clamp(1.8rem, 4.3vw, 2.9rem);
   letter-spacing: 0.08em;
-  color: #f7efff;
-  background: linear-gradient(92deg, #fff7ff 0%, #efe2ff 44%, #ffc8ed 70%, #8eefff 100%);
-  -webkit-background-clip: text;
-  background-clip: text;
-  -webkit-text-fill-color: transparent;
-  -webkit-text-stroke: 0.35px rgba(255, 255, 255, 0.32);
+  color: #f8ebff;
+  -webkit-text-stroke: 0.45px rgba(255, 230, 252, 0.42);
   text-shadow:
-    0 0 8px rgba(255, 255, 255, 0.2),
-    0 0 18px rgba(255, 137, 236, 0.2),
-    0 0 30px rgba(103, 230, 255, 0.16);
+    0 1px 0 rgba(0, 0, 0, 0.45),
+    0 0 14px rgba(255, 84, 208, 0.5),
+    0 0 28px rgba(103, 230, 255, 0.36),
+    0 0 42px rgba(255, 206, 245, 0.25);
   filter: drop-shadow(0 2px 10px rgba(10, 7, 16, 0.45));
+}
+
+@supports ((-webkit-background-clip: text) or (background-clip: text)) {
+  h1 {
+    background: linear-gradient(92deg, #fff9ff 0%, #ffe4f6 42%, #ff9ee1 68%, #7ce8ff 100%);
+    -webkit-background-clip: text;
+    background-clip: text;
+    -webkit-text-fill-color: transparent;
+    color: transparent;
+  }
 }
 
 .bio {
