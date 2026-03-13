@@ -1,6 +1,8 @@
 const DISCORD_USER_ID = "1116207043544612985";
 const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
-const VIEW_COUNTER_BASE = "https://api.counterapi.dev/v1";
+const VIEW_COUNTER_BASE = "https://counterapi.com/api";
+const VIEW_COUNTER_ACTION = "view";
+const VIEW_COUNTER_CALLBACK = "__profileViewCounterCb";
 const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
@@ -143,23 +145,24 @@ async function updateProfileViews() {
     return;
   }
 
-  try {
-    const response = await fetch(`${VIEW_COUNTER_BASE}/${VIEW_COUNTER_NAMESPACE}/${VIEW_COUNTER_KEY}/up`, {
-      cache: "no-store"
-    });
-    if (!response.ok) {
-      return;
-    }
-
-    const payload = await response.json();
-    const candidate = payload?.count ?? payload?.value ?? payload?.data;
+  const callbackName = VIEW_COUNTER_CALLBACK;
+  window[callbackName] = (payload) => {
+    const candidate = payload?.value ?? payload?.count ?? payload?.data;
     const normalized = typeof candidate === "string" ? Number(candidate) : candidate;
     if (typeof normalized === "number" && Number.isFinite(normalized)) {
       profileViews.textContent = String(normalized);
     }
-  } catch {
-    // Leave blank if the counter endpoint is unavailable.
-  }
+  };
+
+  const script = document.createElement("script");
+  script.src = `${VIEW_COUNTER_BASE}/${encodeURIComponent(VIEW_COUNTER_NAMESPACE)}/${encodeURIComponent(VIEW_COUNTER_ACTION)}/${encodeURIComponent(VIEW_COUNTER_KEY)}?callback=${callbackName}&cb=${Date.now()}`;
+  script.async = true;
+  script.onerror = () => {
+    if (window[callbackName]) {
+      delete window[callbackName];
+    }
+  };
+  document.head.appendChild(script);
 }
 
 function formatMs(ms) {
