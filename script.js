@@ -22,8 +22,32 @@ const progressFill = document.getElementById("progressFill");
 let progressState = null;
 let progressTimer = null;
 
+statusAvatar.onerror = () => {
+  if (statusAvatar.src !== DEFAULT_STATUS_AVATAR) {
+    statusAvatar.src = DEFAULT_STATUS_AVATAR;
+  }
+};
+
+activityArt.onerror = () => {
+  if (activityArt.src !== DEFAULT_ACTIVITY_ART) {
+    activityArt.src = DEFAULT_ACTIVITY_ART;
+  }
+};
+
 function isUserIdSet() {
   return /^\d{17,20}$/.test(DISCORD_USER_ID);
+}
+
+function resolveSpotifyArtUrl(input) {
+  if (!input || typeof input !== "string") {
+    return "";
+  }
+
+  if (input.startsWith("http://") || input.startsWith("https://")) {
+    return input;
+  }
+
+  return `https://i.scdn.co/image/${input}`;
 }
 
 function formatMs(ms) {
@@ -151,10 +175,9 @@ function renderPresence(data) {
   if (data.listening_to_spotify && data.spotify) {
     const spotify = data.spotify;
     const albumArtId = spotify.album_art_url;
+    const spotifyArtUrl = resolveSpotifyArtUrl(albumArtId);
 
-    activityArt.src = albumArtId
-      ? `https://i.scdn.co/image/${albumArtId}`
-      : DEFAULT_ACTIVITY_ART;
+    activityArt.src = spotifyArtUrl || DEFAULT_ACTIVITY_ART;
     activityTitle.textContent = spotify.song || "Listening on Spotify";
     activitySubtitle.textContent = `${spotify.artist || "Unknown artist"} - ${spotify.album || "Unknown album"}`;
     startProgress(spotify.timestamps?.start, spotify.timestamps?.end);
