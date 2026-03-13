@@ -270,7 +270,7 @@ function formatMs(ms) {
 }
 
 function setStatusDot(status) {
-  statusDot.classList.remove("online", "idle", "dnd", "offline");
+  statusDot.classList.remove("online", "idle", "dnd", "offline", "streaming");
   statusDot.classList.add(status || "offline");
 }
 
@@ -376,11 +376,12 @@ function renderPresence(data) {
     dnd: "Do not disturb",
     offline: "Offline"
   };
+  const isStreaming = Array.isArray(data.activities) && data.activities.some((item) => item.type === 1);
 
   statusLink.href = `https://discord.com/users/${user.id || DISCORD_USER_ID}`;
   discordName.textContent = displayName.toUpperCase();
   statusAvatar.src = avatarUrl;
-  setStatusDot(data.discord_status || "offline");
+  setStatusDot(isStreaming ? "streaming" : data.discord_status || "offline");
   statusText.textContent = customStatus?.state || statusMap[data.discord_status] || "Offline";
 
   if (data.listening_to_spotify && data.spotify) {
