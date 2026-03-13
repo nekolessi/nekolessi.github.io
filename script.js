@@ -1,4 +1,4 @@
-const DISCORD_USER_ID = "PUT_DISCORD_USER_ID_HERE";
+const DISCORD_USER_ID = "1116207043544612985";
 const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
