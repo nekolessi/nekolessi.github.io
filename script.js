@@ -4,7 +4,6 @@ const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
-const DEFAULT_PROFILE_VIEWS = "235";
 const VIEW_COUNTER_NAMESPACE = "nekolessi_github";
 const VIEW_COUNTER_KEY = "main_card_views";
 const DEFAULT_STATUS_AVATAR =
@@ -51,10 +50,6 @@ if (heroProfileImage) {
 
 if (profileLocation) {
   profileLocation.textContent = PROFILE_LOCATION;
-}
-
-if (profileViews) {
-  profileViews.textContent = DEFAULT_PROFILE_VIEWS;
 }
 
 function normalizeHref(link) {
