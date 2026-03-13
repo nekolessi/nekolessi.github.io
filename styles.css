@@ -96,47 +96,13 @@ body {
   z-index: -1;
 }
 
-.avatar-wrap {
-  width: 114px;
-  height: 114px;
-  border-radius: 50%;
-  margin-top: -88px;
-  margin-bottom: 16px;
-  border: 2px solid rgba(230, 185, 255, 0.62);
-  padding: 4px;
-  background: rgba(31, 13, 49, 0.7);
-  box-shadow: 0 0 24px rgba(200, 113, 255, 0.48);
-}
-
-.avatar-wrap img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-  border-radius: 50%;
-}
-
 h1 {
   margin: 0;
-  display: flex;
-  align-items: center;
-  gap: 12px;
+  display: block;
   font-family: "Unbounded", sans-serif;
   font-size: clamp(1.95rem, 5.2vw, 3rem);
   letter-spacing: 0.07em;
   text-shadow: 0 0 20px rgba(199, 116, 255, 0.48);
-}
-
-.orb {
-  width: 42px;
-  height: 42px;
-  border-radius: 50%;
-  display: grid;
-  place-items: center;
-  color: #fbf4ff;
-  font-size: 0.95rem;
-  background: radial-gradient(circle at 35% 28%, rgba(103, 230, 255, 0.8), rgba(121, 56, 173, 0.24));
-  border: 1px solid rgba(156, 255, 255, 0.5);
-  box-shadow: 0 0 20px rgba(103, 230, 255, 0.45);
 }
 
 .tagline {
@@ -316,13 +282,6 @@ h1 {
 
   .hero {
     padding: 22px 16px 18px;
-  }
-
-  .avatar-wrap {
-    width: 90px;
-    height: 90px;
-    margin-top: -64px;
-    margin-bottom: 12px;
   }
 
   h1 {
