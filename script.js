@@ -1,7 +1,7 @@
 const DISCORD_USER_ID = "1116207043544612985";
 const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
 const HERO_PROFILE_IMAGE =
-  "https://images.unsplash.com/photo-1544717302-de2939b7ef71?auto=format&fit=crop&w=800&q=80";
+  "https://cdn.discordapp.com/attachments/1269656592782196841/1481954731646521464/Unt5551.png.png?ex=69b53165&is=69b3dfe5&hm=8d60c58262093b317a2c2c99b3a036da011e1a646e474f127c9cebb331a8aa24&";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
