@@ -76,20 +76,12 @@ body {
 }
 
 .hero {
-  padding: 36px 34px 30px;
+  padding: 28px 34px 28px;
   position: relative;
   isolation: isolate;
-}
-
-.hero-grid {
-  display: grid;
-  grid-template-columns: minmax(0, 1fr) 240px;
-  gap: 22px;
-  align-items: center;
-}
-
-.hero-copy {
-  min-width: 0;
+  background:
+    linear-gradient(120deg, rgba(40, 36, 44, 0.48), rgba(25, 22, 30, 0.48)),
+    rgba(58, 53, 60, 0.34);
 }
 
 .hero::before {
@@ -108,79 +100,108 @@ body {
 }
 
 h1 {
-  margin: 0;
+  margin: 0 0 12px;
   display: block;
-  font-family: "Unbounded", sans-serif;
-  font-size: clamp(1.95rem, 5.2vw, 3rem);
-  letter-spacing: 0.07em;
-  text-shadow: 0 0 20px rgba(199, 116, 255, 0.48);
-}
-
-.tagline {
-  margin: 12px 0 8px;
-  font-size: 0.79rem;
-  letter-spacing: 0.2em;
-  text-transform: uppercase;
-  color: #ddcaef;
+  font-family: "Silkscreen", sans-serif;
+  font-size: clamp(1.8rem, 4.3vw, 2.9rem);
+  letter-spacing: 0.08em;
+  text-shadow: 0 0 18px rgba(255, 255, 255, 0.2);
 }
 
 .bio {
   margin: 0;
-  max-width: 100%;
-  font-size: clamp(1.08rem, 2.2vw, 2rem);
-  line-height: 1.4;
-  font-weight: 500;
-  color: #d8c6e8;
+  max-width: 690px;
+  font-family: "Silkscreen", sans-serif;
+  font-size: clamp(0.87rem, 1.6vw, 1.28rem);
+  line-height: 1.55;
+  letter-spacing: 0.06em;
+  color: #ddd3e7;
 }
 
 .socials {
-  margin-top: 22px;
+  margin-top: 20px;
   display: flex;
   flex-wrap: wrap;
-  gap: 10px;
+  gap: 14px;
   justify-content: flex-start;
 }
 
-.hero-photo {
-  margin: 0;
-  width: 240px;
-  aspect-ratio: 1 / 1;
-  border-radius: 22px;
-  overflow: hidden;
-  border: 1px solid rgba(236, 201, 255, 0.35);
-  box-shadow:
-    0 0 0 1px rgba(255, 255, 255, 0.05) inset,
-    0 18px 36px rgba(0, 0, 0, 0.46),
-    0 0 28px rgba(230, 90, 255, 0.2);
-  justify-self: end;
+.socials a {
+  width: auto;
+  height: auto;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  text-decoration: none;
+  color: #e8dff4;
+  background: transparent;
+  border: none;
+  font-size: 2rem;
+  transition: transform 170ms ease, color 170ms ease, filter 180ms ease;
 }
 
-.hero-photo img {
+.socials a:hover {
+  transform: translateY(-2px);
+  color: #fff;
+  filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.24));
+}
+
+.socials a:nth-child(1) { color: #ff497b; }
+.socials a:nth-child(2) { color: #f6f4f8; }
+.socials a:nth-child(3) { color: #a970ff; }
+.socials a:nth-child(4) { color: #c7c7c7; }
+.socials a:nth-child(5) { color: #31d977; }
+.socials a:nth-child(6) { color: #5c76ff; }
+.socials a:nth-child(7) { color: #36b5ff; }
+.socials a:nth-child(8) { color: #f5f5f5; }
+
+.hero-copy {
+  min-width: 0;
+  margin-top: 26px;
+}
+
+.hero-avatar {
+  position: absolute;
+  top: -48px;
+  left: 22px;
+  width: 110px;
+  height: 110px;
+  margin: 0;
+  border-radius: 50%;
+  overflow: hidden;
+  border: 2px solid rgba(255, 255, 255, 0.2);
+  box-shadow: 0 0 24px rgba(0, 0, 0, 0.35);
+}
+
+.hero-avatar img {
   display: block;
   width: 100%;
   height: 100%;
   object-fit: cover;
 }
 
-.socials a {
-  width: 46px;
-  height: 46px;
-  display: grid;
-  place-items: center;
-  border-radius: 13px;
-  text-decoration: none;
-  color: #dfccff;
-  background: rgba(83, 39, 126, 0.4);
-  border: 1px solid rgba(230, 194, 255, 0.3);
-  font-size: 1.05rem;
-  transition: transform 170ms ease, color 170ms ease, box-shadow 200ms ease, border-color 200ms ease;
+.hero-topline {
+  position: absolute;
+  top: 24px;
+  right: 28px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #e5dde8;
+  font-family: "Silkscreen", sans-serif;
+  font-size: 0.72rem;
+  letter-spacing: 0.06em;
 }
 
-.socials a:hover {
-  transform: translateY(-2px) scale(1.04);
-  color: #fff;
-  border-color: rgba(255, 204, 251, 0.72);
-  box-shadow: 0 0 24px rgba(238, 110, 255, 0.35);
+.hero-meta {
+  margin: 0;
+  display: inline-flex;
+  align-items: center;
+  gap: 7px;
+}
+
+.hero-divider {
+  opacity: 0.6;
 }
 
 .live-card,
@@ -316,27 +337,33 @@ h1 {
     padding: 22px 16px 18px;
   }
 
-  .hero-grid {
-    grid-template-columns: 1fr;
+  .hero-topline {
+    top: 16px;
+    right: 14px;
+    font-size: 0.62rem;
+    gap: 8px;
   }
 
-  .hero-photo {
-    width: min(220px, 70vw);
-    justify-self: center;
-    margin-bottom: 8px;
+  .hero-avatar {
+    width: 82px;
+    height: 82px;
+    top: -34px;
+    left: 14px;
   }
 
   h1 {
-    font-size: clamp(1.45rem, 7vw, 2rem);
+    font-size: clamp(1.2rem, 7.5vw, 2rem);
+    letter-spacing: 0.05em;
   }
 
   .bio {
-    font-size: 1.08rem;
+    font-size: 0.83rem;
+    max-width: 100%;
+    letter-spacing: 0.04em;
   }
 
   .socials a {
-    width: 40px;
-    height: 40px;
+    font-size: 1.55rem;
   }
 
   .live-card,

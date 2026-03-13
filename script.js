@@ -3,6 +3,10 @@ const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
 const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
+const PROFILE_LOCATION = "USA";
+const DEFAULT_PROFILE_VIEWS = "235";
+const VIEW_COUNTER_NAMESPACE = "nekolessi_github";
+const VIEW_COUNTER_KEY = "main_card_views";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -21,6 +25,8 @@ const PROFILE_LINKS = [
 ];
 
 const heroProfileImage = document.getElementById("heroProfileImage");
+const profileViews = document.getElementById("profileViews");
+const profileLocation = document.getElementById("profileLocation");
 const socialLinksRoot = document.getElementById("socialLinks");
 const statusLink = document.getElementById("discordStatusLink");
 const statusAvatar = document.getElementById("statusAvatar");
@@ -41,6 +47,14 @@ let progressTimer = null;
 
 if (heroProfileImage) {
   heroProfileImage.src = HERO_PROFILE_IMAGE;
+}
+
+if (profileLocation) {
+  profileLocation.textContent = PROFILE_LOCATION;
+}
+
+if (profileViews) {
+  profileViews.textContent = DEFAULT_PROFILE_VIEWS;
 }
 
 function normalizeHref(link) {
@@ -126,6 +140,28 @@ function resolveSpotifyArtUrl(input) {
   }
 
   return `https://i.scdn.co/image/${input}`;
+}
+
+async function updateProfileViews() {
+  if (!profileViews) {
+    return;
+  }
+
+  try {
+    const response = await fetch(`https://api.countapi.xyz/hit/${VIEW_COUNTER_NAMESPACE}/${VIEW_COUNTER_KEY}`, {
+      cache: "no-store"
+    });
+    if (!response.ok) {
+      return;
+    }
+
+    const payload = await response.json();
+    if (typeof payload.value === "number") {
+      profileViews.textContent = String(payload.value);
+    }
+  } catch {
+    // Keep fallback value if the external counter is unavailable.
+  }
 }
 
 function formatMs(ms) {
@@ -308,5 +344,6 @@ async function fetchPresence() {
 }
 
 renderSocialLinks();
+updateProfileViews();
 fetchPresence();
 setInterval(fetchPresence, 20000);
