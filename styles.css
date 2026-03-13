@@ -168,6 +168,12 @@ h1 {
   filter: drop-shadow(0 0 10px rgba(255, 255, 255, 0.24));
 }
 
+.socials a:focus-visible {
+  outline: 2px solid rgba(228, 164, 255, 0.72);
+  outline-offset: 4px;
+  border-radius: 8px;
+}
+
 .socials a:nth-child(1) { color: #ff497b; }
 .socials a:nth-child(2) { color: #f6f4f8; }
 .socials a:nth-child(3) { color: #a970ff; }
@@ -292,6 +298,11 @@ h1 {
   transform: translateY(-2px);
   border-color: rgba(219, 184, 246, 0.46);
   box-shadow: 0 16px 42px rgba(0, 0, 0, 0.5), 0 0 22px rgba(184, 152, 212, 0.2);
+}
+
+.live-card:focus-visible {
+  outline: 2px solid rgba(228, 164, 255, 0.72);
+  outline-offset: 4px;
 }
 
 .fancy-avatar-wrap {
@@ -630,5 +641,18 @@ h1 {
   .eyebrow {
     font-size: 0.67rem;
     letter-spacing: 0.14em;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .socials a,
+  .live-card {
+    transition: none;
+  }
+
+  .socials a:hover,
+  .live-card:hover {
+    transform: none;
+    filter: none;
   }
 }
