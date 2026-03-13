@@ -124,11 +124,28 @@ h1 {
 }
 
 .socials {
-  margin-top: 20px;
+  margin-top: 24px;
+  padding-top: 14px;
   display: flex;
   flex-wrap: wrap;
   gap: 14px;
   justify-content: center;
+  position: relative;
+}
+
+.socials::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 10%;
+  width: 80%;
+  height: 1px;
+  background: linear-gradient(
+    90deg,
+    rgba(255, 255, 255, 0),
+    rgba(218, 165, 246, 0.45),
+    rgba(255, 255, 255, 0)
+  );
 }
 
 .socials a {
