@@ -3,12 +3,12 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Nekolessi | Violet Gothic Profile</title>
-    <meta name="description" content="Clean purple goth profile page for GitHub Pages." />
+    <title>Nekolessi | Spicy Gothic Profile</title>
+    <meta name="description" content="Spicy purple-goth Discord-powered profile page for GitHub Pages." />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
-      href="https://fonts.googleapis.com/css2?family=Cinzel+Decorative:wght@400;700&family=Manrope:wght@400;500;700&display=swap"
+      href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Unbounded:wght@500;700&display=swap"
       rel="stylesheet"
     />
     <link
@@ -21,35 +21,25 @@
     <link rel="stylesheet" href="styles.css" />
   </head>
   <body>
-    <div class="bg-photo" aria-hidden="true"></div>
-    <div class="bg-overlay" aria-hidden="true"></div>
+    <div class="atmosphere" aria-hidden="true"></div>
+    <div class="grain" aria-hidden="true"></div>
 
     <main class="shell">
       <section class="card hero">
-        <div class="hero-top">
-          <div class="stats"><i class="fa-solid fa-eye"></i> 235</div>
-          <div class="stats"><i class="fa-solid fa-location-dot"></i> USA</div>
-        </div>
-
         <div class="avatar-wrap">
           <img
-            src="https://images.unsplash.com/photo-1611003229182-7e27f26b9577?auto=format&fit=crop&w=480&q=80"
+            src="https://images.unsplash.com/photo-1611003229182-7e27f26b9577?auto=format&fit=crop&w=600&q=80"
             alt="Profile avatar"
           />
-          <span class="heart heart-1"><i class="fa-solid fa-heart"></i></span>
-          <span class="heart heart-2"><i class="fa-solid fa-heart"></i></span>
-          <span class="heart heart-3"><i class="fa-solid fa-heart"></i></span>
         </div>
 
         <h1>
           NEKOLESSI
-          <span class="orb"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+          <span class="orb"><i class="fa-solid fa-wand-sparkles"></i></span>
         </h1>
-        <p class="tagline">VIOLET GOTHIC // CLEAN AESTHETIC</p>
 
-        <p class="bio">
-          OH HAII~ I'M JUST A HOPELESS GIRLFAILURE... SPEND MY FREE TIME WATCHING VTUBERS &amp; MAKING ART WHEN MY BRAIN ALLOWS.
-        </p>
+        <p class="tagline">SPICY GOTHIC ENERGY</p>
+        <p class="bio">OH HAII~ I'M JUST A HOPELESS GIRLFAILURE... SPEND MY FREE TIME WATCHING VTUBERS &amp; MAKING ART WHEN MY BRAIN ALLOWS.</p>
 
         <nav class="socials" aria-label="social links">
           <a href="#" aria-label="Mail"><i class="fa-solid fa-envelope"></i></a>
@@ -61,38 +51,42 @@
         </nav>
       </section>
 
-      <section class="card status">
+      <a class="card live-card" id="discordStatusLink" href="#" target="_blank" rel="noreferrer noopener">
         <img
+          id="statusAvatar"
           class="status-avatar"
-          src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=240&q=80"
-          alt="Secondary avatar"
+          src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80"
+          alt="Discord avatar"
         />
-        <div>
-          <p class="status-name">NEKOLESSI <span class="check"><i class="fa-solid fa-circle-check"></i></span></p>
-          <p class="status-note"><i class="fa-brands fa-twitch"></i> HEADPAT PRINCESS</p>
+        <div class="status-copy">
+          <p class="eyebrow">DISCORD STATUS</p>
+          <p class="status-line">
+            <span id="discordName">NEKOLESSI</span>
+            <span class="status-dot offline" id="statusDot" aria-hidden="true"></span>
+          </p>
+          <p id="discordStatusText" class="status-text">Set your Discord user ID in script.js to load live presence.</p>
         </div>
-      </section>
+        <span class="external"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+      </a>
 
-      <section class="card player">
+      <section class="card activity-card" id="activityCard">
         <img
-          class="album"
-          src="https://images.unsplash.com/photo-1487215078519-e21cc028cb29?auto=format&fit=crop&w=300&q=80"
-          alt="Album art"
+          class="activity-art"
+          id="activityArt"
+          src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=300&q=80"
+          alt="Activity artwork"
         />
-        <div class="track">
-          <p class="track-name">LOST</p>
-          <div class="timeline">
-            <span class="time" id="currentTime">2:57</span>
+        <div class="activity-copy">
+          <p class="eyebrow">NOW PLAYING / LISTENING</p>
+          <p class="activity-title" id="activityTitle">Nothing active right now</p>
+          <p class="activity-sub" id="activitySubtitle">Once linked, this updates from your Discord activity.</p>
+          <div class="timeline hidden" id="activityTimeline">
+            <span class="time" id="currentTime">0:00</span>
             <div class="bar">
               <div class="bar-fill" id="progressFill"></div>
             </div>
-            <span class="time">5:51</span>
+            <span class="time" id="totalTime">0:00</span>
           </div>
-        </div>
-        <div class="controls" aria-hidden="true">
-          <i class="fa-solid fa-backward-step"></i>
-          <i class="fa-solid fa-pause"></i>
-          <i class="fa-solid fa-forward-step"></i>
         </div>
       </section>
     </main>
