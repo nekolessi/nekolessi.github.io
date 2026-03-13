@@ -199,26 +199,28 @@ h1 {
   display: inline-flex;
   align-items: center;
   gap: 7px;
+  line-height: 1;
 }
 
 .profile-views-live {
-  width: 30px;
-  height: 16px;
+  width: 28px;
+  height: 15px;
   overflow: hidden;
   display: inline-block;
   position: relative;
   vertical-align: middle;
-  border-radius: 6px;
+  border-radius: 999px;
 }
 
 .profile-views-live img {
   position: absolute;
   right: 0;
-  top: 0;
-  height: 16px;
+  top: 50%;
+  height: 15px;
   width: auto;
-  transform: none;
-  filter: brightness(1.07);
+  transform: translateY(-50%) scale(0.93);
+  transform-origin: right center;
+  filter: brightness(1.1);
 }
 
 .hero-divider {
