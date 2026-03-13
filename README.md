@@ -9,10 +9,11 @@ Spicy purple-goth profile page with live Discord presence blocks.
 
 ## Important setup
 1. Open `script.js`.
-2. Edit `HERO_PROFILE_IMAGE` to change the right-side photo in the main card.
-3. Edit `DISCORD_USER_ID` if you need to change your Discord account.
-4. Edit the `PROFILE_LINKS` array to add/remove/reorder social icons and links.
-5. Commit and push.
+2. Replace `images/profile.png` if you want to change the default right-side photo.
+3. Optional: set `HERO_PROFILE_IMAGE_URL` in `script.js` if you want to use an external image link instead of local file.
+4. Edit `DISCORD_USER_ID` if you need to change your Discord account.
+5. Edit the `PROFILE_LINKS` array to add/remove/reorder social icons and links.
+6. Commit and push.
 
 Without a valid Discord ID, the middle/bottom cards show placeholder text.
 

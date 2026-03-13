@@ -1,7 +1,8 @@
 const DISCORD_USER_ID = "1116207043544612985";
 const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
-const HERO_PROFILE_IMAGE =
-  "https://cdn.discordapp.com/attachments/1269656592782196841/1481954731646521464/Unt5551.png.png?ex=69b53165&is=69b3dfe5&hm=8d60c58262093b317a2c2c99b3a036da011e1a646e474f127c9cebb331a8aa24&";
+const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
+const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
+const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -103,6 +104,10 @@ activityArt.onerror = () => {
 
 if (heroProfileImage) {
   heroProfileImage.onerror = () => {
+    if (heroProfileImage.src !== HERO_PROFILE_IMAGE_LOCAL) {
+      heroProfileImage.src = HERO_PROFILE_IMAGE_LOCAL;
+      return;
+    }
     heroProfileImage.style.opacity = "0.45";
   };
 }
