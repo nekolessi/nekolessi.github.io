@@ -4,7 +4,7 @@ const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
-const VIEW_COUNTER_WORKER_URL = ""; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
+const VIEW_COUNTER_WORKER_URL = "https://nekolessi-view-counter.nekolessi.workers.dev/views"; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
 const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
