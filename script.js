@@ -5,6 +5,19 @@ const DEFAULT_STATUS_AVATAR =
 const DEFAULT_ACTIVITY_ART =
   "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=300&q=80";
 
+// Easy config: edit links here (add/remove/reorder as you want).
+const PROFILE_LINKS = [
+  { label: "Email", icon: "fa-solid fa-envelope", href: "nekolessi.july916@passinbox.com", type: "email" },
+  { label: "Carrd", icon: "fa-solid fa-id-card", href: "nekolessi.uwu.ai" },
+  { label: "Twitch", icon: "fa-brands fa-twitch", href: "twitch.tv/nekolessi" },
+  { label: "Steam", icon: "fa-brands fa-steam", href: "steamcommunity.com/id/nekolessi/" },
+  { label: "Spotify", icon: "fa-brands fa-spotify", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
+  { label: "Oshi Card", icon: "fa-solid fa-link", href: "https://oshi.to/nekolessi" },
+  { label: "Throne", icon: "fa-solid fa-crown", href: "https://throne.com/nekolessi" },
+  { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
+];
+
+const socialLinksRoot = document.getElementById("socialLinks");
 const statusLink = document.getElementById("discordStatusLink");
 const statusAvatar = document.getElementById("statusAvatar");
 const discordName = document.getElementById("discordName");
@@ -21,6 +34,53 @@ const progressFill = document.getElementById("progressFill");
 
 let progressState = null;
 let progressTimer = null;
+
+function normalizeHref(link) {
+  const rawHref = (link.href || "").trim();
+  if (!rawHref) {
+    return "";
+  }
+
+  if (link.type === "email") {
+    return rawHref.startsWith("mailto:") ? rawHref : `mailto:${rawHref}`;
+  }
+
+  if (rawHref.startsWith("http://") || rawHref.startsWith("https://") || rawHref.startsWith("mailto:")) {
+    return rawHref;
+  }
+
+  return `https://${rawHref}`;
+}
+
+function renderSocialLinks() {
+  if (!socialLinksRoot) {
+    return;
+  }
+
+  socialLinksRoot.innerHTML = "";
+
+  PROFILE_LINKS.forEach((link) => {
+    const finalHref = normalizeHref(link);
+    if (!finalHref) {
+      return;
+    }
+
+    const anchor = document.createElement("a");
+    anchor.href = finalHref;
+    anchor.title = link.label;
+    anchor.setAttribute("aria-label", link.label);
+
+    if (!finalHref.startsWith("mailto:")) {
+      anchor.target = "_blank";
+      anchor.rel = "noreferrer noopener";
+    }
+
+    const icon = document.createElement("i");
+    icon.className = link.icon;
+    anchor.appendChild(icon);
+    socialLinksRoot.appendChild(anchor);
+  });
+}
 
 statusAvatar.onerror = () => {
   if (statusAvatar.src !== DEFAULT_STATUS_AVATAR) {
@@ -229,5 +289,6 @@ async function fetchPresence() {
   }
 }
 
+renderSocialLinks();
 fetchPresence();
 setInterval(fetchPresence, 20000);

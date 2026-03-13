@@ -9,8 +9,9 @@ Spicy purple-goth profile page with live Discord presence blocks.
 
 ## Important setup
 1. Open `script.js`.
-2. Replace `PUT_DISCORD_USER_ID_HERE` with your real Discord user ID (17-20 digits).
-3. Commit and push.
+2. Edit `DISCORD_USER_ID` if you need to change your Discord account.
+3. Edit the `PROFILE_LINKS` array to add/remove/reorder social icons and links.
+4. Commit and push.
 
 Without a valid Discord ID, the middle/bottom cards show placeholder text.
 
