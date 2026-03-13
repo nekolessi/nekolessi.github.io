@@ -463,6 +463,10 @@ function renderPresence(data) {
 }
 
 async function fetchPresence() {
+  if (typeof document !== "undefined" && document.hidden) {
+    return;
+  }
+
   if (!isUserIdSet()) {
     setDisconnectedState("Set your Discord user ID in script.js to load live presence.");
     return;
@@ -492,3 +496,9 @@ renderSocialLinks();
 updateProfileViews();
 fetchPresence();
 setInterval(fetchPresence, 20000);
+
+document.addEventListener("visibilitychange", () => {
+  if (!document.hidden) {
+    fetchPresence();
+  }
+});
