@@ -55,8 +55,8 @@ body {
 .shell {
   position: relative;
   z-index: 1;
-  width: min(980px, calc(100% - 44px));
-  margin: 60px auto;
+  width: min(780px, calc(100% - 48px));
+  margin: 104px auto 56px;
   display: grid;
   gap: 20px;
 }
@@ -335,8 +335,8 @@ h1 {
 
 @media (max-width: 760px) {
   .shell {
-    width: min(680px, calc(100% - 24px));
-    margin: 74px auto 30px;
+    width: min(620px, calc(100% - 20px));
+    margin: 86px auto 34px;
     gap: 14px;
   }
 
