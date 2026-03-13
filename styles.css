@@ -202,7 +202,7 @@ h1 {
 }
 
 .profile-views-live {
-  width: 34px;
+  width: 24px;
   height: 14px;
   overflow: hidden;
   display: inline-block;
@@ -217,7 +217,7 @@ h1 {
   height: 14px;
   width: auto;
   transform: none;
-  filter: grayscale(100%) brightness(1.45);
+  filter: brightness(1.07);
 }
 
 .hero-divider {
