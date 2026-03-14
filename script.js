@@ -368,7 +368,7 @@ async function submitReaction(reactionId) {
 
   reactionsFetchInFlight = true;
   renderReactionButtons();
-  setReactionStatus("Saving reaction...");
+  setReactionStatus("");
 
   try {
     const response = await withTimeout(
@@ -391,7 +391,7 @@ async function submitReaction(reactionId) {
     selectedReactionId = reactionId;
     storeReactionChoice(reactionId);
     renderReactionButtons(counts);
-    setReactionStatus("Thanks for reacting.");
+    setReactionStatus("meow~");
   } catch {
     setReactionStatus("Could not save reaction right now.");
     try {
