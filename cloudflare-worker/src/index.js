@@ -42,6 +42,14 @@ function normalizeReactions(raw) {
   return base;
 }
 
+function getCounterKv(env) {
+  if (!env || !env.PROFILE_COUNTER_KV) {
+    return null;
+  }
+
+  return env.PROFILE_COUNTER_KV;
+}
+
 export default {
   async fetch(request, env) {
     if (request.method === "OPTIONS") {
@@ -49,23 +57,27 @@ export default {
     }
 
     const url = new URL(request.url);
+    const counterKv = getCounterKv(env);
+    if (!counterKv) {
+      return jsonResponse({ error: "Worker KV binding missing: PROFILE_COUNTER_KV" }, 500);
+    }
 
     if (url.pathname === "/views") {
       if (request.method !== "GET") {
         return jsonResponse({ error: "Method not allowed" }, 405);
       }
 
-      const currentRaw = await env.PROFILE_COUNTER_KV.get(COUNTER_KEY);
+      const currentRaw = await counterKv.get(COUNTER_KEY);
       const current = Number.parseInt(currentRaw ?? `${COUNTER_INIT}`, 10) || COUNTER_INIT;
       const next = current + 1;
 
-      await env.PROFILE_COUNTER_KV.put(COUNTER_KEY, `${next}`);
+      await counterKv.put(COUNTER_KEY, `${next}`);
       return jsonResponse({ count: next });
     }
 
     if (url.pathname === "/reactions") {
       if (request.method === "GET") {
-        const raw = await env.PROFILE_COUNTER_KV.get(REACTIONS_KEY, "json");
+        const raw = await counterKv.get(REACTIONS_KEY, "json");
         return jsonResponse({ counts: normalizeReactions(raw) });
       }
 
@@ -82,11 +94,11 @@ export default {
           return jsonResponse({ error: "Invalid reaction type" }, 400);
         }
 
-        const raw = await env.PROFILE_COUNTER_KV.get(REACTIONS_KEY, "json");
+        const raw = await counterKv.get(REACTIONS_KEY, "json");
         const counts = normalizeReactions(raw);
         counts[reaction] += 1;
 
-        await env.PROFILE_COUNTER_KV.put(REACTIONS_KEY, JSON.stringify(counts));
+        await counterKv.put(REACTIONS_KEY, JSON.stringify(counts));
         return jsonResponse({ counts });
       }
 
