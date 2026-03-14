@@ -9,6 +9,7 @@ const REACTIONS_WORKER_URL = deriveReactionsWorkerUrl();
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
 const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
+const DISCORD_PROFILE_BASE = "https://discord.com/users/";
 const DEFAULT_STATUS_AVATAR =
   "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
 const DEFAULT_ACTIVITY_ART =
@@ -326,6 +327,7 @@ function renderReactionButtons(counts = reactionCounts) {
     if (selectedReactionId === reaction.id) {
       button.classList.add("active");
     }
+    button.setAttribute("aria-pressed", selectedReactionId === reaction.id ? "true" : "false");
 
     button.setAttribute("aria-label", `${reaction.label} reaction`);
     button.disabled = reactionsFetchInFlight;
@@ -583,11 +585,34 @@ function setDisconnectedState(message) {
   setStatusText(null, message);
   setStatusDot("offline");
   statusAvatar.src = DEFAULT_STATUS_AVATAR;
+  setDiscordProfileLink("");
 
   activityArt.src = DEFAULT_ACTIVITY_ART;
   activityTitle.textContent = "Nothing active right now";
   activitySubtitle.textContent = "Once linked, this updates from your Discord activity.";
   stopProgress();
+}
+
+function setDiscordProfileLink(userId, label = "") {
+  if (!statusLink) {
+    return;
+  }
+
+  const safeId = String(userId || "").trim();
+  if (!safeId) {
+    statusLink.removeAttribute("href");
+    statusLink.classList.add("is-disabled");
+    statusLink.setAttribute("aria-disabled", "true");
+    statusLink.setAttribute("aria-label", "Discord profile unavailable");
+    statusLink.tabIndex = -1;
+    return;
+  }
+
+  statusLink.href = `${DISCORD_PROFILE_BASE}${safeId}`;
+  statusLink.classList.remove("is-disabled");
+  statusLink.removeAttribute("aria-disabled");
+  statusLink.setAttribute("aria-label", label ? `Open ${label} on Discord` : "Open Discord profile");
+  statusLink.tabIndex = 0;
 }
 
 function activityImageFromDiscord(activity) {
@@ -640,7 +665,7 @@ function renderPresence(data) {
   };
   const isStreaming = Array.isArray(data.activities) && data.activities.some((item) => item.type === 1);
 
-  statusLink.href = `https://discord.com/users/${user.id || DISCORD_USER_ID}`;
+  setDiscordProfileLink(user.id || DISCORD_USER_ID, displayName);
   discordName.textContent = displayName.toUpperCase();
   statusAvatar.src = avatarUrl;
   setStatusDot(isStreaming ? "streaming" : data.discord_status || "offline");
