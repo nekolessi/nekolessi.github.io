@@ -17,12 +17,11 @@ const DEFAULT_ACTIVITY_ART =
 
 // Easy config: edit links here (add/remove/reorder as you want).
 const PROFILE_LINKS = [
+  { label: "Oshi Card", icon: "fa-solid fa-link", href: "https://oshi.to/nekolessi" },
   { label: "Email", icon: "fa-solid fa-envelope", href: "nekolessi.july916@passinbox.com", type: "email" },
-  { label: "Carrd", icon: "fa-solid fa-id-card", href: "nekolessi.uwu.ai" },
   { label: "Twitch", icon: "fa-brands fa-twitch", href: "twitch.tv/nekolessi" },
   { label: "Steam", icon: "fa-brands fa-steam", href: "steamcommunity.com/id/nekolessi/" },
   { label: "Spotify", icon: "fa-brands fa-spotify", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
-  { label: "Oshi Card", icon: "fa-solid fa-link", href: "https://oshi.to/nekolessi" },
   { label: "Throne", icon: "fa-solid fa-crown", href: "https://throne.com/nekolessi" },
   { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
 ];
