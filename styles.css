@@ -110,7 +110,7 @@ h1 {
   margin: 0 0 14px;
   display: block;
   font-family: "Silkscreen", sans-serif;
-  font-size: clamp(2.35rem, 2.15rem + 0.75vw, 2.9rem);
+  font-size: clamp(2.55rem, 2.44rem + 0.28vw, 2.9rem);
   line-height: 1.03;
   letter-spacing: 0.085em;
   color: #d966d3;
@@ -121,7 +121,7 @@ h1 {
   margin: 0;
   max-width: 46ch;
   font-family: "Silkscreen", sans-serif;
-  font-size: clamp(1rem, 0.93rem + 0.28vw, 1.24rem);
+  font-size: clamp(1.08rem, 1.03rem + 0.16vw, 1.22rem);
   line-height: 1.5;
   letter-spacing: 0.06em;
   color: #ddd3e7;
@@ -475,7 +475,7 @@ h1 {
   margin: 3px 0 4px;
   display: flex;
   align-items: center;
-  font-size: clamp(1.16rem, 1.02rem + 0.48vw, 1.58rem);
+  font-size: clamp(1.32rem, 1.24rem + 0.26vw, 1.58rem);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: #f0e9f8;
@@ -596,7 +596,7 @@ h1 {
 .activity-title {
   margin: 3px 0 4px;
   font-family: "Silkscreen", sans-serif;
-  font-size: clamp(1.2rem, 1.04rem + 0.52vw, 1.66rem);
+  font-size: clamp(1.36rem, 1.28rem + 0.28vw, 1.66rem);
   font-weight: 700;
   letter-spacing: 0.06em;
   color: #f0e9f8;
@@ -637,24 +637,6 @@ h1 {
   height: 100%;
   border-radius: inherit;
   background: linear-gradient(90deg, var(--accent-hot), var(--accent), var(--accent-cool));
-}
-
-@media (min-width: 761px) and (max-width: 1200px) {
-  h1 {
-    font-size: 2.58rem;
-  }
-
-  .bio {
-    font-size: 1.08rem;
-  }
-
-  .status-line {
-    font-size: 1.34rem;
-  }
-
-  .activity-title {
-    font-size: 1.38rem;
-  }
 }
 
 @media (max-width: 760px) {
