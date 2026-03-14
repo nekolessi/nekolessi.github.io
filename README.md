@@ -43,4 +43,7 @@ This repo includes a tiny Worker at `cloudflare-worker/src/index.js`.
    - `const VIEW_COUNTER_WORKER_URL = "https://your-worker.workers.dev/views";`
 6. Commit/push site changes.
 
-Note: this counter increments on each page load/refresh request (it is not unique-visitor tracking).
+Notes:
+- This counter increments on each page load/refresh request (it is not unique-visitor tracking).
+- The same Worker also serves profile reactions at `/reactions` (the site auto-derives this URL from `VIEW_COUNTER_WORKER_URL`).
+- If you change Worker code, run `npx wrangler deploy` again to publish updates.

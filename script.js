@@ -5,6 +5,7 @@ const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const PROFILE_LOCATION = "USA";
 const VIEW_COUNTER_WORKER_URL = "https://nekolessi-view-counter.nekolessi.workers.dev/views"; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
+const REACTIONS_WORKER_URL = deriveReactionsWorkerUrl();
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
 const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
@@ -24,11 +25,21 @@ const PROFILE_LINKS = [
   { label: "Throne", icon: "fa-solid fa-crown", href: "https://throne.com/nekolessi" },
   { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
 ];
+const PROFILE_REACTIONS = [
+  { id: "heart", emoji: "💗", label: "Love" },
+  { id: "sparkles", emoji: "✨", label: "Sparkle" },
+  { id: "fire", emoji: "🔥", label: "Fire" },
+  { id: "crown", emoji: "👑", label: "Crown" }
+];
+const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
 
 const heroProfileImage = document.getElementById("heroProfileImage");
 const profileViews = document.getElementById("profileViews");
 const profileLocation = document.getElementById("profileLocation");
 const socialLinksRoot = document.getElementById("socialLinks");
+const reactionsSection = document.getElementById("reactionsSection");
+const profileReactionsRoot = document.getElementById("profileReactions");
+const reactionStatus = document.getElementById("reactionStatus");
 const statusLink = document.getElementById("discordStatusLink");
 const statusAvatar = document.getElementById("statusAvatar");
 const discordName = document.getElementById("discordName");
@@ -60,6 +71,9 @@ const hasPresenceElements = Boolean(
 let progressState = null;
 let progressTimer = null;
 let profileViewsFetchInFlight = false;
+let reactionsFetchInFlight = false;
+let selectedReactionId = readStoredReactionChoice();
+let reactionCounts = defaultReactionCounts();
 
 if (heroProfileImage) {
   heroProfileImage.src = HERO_PROFILE_IMAGE;
@@ -190,6 +204,60 @@ async function fetchViewCountFromBadgeProxy() {
   return count;
 }
 
+function deriveReactionsWorkerUrl() {
+  const base = (VIEW_COUNTER_WORKER_URL || "").trim();
+  if (!base) {
+    return "";
+  }
+
+  if (/\/views\/?$/i.test(base)) {
+    return base.replace(/\/views\/?$/i, "/reactions");
+  }
+
+  return `${base.replace(/\/$/, "")}/reactions`;
+}
+
+function defaultReactionCounts() {
+  return PROFILE_REACTIONS.reduce((acc, reaction) => {
+    acc[reaction.id] = 0;
+    return acc;
+  }, {});
+}
+
+function normalizeReactionCounts(rawCounts) {
+  const baseCounts = defaultReactionCounts();
+  if (!rawCounts || typeof rawCounts !== "object") {
+    return baseCounts;
+  }
+
+  PROFILE_REACTIONS.forEach((reaction) => {
+    const raw = rawCounts[reaction.id];
+    const numeric = Number.parseInt(raw, 10);
+    if (Number.isFinite(numeric) && numeric >= 0) {
+      baseCounts[reaction.id] = numeric;
+    }
+  });
+
+  return baseCounts;
+}
+
+function readStoredReactionChoice() {
+  try {
+    const value = localStorage.getItem(REACTION_LOCAL_KEY) || "";
+    return PROFILE_REACTIONS.some((reaction) => reaction.id === value) ? value : "";
+  } catch {
+    return "";
+  }
+}
+
+function storeReactionChoice(reactionId) {
+  try {
+    localStorage.setItem(REACTION_LOCAL_KEY, reactionId);
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
 function normalizeHref(link) {
   const rawHref = (link.href || "").trim();
   if (!rawHref) {
@@ -236,6 +304,130 @@ function renderSocialLinks() {
     anchor.appendChild(icon);
     socialLinksRoot.appendChild(anchor);
   });
+}
+
+function setReactionStatus(message) {
+  if (!reactionStatus) {
+    return;
+  }
+
+  reactionStatus.textContent = message || "";
+}
+
+function renderReactionButtons(counts = reactionCounts) {
+  if (!profileReactionsRoot) {
+    return;
+  }
+
+  reactionCounts = normalizeReactionCounts(counts);
+  profileReactionsRoot.innerHTML = "";
+
+  PROFILE_REACTIONS.forEach((reaction) => {
+    const button = document.createElement("button");
+    button.type = "button";
+    button.className = "reaction-btn";
+    if (selectedReactionId === reaction.id) {
+      button.classList.add("active");
+    }
+
+    button.setAttribute("aria-label", `${reaction.label} reaction`);
+    button.disabled = reactionsFetchInFlight;
+
+    const emoji = document.createElement("span");
+    emoji.className = "reaction-emoji";
+    emoji.textContent = reaction.emoji;
+
+    const count = document.createElement("span");
+    count.className = "reaction-count";
+    count.textContent = String(reactionCounts[reaction.id] ?? 0);
+
+    button.appendChild(emoji);
+    button.appendChild(count);
+    button.addEventListener("click", () => submitReaction(reaction.id));
+    profileReactionsRoot.appendChild(button);
+  });
+}
+
+async function fetchReactionCounts() {
+  const response = await withTimeout(
+    fetch(REACTIONS_WORKER_URL, {
+      cache: "no-store"
+    }),
+    VIEW_FETCH_TIMEOUT_MS
+  );
+
+  if (!response.ok) {
+    throw new Error(`Reaction request failed (${response.status})`);
+  }
+
+  const payload = await response.json();
+  return normalizeReactionCounts(payload?.counts);
+}
+
+async function submitReaction(reactionId) {
+  if (!REACTIONS_WORKER_URL || reactionsFetchInFlight || !profileReactionsRoot) {
+    return;
+  }
+
+  reactionsFetchInFlight = true;
+  renderReactionButtons();
+  setReactionStatus("Saving reaction...");
+
+  try {
+    const response = await withTimeout(
+      fetch(REACTIONS_WORKER_URL, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({ reaction: reactionId })
+      }),
+      VIEW_FETCH_TIMEOUT_MS
+    );
+
+    if (!response.ok) {
+      throw new Error(`Reaction update failed (${response.status})`);
+    }
+
+    const payload = await response.json();
+    const counts = normalizeReactionCounts(payload?.counts);
+    selectedReactionId = reactionId;
+    storeReactionChoice(reactionId);
+    renderReactionButtons(counts);
+    setReactionStatus("Thanks for reacting.");
+  } catch {
+    setReactionStatus("Could not save reaction right now.");
+    try {
+      const counts = await fetchReactionCounts();
+      renderReactionButtons(counts);
+    } catch {
+      renderReactionButtons();
+    }
+  } finally {
+    reactionsFetchInFlight = false;
+    renderReactionButtons();
+  }
+}
+
+async function initProfileReactions() {
+  if (!reactionsSection || !profileReactionsRoot) {
+    return;
+  }
+
+  if (!REACTIONS_WORKER_URL) {
+    reactionsSection.style.display = "none";
+    return;
+  }
+
+  renderReactionButtons();
+  setReactionStatus("");
+
+  try {
+    const counts = await fetchReactionCounts();
+    renderReactionButtons(counts);
+  } catch {
+    setReactionStatus("Reactions offline right now.");
+  }
 }
 
 if (statusAvatar) {
@@ -523,6 +715,7 @@ async function fetchPresence() {
 }
 
 renderSocialLinks();
+initProfileReactions();
 updateProfileViews();
 fetchPresence();
 setInterval(fetchPresence, 20000);

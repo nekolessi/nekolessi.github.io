@@ -183,6 +183,87 @@ h1 {
 .socials a:nth-child(7) { color: #36b5ff; }
 .socials a:nth-child(8) { color: #f5f5f5; }
 
+.reactions {
+  margin-top: 12px;
+  display: grid;
+  justify-items: center;
+  gap: 8px;
+}
+
+.reactions-title {
+  margin: 0;
+  font-family: "Silkscreen", sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.18em;
+  color: #bca7d2;
+  text-transform: uppercase;
+}
+
+.reactions-grid {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 9px;
+}
+
+.reaction-btn {
+  appearance: none;
+  border: 1px solid rgba(214, 152, 247, 0.34);
+  background: linear-gradient(150deg, rgba(70, 38, 104, 0.6), rgba(33, 21, 50, 0.55));
+  color: #f4ebff;
+  border-radius: 999px;
+  min-width: 56px;
+  padding: 5px 10px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-family: "Silkscreen", sans-serif;
+  font-size: 0.7rem;
+  line-height: 1;
+  cursor: pointer;
+  transition: transform 160ms ease, border-color 170ms ease, box-shadow 180ms ease;
+}
+
+.reaction-btn:hover {
+  transform: translateY(-1px);
+  border-color: rgba(236, 184, 255, 0.58);
+  box-shadow: 0 0 14px rgba(201, 108, 255, 0.24);
+}
+
+.reaction-btn:focus-visible {
+  outline: 2px solid rgba(228, 164, 255, 0.72);
+  outline-offset: 2px;
+}
+
+.reaction-btn.active {
+  border-color: rgba(243, 198, 255, 0.84);
+  box-shadow: 0 0 12px rgba(236, 120, 255, 0.28);
+}
+
+.reaction-btn:disabled {
+  opacity: 0.72;
+  cursor: wait;
+}
+
+.reaction-emoji {
+  font-size: 0.96rem;
+}
+
+.reaction-count {
+  min-width: 1.2em;
+  text-align: center;
+}
+
+.reactions-status {
+  margin: 0;
+  min-height: 0.9rem;
+  font-family: "Silkscreen", sans-serif;
+  font-size: 0.58rem;
+  letter-spacing: 0.12em;
+  color: #b2a1c7;
+}
+
 .hero-copy {
   min-width: 0;
   margin-top: 46px;
@@ -597,6 +678,25 @@ h1 {
     font-size: 1.55rem;
   }
 
+  .reactions-title {
+    font-size: 0.56rem;
+    letter-spacing: 0.14em;
+  }
+
+  .reaction-btn {
+    min-width: 52px;
+    padding: 4px 9px;
+    font-size: 0.64rem;
+  }
+
+  .reaction-emoji {
+    font-size: 0.88rem;
+  }
+
+  .reactions-status {
+    font-size: 0.54rem;
+  }
+
   .live-card,
   .activity-card {
     padding: 13px;
@@ -648,12 +748,14 @@ h1 {
 
 @media (prefers-reduced-motion: reduce) {
   .socials a,
-  .live-card {
+  .live-card,
+  .reaction-btn {
     transition: none;
   }
 
   .socials a:hover,
-  .live-card:hover {
+  .live-card:hover,
+  .reaction-btn:hover {
     transform: none;
     filter: none;
   }
