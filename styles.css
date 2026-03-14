@@ -639,6 +639,24 @@ h1 {
   background: linear-gradient(90deg, var(--accent-hot), var(--accent), var(--accent-cool));
 }
 
+@media (min-width: 761px) and (max-width: 1200px) {
+  h1 {
+    font-size: 2.58rem;
+  }
+
+  .bio {
+    font-size: 1.08rem;
+  }
+
+  .status-line {
+    font-size: 1.34rem;
+  }
+
+  .activity-title {
+    font-size: 1.38rem;
+  }
+}
+
 @media (max-width: 760px) {
   body {
     background-attachment: scroll;
