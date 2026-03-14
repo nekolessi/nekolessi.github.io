@@ -14,6 +14,9 @@
   --idle: #f8d159;
   --dnd: #ff5c72;
   --offline: #6d5f80;
+  --card-surface:
+    linear-gradient(120deg, rgba(40, 36, 44, 0.48), rgba(25, 22, 30, 0.48)),
+    rgba(58, 53, 60, 0.34);
 }
 
 * {
@@ -83,9 +86,7 @@ body {
   padding: 28px 34px 28px;
   position: relative;
   isolation: isolate;
-  background:
-    linear-gradient(120deg, rgba(40, 36, 44, 0.48), rgba(25, 22, 30, 0.48)),
-    rgba(58, 53, 60, 0.34);
+  background: var(--card-surface);
 }
 
 .hero::before {
@@ -207,9 +208,7 @@ h1 {
 .reaction-btn {
   appearance: none;
   border: 1px solid rgba(194, 141, 230, 0.36);
-  background:
-    linear-gradient(120deg, rgba(40, 36, 44, 0.48), rgba(25, 22, 30, 0.48)),
-    rgba(58, 53, 60, 0.34);
+  background: var(--card-surface);
   color: #f4ebff;
   border-radius: 999px;
   min-width: 80px;
@@ -224,6 +223,7 @@ h1 {
   cursor: pointer;
   backdrop-filter: blur(13px);
   -webkit-backdrop-filter: blur(13px);
+  box-shadow: inset 0 0 0 1px rgba(255, 255, 255, 0.04);
   transition: transform 160ms ease, border-color 170ms ease, box-shadow 180ms ease;
 }
 
@@ -365,9 +365,7 @@ h1 {
   align-items: center;
   gap: 16px;
   font-family: "Silkscreen", sans-serif;
-  background:
-    linear-gradient(120deg, rgba(40, 36, 44, 0.48), rgba(25, 22, 30, 0.48)),
-    rgba(58, 53, 60, 0.34);
+  background: var(--card-surface);
   border-color: rgba(194, 141, 230, 0.36);
 }
 
