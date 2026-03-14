@@ -70,6 +70,7 @@ let progressState = null;
 let progressTimer = null;
 let profileViewsFetchInFlight = false;
 let reactionsFetchInFlight = false;
+let presenceFetchInFlight = false;
 let selectedReactionId = readStoredReactionChoice();
 let reactionCounts = defaultReactionCounts();
 
@@ -707,12 +708,19 @@ async function fetchPresence() {
     return;
   }
 
+  if (presenceFetchInFlight) {
+    return;
+  }
+
   if (typeof document !== "undefined" && document.hidden) {
     return;
   }
 
+  presenceFetchInFlight = true;
+
   if (!isUserIdSet()) {
     setDisconnectedState("Set your Discord user ID in script.js to load live presence.");
+    presenceFetchInFlight = false;
     return;
   }
 
@@ -733,6 +741,8 @@ async function fetchPresence() {
     renderPresence(payload.data);
   } catch {
     setDisconnectedState("Could not reach Discord presence feed right now.");
+  } finally {
+    presenceFetchInFlight = false;
   }
 }
 
