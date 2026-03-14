@@ -1,7 +1,7 @@
 const COUNTER_KEY = "profile_views_total";
 const COUNTER_INIT = 0;
 const REACTIONS_KEY = "profile_reactions_counts";
-const REACTION_IDS = ["heart", "sparkles", "fire", "crown"];
+const REACTION_IDS = ["heart"];
 const CORS_HEADERS = {
   "Access-Control-Allow-Origin": "*",
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",

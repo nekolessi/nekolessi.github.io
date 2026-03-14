@@ -183,8 +183,8 @@ h1 {
 .socials a:nth-child(7) { color: #36b5ff; }
 .socials a:nth-child(8) { color: #f5f5f5; }
 
-.reactions {
-  margin-top: 12px;
+.reactions-card {
+  padding: 14px 18px 12px;
   display: grid;
   justify-items: center;
   gap: 8px;
@@ -201,9 +201,8 @@ h1 {
 
 .reactions-grid {
   display: flex;
-  flex-wrap: wrap;
   justify-content: center;
-  gap: 9px;
+  gap: 10px;
 }
 
 .reaction-btn {
@@ -212,8 +211,8 @@ h1 {
   background: linear-gradient(150deg, rgba(70, 38, 104, 0.6), rgba(33, 21, 50, 0.55));
   color: #f4ebff;
   border-radius: 999px;
-  min-width: 56px;
-  padding: 5px 10px;
+  min-width: 80px;
+  padding: 6px 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -251,7 +250,7 @@ h1 {
 }
 
 .reaction-count {
-  min-width: 1.2em;
+  min-width: 1.35em;
   text-align: center;
 }
 
@@ -684,8 +683,8 @@ h1 {
   }
 
   .reaction-btn {
-    min-width: 52px;
-    padding: 4px 9px;
+    min-width: 74px;
+    padding: 5px 12px;
     font-size: 0.64rem;
   }
 

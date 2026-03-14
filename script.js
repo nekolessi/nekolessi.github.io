@@ -26,10 +26,7 @@ const PROFILE_LINKS = [
   { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
 ];
 const PROFILE_REACTIONS = [
-  { id: "heart", emoji: "💗", label: "Love" },
-  { id: "sparkles", emoji: "✨", label: "Sparkle" },
-  { id: "fire", emoji: "🔥", label: "Fire" },
-  { id: "crown", emoji: "👑", label: "Crown" }
+  { id: "heart", emoji: "💗", label: "Like catgirls" }
 ];
 const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
 
