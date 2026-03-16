@@ -23,6 +23,23 @@ Update these constants:
 Notes:
 - If `HERO_PROFILE_IMAGE_URL` is empty, local `images/profile.png` is used.
 - Reactions endpoint is auto-derived from `VIEW_COUNTER_WORKER_URL` (`/views` -> `/reactions`).
+- Social links use **Simple Icons only**.
+
+### `PROFILE_LINKS` format
+Use this shape for each link:
+```js
+{
+  label: "Ko-fi",
+  simpleIcon: "kofi",
+  iconColor: "72A5F2",
+  href: "ko-fi.com/nekolessi"
+}
+```
+
+Tips:
+- `simpleIcon` is the Simple Icons slug (from `cdn.simpleicons.org/<slug>`).
+- `iconColor` is a hex color without `#` (for example `1ED760`).
+- Use `type: "email"` for email links so they become `mailto:`.
 
 ## Publish on GitHub Pages
 1. Repo `Settings` -> `Pages`
