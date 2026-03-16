@@ -20,7 +20,7 @@ const PROFILE_LINKS = [
   { label: "Oshi Card", icon: "fa-solid fa-link", href: "oshi.to/nekolessi" },
   { label: "Email", icon: "fa-solid fa-envelope", href: "nekolessi.july916@passinbox.com", type: "email" },
   { label: "Twitch", icon: "fa-brands fa-twitch", href: "twitch.tv/nekolessi" },
-  { label: "Ko-fi", icon: "fa-brands fa-ko-fi", href: "ko-fi.com/nekolessi" },
+  { label: "Ko-fi", iconImage: "https://cdn.simpleicons.org/kofi/72A5F2", href: "ko-fi.com/nekolessi" },
   { label: "Spotify", icon: "fa-brands fa-spotify", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
   { label: "Throne", icon: "fa-solid fa-crown", href: "throne.com/nekolessi" },
   { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
@@ -296,10 +296,24 @@ function renderSocialLinks() {
       anchor.rel = "noreferrer noopener";
     }
 
-    const icon = document.createElement("i");
-    icon.className = link.icon;
-    icon.setAttribute("aria-hidden", "true");
-    anchor.appendChild(icon);
+    if (link.iconImage) {
+      const image = document.createElement("img");
+      image.className = "social-icon-image";
+      image.src = link.iconImage;
+      image.alt = "";
+      image.setAttribute("aria-hidden", "true");
+      image.loading = "lazy";
+      image.decoding = "async";
+      anchor.appendChild(image);
+    } else if (link.icon) {
+      const icon = document.createElement("i");
+      icon.className = link.icon;
+      icon.setAttribute("aria-hidden", "true");
+      anchor.appendChild(icon);
+    } else {
+      return;
+    }
+
     socialLinksRoot.appendChild(anchor);
   });
 }
