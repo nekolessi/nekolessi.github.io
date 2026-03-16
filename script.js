@@ -20,7 +20,7 @@ const PROFILE_LINKS = [
   { label: "Oshi Card", icon: "fa-solid fa-link", href: "oshi.to/nekolessi" },
   { label: "Email", icon: "fa-solid fa-envelope", href: "nekolessi.july916@passinbox.com", type: "email" },
   { label: "Twitch", icon: "fa-brands fa-twitch", href: "twitch.tv/nekolessi" },
-  { label: "Steam", icon: "fa-brands fa-ko-fi", href: "ko-fi.com/nekolessi" },
+  { label: "Ko-fi", icon: "fa-brands fa-ko-fi", href: "ko-fi.com/nekolessi" },
   { label: "Spotify", icon: "fa-brands fa-spotify", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
   { label: "Throne", icon: "fa-solid fa-crown", href: "throne.com/nekolessi" },
   { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
