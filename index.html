@@ -13,16 +13,12 @@
     <meta property="og:url" content="https://nekolessi.github.io/" />
     <meta name="twitter:card" content="summary_large_image" />
     <link rel="preload" as="image" href="images/background.jpg" fetchpriority="high" />
-    <link rel="preconnect" href="https://cdn.jsdelivr.net" crossorigin />
+    <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;700;900&family=Silkscreen:wght@400;700&display=swap"
       rel="stylesheet"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.5.2/css/all.min.css"
     />
     <link rel="stylesheet" href="styles.css" />
   </head>
@@ -46,11 +42,20 @@
 
         <div class="hero-topline">
           <p class="hero-meta">
-            <i class="fa-solid fa-eye"></i>
+            <svg class="meta-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z" />
+              <circle cx="12" cy="12" r="3.25" />
+            </svg>
             <span class="profile-views-live" id="profileViews" aria-live="polite">...</span>
           </p>
           <span class="hero-divider">|</span>
-          <p class="hero-meta"><i class="fa-solid fa-location-dot"></i> <span id="profileLocation">USA</span></p>
+          <p class="hero-meta">
+            <svg class="meta-icon" viewBox="0 0 24 24" aria-hidden="true">
+              <path d="M12 22s7-6.4 7-12a7 7 0 1 0-14 0c0 5.6 7 12 7 12z" />
+              <circle cx="12" cy="10" r="2.5" />
+            </svg>
+            <span id="profileLocation">USA</span>
+          </p>
         </div>
 
         <div class="hero-copy">
@@ -83,7 +88,13 @@
           </p>
           <p id="discordStatusText" class="status-text" aria-live="polite">Set your Discord user ID in script.js to load live presence.</p>
         </div>
-        <span class="external"><i class="fa-solid fa-arrow-up-right-from-square"></i></span>
+        <span class="external" aria-hidden="true">
+          <svg class="external-icon" viewBox="0 0 24 24">
+            <path d="M9 5h10v10" />
+            <path d="M8 16 19 5" />
+            <path d="M5 9v10h10" />
+          </svg>
+        </span>
       </a>
 
       <section class="card activity-card" id="activityCard">

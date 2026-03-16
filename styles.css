@@ -171,6 +171,7 @@ h1 {
   height: 1em;
   display: block;
   object-fit: contain;
+  border-radius: 2px;
 }
 
 .socials a:hover {
@@ -184,15 +185,6 @@ h1 {
   outline-offset: 4px;
   border-radius: 8px;
 }
-
-.socials a:nth-child(1) { color: #ff497b; }
-.socials a:nth-child(2) { color: #f6f4f8; }
-.socials a:nth-child(3) { color: #a970ff; }
-.socials a:nth-child(4) { color: #c7c7c7; }
-.socials a:nth-child(5) { color: #31d977; }
-.socials a:nth-child(6) { color: #5c76ff; }
-.socials a:nth-child(7) { color: #36b5ff; }
-.socials a:nth-child(8) { color: #f5f5f5; }
 
 .reactions-inline {
   padding: 4px 0 0;
@@ -352,6 +344,17 @@ h1 {
   align-items: center;
   gap: 7px;
   line-height: 1;
+}
+
+.meta-icon {
+  width: 0.95rem;
+  height: 0.95rem;
+  display: block;
+  stroke: currentcolor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .profile-views-live {
@@ -600,6 +603,17 @@ h1 {
   font-family: "Silkscreen", sans-serif;
   color: #bda8d8;
   font-size: 0.92rem;
+}
+
+.external-icon {
+  width: 1rem;
+  height: 1rem;
+  display: block;
+  stroke: currentcolor;
+  fill: none;
+  stroke-width: 2;
+  stroke-linecap: round;
+  stroke-linejoin: round;
 }
 
 .activity-title {

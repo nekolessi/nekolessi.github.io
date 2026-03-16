@@ -16,14 +16,15 @@ const DEFAULT_ACTIVITY_ART =
   "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=300&q=80";
 
 // Easy config: edit links here (add/remove/reorder as you want).
+// Social icons use Simple Icons only.
 const PROFILE_LINKS = [
-  { label: "Oshi Card", icon: "fa-solid fa-link", href: "oshi.to/nekolessi" },
-  { label: "Email", icon: "fa-solid fa-envelope", href: "nekolessi.july916@passinbox.com", type: "email" },
-  { label: "Twitch", icon: "fa-brands fa-twitch", href: "twitch.tv/nekolessi" },
-  { label: "Ko-fi", iconImage: "https://cdn.simpleicons.org/kofi/72A5F2", href: "ko-fi.com/nekolessi" },
-  { label: "Spotify", icon: "fa-brands fa-spotify", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
-  { label: "Throne", icon: "fa-solid fa-crown", href: "throne.com/nekolessi" },
-  { label: "Telegram", icon: "fa-brands fa-telegram", href: "t.me/nekolessi" }
+  { label: "Oshi Card", simpleIcon: "linktree", iconColor: "43E55E", href: "oshi.to/nekolessi" },
+  { label: "Email", simpleIcon: "gmail", iconColor: "EA4335", href: "nekolessi.july916@passinbox.com", type: "email" },
+  { label: "Twitch", simpleIcon: "twitch", iconColor: "9146FF", href: "twitch.tv/nekolessi" },
+  { label: "Ko-fi", simpleIcon: "kofi", iconColor: "72A5F2", href: "ko-fi.com/nekolessi" },
+  { label: "Spotify", simpleIcon: "spotify", iconColor: "1ED760", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
+  { label: "Throne", simpleIcon: "buymeacoffee", iconColor: "FFDD00", href: "throne.com/nekolessi" },
+  { label: "Telegram", simpleIcon: "telegram", iconColor: "26A5E4", href: "t.me/nekolessi" }
 ];
 const PROFILE_REACTIONS = [
   { id: "heart", emoji: "💗", label: "Like catgirls" }
@@ -273,6 +274,16 @@ function normalizeHref(link) {
   return `https://${rawHref}`;
 }
 
+function simpleIconUrl(name, color) {
+  const iconName = String(name || "").trim().toLowerCase();
+  if (!iconName) {
+    return "";
+  }
+
+  const iconColor = String(color || "f5f1fb").replace(/[^a-fA-F0-9]/g, "");
+  return `https://cdn.simpleicons.org/${encodeURIComponent(iconName)}/${iconColor || "f5f1fb"}`;
+}
+
 function renderSocialLinks() {
   if (!socialLinksRoot) {
     return;
@@ -296,20 +307,15 @@ function renderSocialLinks() {
       anchor.rel = "noreferrer noopener";
     }
 
-    if (link.iconImage) {
+    if (link.simpleIcon) {
       const image = document.createElement("img");
       image.className = "social-icon-image";
-      image.src = link.iconImage;
+      image.src = simpleIconUrl(link.simpleIcon, link.iconColor);
       image.alt = "";
       image.setAttribute("aria-hidden", "true");
       image.loading = "lazy";
       image.decoding = "async";
       anchor.appendChild(image);
-    } else if (link.icon) {
-      const icon = document.createElement("i");
-      icon.className = link.icon;
-      icon.setAttribute("aria-hidden", "true");
-      anchor.appendChild(icon);
     } else {
       return;
     }
