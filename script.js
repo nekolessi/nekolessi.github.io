@@ -18,7 +18,7 @@ const DEFAULT_ACTIVITY_ART =
 // Easy config: edit links here (add/remove/reorder as you want).
 // Social icons use Simple Icons only.
 const PROFILE_LINKS = [
-  { label: "Oshi Card", simpleIcon: "premid", iconColor: "43E55E", href: "oshi.to/nekolessi" },
+  { label: "Oshi Card", simpleIcon: "premid", iconColor: "B243DE", href: "oshi.to/nekolessi" },
   { label: "Email", simpleIcon: "gmail", iconColor: "EA4335", href: "nekolessi.july916@passinbox.com", type: "email" },
   { label: "Twitch", simpleIcon: "twitch", iconColor: "9146FF", href: "twitch.tv/nekolessi" },
   { label: "Ko-fi", simpleIcon: "kofi", iconColor: "72A5F2", href: "ko-fi.com/nekolessi" },
