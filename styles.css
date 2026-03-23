@@ -659,6 +659,15 @@ h1 {
   display: none;
 }
 
+.timeline.elapsed-only .bar {
+  background: linear-gradient(90deg, rgba(255, 102, 179, 0.18), rgba(132, 214, 255, 0.12));
+}
+
+.timeline.elapsed-only .bar-fill {
+  width: 100%;
+  opacity: 0.9;
+}
+
 .time {
   min-width: 34px;
   font-family: "Silkscreen", sans-serif;
@@ -666,6 +675,14 @@ h1 {
   font-size: 0.95rem;
   font-weight: 700;
   font-variant-numeric: tabular-nums;
+}
+
+.timeline.elapsed-only .time:last-child {
+  min-width: 64px;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  font-size: 0.74rem;
+  color: var(--text-soft);
 }
 
 .bar {

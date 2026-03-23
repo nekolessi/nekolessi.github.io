@@ -505,9 +505,15 @@ function resolveSpotifyArtUrl(input) {
 function formatMs(ms) {
   const safeMs = Math.max(0, ms);
   const totalSeconds = Math.floor(safeMs / 1000);
-  const min = Math.floor(totalSeconds / 60);
+  const hours = Math.floor(totalSeconds / 3600);
+  const min = Math.floor((totalSeconds % 3600) / 60);
   const sec = String(totalSeconds % 60).padStart(2, "0");
-  return `${min}:${sec}`;
+
+  if (hours > 0) {
+    return `${hours}:${String(min).padStart(2, "0")}:${sec}`;
+  }
+
+  return `${Math.floor(totalSeconds / 60)}:${sec}`;
 }
 
 function setStatusDot(status) {
@@ -572,13 +578,15 @@ function setStatusText(customStatus, fallbackText) {
 function startProgress(startMs, endMs) {
   stopProgress();
 
-  if (!startMs || !endMs || endMs <= startMs) {
+  if (!startMs) {
     timeline.classList.add("hidden");
     return;
   }
 
-  progressState = { startMs, endMs };
+  const isElapsedOnly = !endMs || endMs <= startMs;
+  progressState = { startMs, endMs: isElapsedOnly ? null : endMs, isElapsedOnly };
   timeline.classList.remove("hidden");
+  timeline.classList.toggle("elapsed-only", isElapsedOnly);
 
   const tick = () => {
     if (!progressState) {
@@ -586,11 +594,21 @@ function startProgress(startMs, endMs) {
     }
 
     const now = Date.now();
-    const duration = progressState.endMs - progressState.startMs;
-    const elapsed = Math.min(Math.max(now - progressState.startMs, 0), duration);
-    const percent = Math.min((elapsed / duration) * 100, 100);
+    const elapsed = Math.max(now - progressState.startMs, 0);
 
     currentTime.textContent = formatMs(elapsed);
+
+    if (progressState.isElapsedOnly) {
+      totalTime.textContent = "elapsed";
+      progressFill.style.width = "100%";
+      return;
+    }
+
+    const duration = progressState.endMs - progressState.startMs;
+    const clampedElapsed = Math.min(elapsed, duration);
+    const percent = Math.min((clampedElapsed / duration) * 100, 100);
+
+    currentTime.textContent = formatMs(clampedElapsed);
     totalTime.textContent = formatMs(duration);
     progressFill.style.width = `${percent}%`;
   };
@@ -606,6 +624,7 @@ function stopProgress() {
     progressTimer = null;
   }
   timeline.classList.add("hidden");
+  timeline.classList.remove("elapsed-only");
   progressFill.style.width = "0%";
   currentTime.textContent = "0:00";
   totalTime.textContent = "0:00";
@@ -823,12 +842,15 @@ async function renderPresence(data) {
 
   const richActivity = pickRichActivity(data.activities);
   if (richActivity) {
-    const detailText = richActivity.details || richActivity.state || "Active on Discord";
-    const subText = richActivity.name || "Activity";
+    const titleText = richActivity.name || richActivity.details || richActivity.state || "Active on Discord";
+    const subtitleParts = [richActivity.details, richActivity.state]
+      .map((value) => String(value || "").trim())
+      .filter((value, index, parts) => value && value !== titleText && parts.indexOf(value) === index);
+    const subText = subtitleParts.join(" - ") || "Running now";
     const richImage = await resolveActivityArt(richActivity);
 
     activityArt.src = richImage || DEFAULT_ACTIVITY_ART;
-    activityTitle.textContent = detailText;
+    activityTitle.textContent = titleText;
     activitySubtitle.textContent = subText;
     startProgress(richActivity.timestamps?.start, richActivity.timestamps?.end);
     return;
