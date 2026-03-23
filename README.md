@@ -35,19 +35,22 @@ This runs:
 
 Update these values:
 
-- `DISCORD_USER_ID`
+- `APP_CONFIG.discordUserId`
+- `APP_CONFIG.heroProfileImageUrl`
+- `APP_CONFIG.viewCounterWorkerUrl`
+- `APP_CONFIG.presenceRefreshIntervalMs`
 - `PROFILE.location`
 - `PROFILE.bioBlocks`
-- `HERO_PROFILE_IMAGE_URL`
-- `VIEW_COUNTER_WORKER_URL`
 - `PROFILE.links`
+- `UI_TEXT`
 
 Notes:
 
-- if `HERO_PROFILE_IMAGE_URL` is empty, the site uses `images/profile.png`
-- the reactions endpoint is auto-derived from `VIEW_COUNTER_WORKER_URL`
-- the Discord app icon endpoint is auto-derived from `VIEW_COUNTER_WORKER_URL`
+- if `APP_CONFIG.heroProfileImageUrl` is empty, the site uses `images/profile.png`
+- the reactions endpoint is auto-derived from `APP_CONFIG.viewCounterWorkerUrl`
+- the Discord app icon endpoint is auto-derived from `APP_CONFIG.viewCounterWorkerUrl`
 - social links use **Simple Icons only**
+- `UI_TEXT` holds section labels, fallback copy, and small status messages so you can retheme wording without digging through logic
 
 ### `PROFILE.links` shape
 
@@ -83,6 +86,28 @@ const PROFILE = {
 };
 ```
 
+### `APP_CONFIG` shape
+
+```js
+const APP_CONFIG = {
+  discordUserId: "1116207043544612985",
+  heroProfileImageUrl: "",
+  viewCounterWorkerUrl: "https://your-worker.workers.dev/views",
+  presenceRefreshIntervalMs: 20000
+};
+```
+
+### `UI_TEXT` shape
+
+```js
+const UI_TEXT = {
+  statusEyebrow: "DISCORD STATUS",
+  activityEyebrow: "NOW PLAYING / LISTENING",
+  reactionsTitle: "click if you like catgirls",
+  activityEmptyTitle: "Nothing active right now"
+};
+```
+
 ## Publish On GitHub Pages
 
 1. Open repo `Settings`.
@@ -110,7 +135,9 @@ Worker files live in `cloudflare-worker/`.
    ```
 4. Set the worker URL in `script.js`:
    ```js
-   const VIEW_COUNTER_WORKER_URL = "https://your-worker.workers.dev/views";
+   const APP_CONFIG = {
+     viewCounterWorkerUrl: "https://your-worker.workers.dev/views"
+   };
    ```
 
 Important behavior:
@@ -132,11 +159,11 @@ curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers
 ## Troubleshooting
 
 - Counter blank:
-  - check that `VIEW_COUNTER_WORKER_URL` ends with `/views`
+  - check that `APP_CONFIG.viewCounterWorkerUrl` ends with `/views`
   - check that the worker is deployed and the `PROFILE_COUNTER` Durable Object binding exists
   - check that `ALLOWED_ORIGINS` includes your site origin
 - Discord status not updating:
-  - check `DISCORD_USER_ID`
+  - check `APP_CONFIG.discordUserId`
   - confirm Lanyard can see that user
 - Style not updating:
   - hard refresh with `Ctrl+F5` after Pages deploy finishes
