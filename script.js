@@ -585,6 +585,15 @@ function setActivitySubtitle(text) {
   activitySubtitle.hidden = !safeText;
 }
 
+function setActivityArt(imageUrl, label) {
+  if (!activityArt) {
+    return;
+  }
+
+  activityArt.src = imageUrl || DEFAULT_ACTIVITY_ART;
+  activityArt.alt = label ? `${label} artwork` : "Activity artwork";
+}
+
 function startProgress(startMs, endMs) {
   stopProgress();
 
@@ -647,7 +656,7 @@ function setDisconnectedState(message) {
   statusAvatar.src = DEFAULT_STATUS_AVATAR;
   setDiscordProfileLink("");
 
-  activityArt.src = DEFAULT_ACTIVITY_ART;
+  setActivityArt("", "");
   activityTitle.textContent = "Nothing active right now";
   setActivitySubtitle("Once linked, this updates from your Discord activity.");
   stopProgress();
@@ -843,7 +852,7 @@ async function renderPresence(data) {
     const albumArtId = spotify.album_art_url;
     const spotifyArtUrl = resolveSpotifyArtUrl(albumArtId);
 
-    activityArt.src = spotifyArtUrl || DEFAULT_ACTIVITY_ART;
+    setActivityArt(spotifyArtUrl, spotify.song || "Spotify");
     activityTitle.textContent = spotify.song || "Listening on Spotify";
     setActivitySubtitle(`${spotify.artist || "Unknown artist"} - ${spotify.album || "Unknown album"}`);
     startProgress(spotify.timestamps?.start, spotify.timestamps?.end);
@@ -859,14 +868,14 @@ async function renderPresence(data) {
     const subText = subtitleParts.join(" - ");
     const richImage = await resolveActivityArt(richActivity);
 
-    activityArt.src = richImage || DEFAULT_ACTIVITY_ART;
+    setActivityArt(richImage, titleText);
     activityTitle.textContent = titleText;
     setActivitySubtitle(subText);
     startProgress(richActivity.timestamps?.start, richActivity.timestamps?.end);
     return;
   }
 
-  activityArt.src = DEFAULT_ACTIVITY_ART;
+  setActivityArt("", "");
   activityTitle.textContent = "Nothing active right now";
   setActivitySubtitle("Open a game or Spotify and this card will update.");
   stopProgress();
