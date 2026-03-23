@@ -873,6 +873,24 @@ h1 {
   }
 }
 
+@media (max-width: 430px) {
+  .timeline {
+    display: grid;
+    grid-template-columns: auto auto;
+    gap: 6px 10px;
+    align-items: center;
+  }
+
+  .bar {
+    grid-column: 1 / -1;
+    grid-row: 2;
+  }
+
+  .time:last-child {
+    justify-self: end;
+  }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .shell > * {
     opacity: 1;

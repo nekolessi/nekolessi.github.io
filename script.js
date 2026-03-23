@@ -3,7 +3,6 @@ const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
 const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
 const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
-const PROFILE_LOCATION = "USA";
 const VIEW_COUNTER_WORKER_URL = "https://nekolessi-view-counter.nekolessi.workers.dev/views"; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
 const REACTIONS_WORKER_URL = deriveReactionsWorkerUrl();
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
@@ -14,23 +13,32 @@ const DISCORD_PROFILE_BASE = "https://discord.com/users/";
 const DEFAULT_STATUS_AVATAR = HERO_PROFILE_IMAGE_LOCAL;
 const DEFAULT_ACTIVITY_ART = "images/activity-fallback.svg";
 
-// Easy config: edit links here (add/remove/reorder as you want).
-// Social icons use Simple Icons only.
-const PROFILE_LINKS = [
-  { label: "Oshi Card", simpleIcon: "premid", iconColor: "CC5CC1", href: "oshi.to/nekolessi" },
-  { label: "Email", simpleIcon: "gmail", iconColor: "EA4335", href: "nekolessi.july916@passinbox.com", type: "email" },
-  { label: "Twitch", simpleIcon: "twitch", iconColor: "9146FF", href: "twitch.tv/nekolessi" },
-  { label: "Spotify", simpleIcon: "spotify", iconColor: "1ED760", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
-  { label: "Telegram", simpleIcon: "telegram", iconColor: "26A5E4", href: "t.me/nekolessi" },
-  { label: "Ko-fi", simpleIcon: "kofi", iconColor: "72A5F2", href: "ko-fi.com/nekolessi" },
-  { label: "Throne", simpleIcon: "ilovepdf", iconColor: "FFDD00", href: "throne.com/nekolessi" }
-];
+const PROFILE = {
+  location: "USA",
+  bioBlocks: [
+    "OH HAII~ I'M JUST A HOPELESS GIRLFAILURE...",
+    "I SPEND MY FREE TIME WATCHING VTUBERS, DOODLING WHEN MY BRAIN COOPERATES, AND STARING INTO SPACE LIKE I FORGOT HOW TO EXIST...",
+    "I'M SHY, VERY DUMB, KINDA NEEDY, AND MAYBE JUST A TINY BIT BRATTY~ PLS BE NICE OR I'LL CRY AND POUT..."
+  ],
+  // Easy config: edit links here (add/remove/reorder as you want).
+  // Social icons use Simple Icons only.
+  links: [
+    { label: "Oshi Card", simpleIcon: "premid", iconColor: "CC5CC1", href: "oshi.to/nekolessi" },
+    { label: "Email", simpleIcon: "gmail", iconColor: "EA4335", href: "nekolessi.july916@passinbox.com", type: "email" },
+    { label: "Twitch", simpleIcon: "twitch", iconColor: "9146FF", href: "twitch.tv/nekolessi" },
+    { label: "Spotify", simpleIcon: "spotify", iconColor: "1ED760", href: "open.spotify.com/user/md3unqsz1utqazf1rtrvdos09" },
+    { label: "Telegram", simpleIcon: "telegram", iconColor: "26A5E4", href: "t.me/nekolessi" },
+    { label: "Ko-fi", simpleIcon: "kofi", iconColor: "72A5F2", href: "ko-fi.com/nekolessi" },
+    { label: "Throne", simpleIcon: "ilovepdf", iconColor: "FFDD00", href: "throne.com/nekolessi" }
+  ]
+};
 const PROFILE_REACTIONS = [
   { id: "heart", emoji: "💗", label: "Like catgirls" }
 ];
 const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
 
 const heroProfileImage = document.getElementById("heroProfileImage");
+const heroBio = document.getElementById("heroBio");
 const profileViews = document.getElementById("profileViews");
 const profileViewsText = document.getElementById("profileViewsText");
 const profileLocation = document.getElementById("profileLocation");
@@ -80,7 +88,11 @@ if (heroProfileImage) {
 }
 
 if (profileLocation) {
-  profileLocation.textContent = PROFILE_LOCATION;
+  profileLocation.textContent = PROFILE.location;
+}
+
+if (heroBio) {
+  renderHeroBio();
 }
 
 async function updateProfileViews() {
@@ -295,6 +307,26 @@ function simpleIconUrl(name, color) {
   return `https://cdn.simpleicons.org/${encodeURIComponent(iconName)}/${iconColor || "f5f1fb"}`;
 }
 
+function renderHeroBio() {
+  if (!heroBio) {
+    return;
+  }
+
+  heroBio.innerHTML = "";
+
+  PROFILE.bioBlocks.forEach((block) => {
+    const line = String(block || "").trim();
+    if (!line) {
+      return;
+    }
+
+    const span = document.createElement("span");
+    span.className = "bio-block";
+    span.textContent = line;
+    heroBio.appendChild(span);
+  });
+}
+
 function renderSocialLinks() {
   if (!socialLinksRoot) {
     return;
@@ -302,7 +334,7 @@ function renderSocialLinks() {
 
   socialLinksRoot.innerHTML = "";
 
-  PROFILE_LINKS.forEach((link) => {
+  PROFILE.links.forEach((link) => {
     const finalHref = normalizeHref(link);
     if (!finalHref) {
       return;
