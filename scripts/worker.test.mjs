@@ -13,7 +13,8 @@ class MemoryStorage {
       return null;
     }
 
-    return structuredClone(this.values.get(key));
+    const value = this.values.get(key);
+    return typeof value === "string" ? value : structuredClone(value);
   }
 
   async put(key, value) {

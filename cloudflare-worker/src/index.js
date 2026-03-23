@@ -66,6 +66,18 @@ function normalizeReactions(raw) {
   return base;
 }
 
+function readStoredReactions(raw) {
+  if (typeof raw === "string") {
+    try {
+      return normalizeReactions(JSON.parse(raw));
+    } catch {
+      return defaultReactions();
+    }
+  }
+
+  return normalizeReactions(raw);
+}
+
 function parseAllowedOrigins(env) {
   const raw = String(env?.ALLOWED_ORIGINS || env?.ALLOWED_ORIGIN || "")
     .split(",")
@@ -156,7 +168,7 @@ export class ProfileCounterDurableObject {
     if (url.pathname === "/reactions") {
       if (request.method === "GET") {
         const raw = await this.state.storage.get(REACTIONS_KEY);
-        return jsonResponse({ counts: normalizeReactions(raw) });
+        return jsonResponse({ counts: readStoredReactions(raw) });
       }
 
       if (request.method === "POST") {
@@ -192,10 +204,10 @@ export class ProfileCounterDurableObject {
         }
 
         const raw = await this.state.storage.get(REACTIONS_KEY);
-        const counts = normalizeReactions(raw);
+        const counts = readStoredReactions(raw);
         counts[reaction] += 1;
 
-        await this.state.storage.put(REACTIONS_KEY, counts);
+        await this.state.storage.put(REACTIONS_KEY, JSON.stringify(counts));
         await this.state.storage.put(rateKey, `${now}`);
         return jsonResponse({ counts });
       }
