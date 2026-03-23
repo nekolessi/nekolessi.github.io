@@ -10,10 +10,8 @@ const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.
 const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
 const DISCORD_PROFILE_BASE = "https://discord.com/users/";
-const DEFAULT_STATUS_AVATAR =
-  "https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80";
-const DEFAULT_ACTIVITY_ART =
-  "https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=300&q=80";
+const DEFAULT_STATUS_AVATAR = HERO_PROFILE_IMAGE_LOCAL;
+const DEFAULT_ACTIVITY_ART = "images/activity-fallback.svg";
 
 // Easy config: edit links here (add/remove/reorder as you want).
 // Social icons use Simple Icons only.
@@ -33,6 +31,7 @@ const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
 
 const heroProfileImage = document.getElementById("heroProfileImage");
 const profileViews = document.getElementById("profileViews");
+const profileViewsText = document.getElementById("profileViewsText");
 const profileLocation = document.getElementById("profileLocation");
 const socialLinksRoot = document.getElementById("socialLinks");
 const reactionsSection = document.getElementById("reactionsSection");
@@ -93,18 +92,28 @@ async function updateProfileViews() {
   profileViewsFetchInFlight = true;
   const currentLabel = profileViews.textContent.trim();
   if (!/^\d+$/.test(currentLabel)) {
-    profileViews.textContent = "...";
+    setProfileViewsLabel("...", "Profile views loading");
   }
 
   try {
     const count = await fetchViewCount();
-    if (count) {
-      profileViews.textContent = count;
+    if (/^\d+$/.test(count)) {
+      setProfileViewsLabel(count, `Profile views: ${count}`);
     }
   } catch {
     // Keep existing label if counter fetch fails.
   } finally {
     profileViewsFetchInFlight = false;
+  }
+}
+
+function setProfileViewsLabel(visibleLabel, spokenLabel) {
+  if (profileViews) {
+    profileViews.textContent = visibleLabel;
+  }
+
+  if (profileViewsText) {
+    profileViewsText.textContent = spokenLabel;
   }
 }
 

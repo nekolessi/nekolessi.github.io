@@ -12,6 +12,9 @@
     <meta property="og:image" content="https://nekolessi.github.io/images/profile.png" />
     <meta property="og:url" content="https://nekolessi.github.io/" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="Nekolessi | Spicy Gothic Profile" />
+    <meta name="twitter:description" content="Spicy purple-goth Discord-powered profile page for GitHub Pages." />
+    <meta name="twitter:image" content="https://nekolessi.github.io/images/profile.png" />
     <link rel="preload" as="image" href="images/background.jpg" fetchpriority="high" />
     <link rel="preconnect" href="https://cdn.simpleicons.org" crossorigin />
     <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -46,7 +49,8 @@
               <path d="M2 12s3.6-6 10-6 10 6 10 6-3.6 6-10 6-10-6-10-6z" />
               <circle cx="12" cy="12" r="3.25" />
             </svg>
-            <span class="profile-views-live" id="profileViews" aria-live="polite">...</span>
+            <span class="sr-only" id="profileViewsText" aria-live="polite" aria-atomic="true">Profile views loading</span>
+            <span class="profile-views-live" id="profileViews" aria-hidden="true">...</span>
           </p>
           <span class="hero-divider">|</span>
           <p class="hero-meta">
@@ -67,12 +71,20 @@
         </div>
       </section>
 
-      <a class="card live-card" id="discordStatusLink" href="#" target="_blank" rel="noreferrer noopener">
+      <a
+        class="card live-card is-disabled"
+        id="discordStatusLink"
+        target="_blank"
+        rel="noreferrer noopener"
+        aria-disabled="true"
+        aria-label="Discord profile unavailable"
+        tabindex="-1"
+      >
         <div class="status-avatar-wrap fancy-avatar-wrap">
           <img
             id="statusAvatar"
             class="status-avatar"
-            src="https://images.unsplash.com/photo-1578632292335-df3abbb0d586?auto=format&fit=crop&w=220&q=80"
+            src="images/profile.png"
             alt="Discord avatar"
             width="82"
             height="82"
@@ -102,7 +114,7 @@
           <img
             class="activity-art"
             id="activityArt"
-            src="https://images.unsplash.com/photo-1516280440614-37939bbacd81?auto=format&fit=crop&w=300&q=80"
+            src="images/activity-fallback.svg"
             alt="Activity artwork"
             width="82"
             height="82"
