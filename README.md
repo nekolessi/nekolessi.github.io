@@ -14,7 +14,7 @@ A goth-neko profile site for GitHub Pages with live Discord status, social links
 - `styles.css`: layout, visuals, and responsiveness
 - `script.js`: profile config and live data logic
 - `images/`: local assets such as `background.jpg` and `profile.png`
-- `cloudflare-worker/src/index.js`: `/views` and `/reactions` API
+- `cloudflare-worker/src/index.js`: `/views` and `/reactions` API backed by a Durable Object
 
 ## Quick Config In `script.js`
 
@@ -66,26 +66,25 @@ Worker files live in `cloudflare-worker/`.
    npx wrangler login
    npx wrangler whoami
    ```
-2. Create the KV namespace:
-   ```powershell
-   npx wrangler kv namespace create PROFILE_COUNTER_KV
-   ```
-3. Copy the returned KV `id` into `cloudflare-worker/wrangler.toml`.
-4. Deploy:
+2. Review `cloudflare-worker/wrangler.toml`:
+   - set `ALLOWED_ORIGINS` to your site origin if you use a custom domain
+   - adjust `REACTION_MIN_INTERVAL_MS` if you want a looser or stricter reaction cooldown
+3. Deploy:
    ```powershell
    cd cloudflare-worker
    npx wrangler deploy
    ```
-5. Set the worker URL in `script.js`:
+4. Set the worker URL in `script.js`:
    ```js
    const VIEW_COUNTER_WORKER_URL = "https://your-worker.workers.dev/views";
    ```
 
 Important behavior:
 
-- page views increment on each request
-- reactions use the same KV namespace
-- missing KV bindings return a clear JSON error
+- page views and reactions are stored through a Durable Object so concurrent requests do not lose counts
+- view increments require an allowed site origin
+- reaction posts require an allowed site origin and are rate-limited per client IP
+- missing Durable Object bindings return a clear JSON error
 
 ## Troubleshooting
 

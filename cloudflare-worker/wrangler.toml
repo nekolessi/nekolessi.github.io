@@ -2,6 +2,14 @@ name = "nekolessi-view-counter"
 main = "src/index.js"
 compatibility_date = "2026-03-13"
 
-[[kv_namespaces]]
-binding = "PROFILE_COUNTER_KV"
-id = "40ede451def341888b6144286c6837c4"
+[vars]
+ALLOWED_ORIGINS = "https://nekolessi.github.io"
+REACTION_MIN_INTERVAL_MS = "10000"
+
+[[durable_objects.bindings]]
+name = "PROFILE_COUNTER"
+class_name = "ProfileCounterDurableObject"
+
+[[migrations]]
+tag = "v1"
+new_sqlite_classes = ["ProfileCounterDurableObject"]
