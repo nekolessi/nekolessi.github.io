@@ -6,6 +6,8 @@ const REACTION_RATE_LIMIT_PREFIX = "reaction_rate_limit:";
 const REACTION_IDS = ["heart"];
 const DEFAULT_ALLOWED_ORIGINS = ["https://nekolessi.github.io"];
 const DEFAULT_REACTION_MIN_INTERVAL_MS = 10_000;
+const DISCORD_APP_ROUTE_PREFIX = "/discord-app/";
+const DISCORD_RPC_BASE = "https://discord.com/api/v10/oauth2/applications/";
 const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
   "Access-Control-Allow-Headers": "Content-Type"
@@ -95,8 +97,58 @@ function isAllowedOrigin(origin, env) {
   return parseAllowedOrigins(env).includes(origin);
 }
 
+function isDiscordAppPath(pathname) {
+  return pathname.startsWith(DISCORD_APP_ROUTE_PREFIX);
+}
+
 function requiresAllowedOrigin(pathname, method) {
-  return pathname === "/views" || (pathname === "/reactions" && method === "POST");
+  return (
+    pathname === "/views" ||
+    (pathname === "/reactions" && method === "POST") ||
+    (isDiscordAppPath(pathname) && method === "GET")
+  );
+}
+
+function isKnownPath(pathname) {
+  return pathname === "/views" || pathname === "/reactions" || isDiscordAppPath(pathname);
+}
+
+function parseDiscordApplicationId(pathname) {
+  if (!isDiscordAppPath(pathname)) {
+    return "";
+  }
+
+  const applicationId = pathname.slice(DISCORD_APP_ROUTE_PREFIX.length).trim();
+  return /^\d{17,20}$/.test(applicationId) ? applicationId : "";
+}
+
+async function fetchDiscordApplication(applicationId) {
+  const response = await fetch(`${DISCORD_RPC_BASE}${applicationId}/rpc`, {
+    headers: {
+      Accept: "application/json"
+    },
+    cf: {
+      cacheTtl: 86_400,
+      cacheEverything: true
+    }
+  });
+
+  if (response.status === 404) {
+    return jsonResponse({ error: "Discord application not found" }, 404);
+  }
+
+  if (!response.ok) {
+    return jsonResponse({ error: `Discord application lookup failed (${response.status})` }, 502);
+  }
+
+  const payload = await response.json();
+  const iconHash = String(payload?.icon || "").trim();
+
+  return jsonResponse({
+    id: applicationId,
+    name: String(payload?.name || "").trim(),
+    iconUrl: iconHash ? `https://cdn.discordapp.com/app-icons/${applicationId}/${iconHash}.png?size=256` : ""
+  });
 }
 
 function getClientIp(request) {
@@ -232,12 +284,26 @@ export default {
       return mergeCorsHeaders(new Response(null, { status: 204 }), request, env);
     }
 
-    if (url.pathname !== "/views" && url.pathname !== "/reactions") {
+    if (!isKnownPath(url.pathname)) {
       return mergeCorsHeaders(jsonResponse({ error: "Not found" }, 404), request, env);
     }
 
     if (requiresAllowedOrigin(url.pathname, request.method) && !isAllowedOrigin(request.headers.get("Origin"), env)) {
       return mergeCorsHeaders(jsonResponse({ error: "Forbidden origin" }, 403), request, env);
+    }
+
+    if (isDiscordAppPath(url.pathname)) {
+      if (request.method !== "GET") {
+        return mergeCorsHeaders(jsonResponse({ error: "Method not allowed" }, 405), request, env);
+      }
+
+      const applicationId = parseDiscordApplicationId(url.pathname);
+      if (!applicationId) {
+        return mergeCorsHeaders(jsonResponse({ error: "Invalid Discord application id" }, 400), request, env);
+      }
+
+      const response = await fetchDiscordApplication(applicationId);
+      return mergeCorsHeaders(response, request, env);
     }
 
     const counterStub = createCounterStub(env);

@@ -16,7 +16,7 @@ A goth-neko profile site for GitHub Pages with live Discord status, social links
 - `scripts/check.mjs`: static site and config validation
 - `scripts/worker.test.mjs`: worker behavior tests
 - `images/`: local assets such as `background.jpg` and `profile.png`
-- `cloudflare-worker/src/index.js`: `/views` and `/reactions` API backed by a Durable Object
+- `cloudflare-worker/src/index.js`: `/views`, `/reactions`, and `/discord-app/:id` APIs
 
 ## Local Verification
 
@@ -33,21 +33,23 @@ This runs:
 
 ## Quick Config In `script.js`
 
-Update these constants:
+Update these values:
 
 - `DISCORD_USER_ID`
-- `PROFILE_LOCATION`
+- `PROFILE.location`
+- `PROFILE.bioBlocks`
 - `HERO_PROFILE_IMAGE_URL`
 - `VIEW_COUNTER_WORKER_URL`
-- `PROFILE_LINKS`
+- `PROFILE.links`
 
 Notes:
 
 - if `HERO_PROFILE_IMAGE_URL` is empty, the site uses `images/profile.png`
 - the reactions endpoint is auto-derived from `VIEW_COUNTER_WORKER_URL`
+- the Discord app icon endpoint is auto-derived from `VIEW_COUNTER_WORKER_URL`
 - social links use **Simple Icons only**
 
-### `PROFILE_LINKS` shape
+### `PROFILE.links` shape
 
 ```js
 {
@@ -63,6 +65,23 @@ Tips:
 - `simpleIcon` is the Simple Icons slug from `cdn.simpleicons.org/<slug>`
 - `iconColor` is a hex color without `#`
 - use `type: "email"` for email links so they become `mailto:`
+
+### `PROFILE` shape
+
+```js
+const PROFILE = {
+  location: "USA",
+  bioBlocks: ["line one", "line two"],
+  links: [
+    {
+      label: "Ko-fi",
+      simpleIcon: "kofi",
+      iconColor: "72A5F2",
+      href: "ko-fi.com/nekolessi"
+    }
+  ]
+};
+```
 
 ## Publish On GitHub Pages
 
@@ -99,6 +118,7 @@ Important behavior:
 - page views and reactions are stored through a Durable Object so concurrent requests do not lose counts
 - view increments require an allowed site origin
 - reaction posts require an allowed site origin and are rate-limited per client IP
+- Discord app icon lookups are proxied through the worker to avoid relying on `allorigins`
 - missing Durable Object bindings return a clear JSON error
 
 After deploy, useful smoke checks are:
@@ -106,6 +126,7 @@ After deploy, useful smoke checks are:
 ```powershell
 curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/views
 curl.exe -i https://your-worker.workers.dev/reactions
+curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/discord-app/1445976703066443846
 ```
 
 ## Troubleshooting

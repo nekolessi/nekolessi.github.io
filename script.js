@@ -5,7 +5,7 @@ const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const VIEW_COUNTER_WORKER_URL = "https://nekolessi-view-counter.nekolessi.workers.dev/views"; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
 const REACTIONS_WORKER_URL = deriveReactionsWorkerUrl();
-const JSON_PROXY_BASE = "https://api.allorigins.win/raw?url=";
+const DISCORD_APP_WORKER_URL = deriveDiscordAppWorkerUrl();
 const VIEW_FETCH_TIMEOUT_MS = 4500;
 const DISCORD_PROFILE_BASE = "https://discord.com/users/";
 const DEFAULT_STATUS_AVATAR = HERO_PROFILE_IMAGE_LOCAL;
@@ -178,6 +178,19 @@ function deriveReactionsWorkerUrl() {
   }
 
   return `${base.replace(/\/$/, "")}/reactions`;
+}
+
+function deriveDiscordAppWorkerUrl() {
+  const base = (VIEW_COUNTER_WORKER_URL || "").trim();
+  if (!base) {
+    return "";
+  }
+
+  if (/\/views\/?$/i.test(base)) {
+    return base.replace(/\/views\/?$/i, "/discord-app");
+  }
+
+  return `${base.replace(/\/$/, "")}/discord-app`;
 }
 
 function defaultReactionCounts() {
@@ -697,9 +710,12 @@ async function fetchDiscordApplicationIcon(activity) {
     return discordApplicationIconCache.get(applicationId);
   }
 
-  const endpoint = `https://discord.com/api/v10/oauth2/applications/${applicationId}/rpc`;
+  if (!DISCORD_APP_WORKER_URL) {
+    throw new Error("Set VIEW_COUNTER_WORKER_URL to derive the Discord app endpoint.");
+  }
+
   const response = await withTimeout(
-    fetch(`${JSON_PROXY_BASE}${encodeURIComponent(endpoint)}`, {
+    fetch(`${DISCORD_APP_WORKER_URL}/${applicationId}`, {
       cache: "force-cache"
     }),
     VIEW_FETCH_TIMEOUT_MS
@@ -710,10 +726,7 @@ async function fetchDiscordApplicationIcon(activity) {
   }
 
   const payload = await response.json();
-  const iconHash = String(payload?.icon || "").trim();
-  const iconUrl = iconHash
-    ? `https://cdn.discordapp.com/app-icons/${applicationId}/${iconHash}.png?size=256`
-    : "";
+  const iconUrl = String(payload?.iconUrl || "").trim();
 
   discordApplicationIconCache.set(applicationId, iconUrl);
   return iconUrl;

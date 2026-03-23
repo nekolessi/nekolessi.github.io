@@ -169,3 +169,67 @@ test("reaction counts can still be read after a successful post", async () => {
   assert.equal(response.status, 200);
   assert.deepEqual(await readJson(response), { counts: { heart: 1 } });
 });
+
+test("discord app lookup proxies Discord metadata through the worker", async () => {
+  const env = createEnv();
+  const originalFetch = globalThis.fetch;
+  const applicationId = "1445976703066443846";
+
+  globalThis.fetch = async (input) => {
+    assert.equal(String(input), `https://discord.com/api/v10/oauth2/applications/${applicationId}/rpc`);
+    return new Response(
+      JSON.stringify({
+        id: applicationId,
+        name: "On-Together",
+        icon: "32860963bf693a92ab6a52ee5cb40b12"
+      }),
+      {
+        status: 200,
+        headers: {
+          "Content-Type": "application/json"
+        }
+      }
+    );
+  };
+
+  try {
+    const response = await worker.fetch(
+      new Request(`https://worker.example/discord-app/${applicationId}`, {
+        headers: { Origin: "https://nekolessi.github.io" }
+      }),
+      env
+    );
+
+    assert.equal(response.status, 200);
+    assert.equal(response.headers.get("Access-Control-Allow-Origin"), "https://nekolessi.github.io");
+    assert.deepEqual(await readJson(response), {
+      id: applicationId,
+      name: "On-Together",
+      iconUrl: `https://cdn.discordapp.com/app-icons/${applicationId}/32860963bf693a92ab6a52ee5cb40b12.png?size=256`
+    });
+  } finally {
+    globalThis.fetch = originalFetch;
+  }
+});
+
+test("discord app lookup rejects invalid ids and blocked origins", async () => {
+  const env = createEnv();
+
+  const invalidResponse = await worker.fetch(
+    new Request("https://worker.example/discord-app/not-an-id", {
+      headers: { Origin: "https://nekolessi.github.io" }
+    }),
+    env
+  );
+  assert.equal(invalidResponse.status, 400);
+  assert.deepEqual(await readJson(invalidResponse), { error: "Invalid Discord application id" });
+
+  const blockedOriginResponse = await worker.fetch(
+    new Request("https://worker.example/discord-app/1445976703066443846", {
+      headers: { Origin: "https://evil.example" }
+    }),
+    env
+  );
+  assert.equal(blockedOriginResponse.status, 403);
+  assert.deepEqual(await readJson(blockedOriginResponse), { error: "Forbidden origin" });
+});
