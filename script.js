@@ -1,15 +1,47 @@
-const DISCORD_USER_ID = "1116207043544612985";
-const LANYARD_BASE = "https://api.lanyard.rest/v1/users/";
-const HERO_PROFILE_IMAGE_LOCAL = "images/profile.png";
-const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you want to use a link instead.
-const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
-const VIEW_COUNTER_WORKER_URL = "https://nekolessi-view-counter.nekolessi.workers.dev/views"; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
+const APP_CONFIG = {
+  discordUserId: "1116207043544612985",
+  lanyardBase: "https://api.lanyard.rest/v1/users/",
+  heroProfileImageLocal: "images/profile.png",
+  heroProfileImageUrl: "", // Optional: set a full image URL here if you want to use a link instead.
+  viewCounterWorkerUrl: "https://nekolessi-view-counter.nekolessi.workers.dev/views", // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
+  viewFetchTimeoutMs: 4500,
+  presenceRefreshIntervalMs: 20000,
+  discordProfileBase: "https://discord.com/users/",
+  defaultActivityArt: "images/activity-fallback.svg"
+};
+
+const UI_TEXT = {
+  statusEyebrow: "DISCORD STATUS",
+  activityEyebrow: "NOW PLAYING / LISTENING",
+  reactionsTitle: "click if you like catgirls",
+  profileViewsLoading: "Profile views loading",
+  reactionSaved: "meow~",
+  reactionsOffline: "Reactions offline right now.",
+  reactionSaveFailed: "Could not save reaction right now.",
+  statusUserIdMissing: "Set your Discord user ID in script.js to load live presence.",
+  statusUnavailable: "Could not reach Discord presence feed right now.",
+  discordProfileUnavailable: "Discord profile unavailable",
+  openDiscordProfile: "Open Discord profile",
+  activityEmptyTitle: "Nothing active right now",
+  activityDisconnectedSubtitle: "Once linked, this updates from your Discord activity.",
+  activityInactiveSubtitle: "Open a game or Spotify and this card will update.",
+  activityFallbackTitle: "Active on Discord",
+  spotifyFallbackTitle: "Listening on Spotify",
+  discordStatusMap: {
+    online: "Online",
+    idle: "Idle",
+    dnd: "Do not disturb",
+    offline: "Offline"
+  }
+};
+
+const HERO_PROFILE_IMAGE = APP_CONFIG.heroProfileImageUrl || APP_CONFIG.heroProfileImageLocal;
+const VIEW_COUNTER_WORKER_URL = APP_CONFIG.viewCounterWorkerUrl;
 const REACTIONS_WORKER_URL = deriveReactionsWorkerUrl();
 const DISCORD_APP_WORKER_URL = deriveDiscordAppWorkerUrl();
-const VIEW_FETCH_TIMEOUT_MS = 4500;
-const DISCORD_PROFILE_BASE = "https://discord.com/users/";
-const DEFAULT_STATUS_AVATAR = HERO_PROFILE_IMAGE_LOCAL;
-const DEFAULT_ACTIVITY_ART = "images/activity-fallback.svg";
+const VIEW_FETCH_TIMEOUT_MS = APP_CONFIG.viewFetchTimeoutMs;
+const DEFAULT_STATUS_AVATAR = APP_CONFIG.heroProfileImageLocal;
+const DEFAULT_ACTIVITY_ART = APP_CONFIG.defaultActivityArt;
 
 const PROFILE = {
   location: "USA",
@@ -49,17 +81,20 @@ const profileReactionsRoot = document.getElementById("profileReactions");
 const reactionStatus = document.getElementById("reactionStatus");
 const statusLink = document.getElementById("discordStatusLink");
 const statusAvatar = document.getElementById("statusAvatar");
+const statusEyebrow = document.getElementById("statusEyebrow");
 const discordName = document.getElementById("discordName");
 const statusDot = document.getElementById("statusDot");
 const statusText = document.getElementById("discordStatusText");
 
 const activityArt = document.getElementById("activityArt");
+const activityEyebrow = document.getElementById("activityEyebrow");
 const activityTitle = document.getElementById("activityTitle");
 const activitySubtitle = document.getElementById("activitySubtitle");
 const timeline = document.getElementById("activityTimeline");
 const currentTime = document.getElementById("currentTime");
 const totalTime = document.getElementById("totalTime");
 const progressFill = document.getElementById("progressFill");
+const reactionsTitle = document.getElementById("reactionsTitle");
 const hasPresenceElements = Boolean(
   statusLink &&
   statusAvatar &&
@@ -96,6 +131,8 @@ if (heroBio) {
   renderHeroBio();
 }
 
+applyStaticUiText();
+
 async function updateProfileViews() {
   if (!profileViews) {
     return;
@@ -107,7 +144,7 @@ async function updateProfileViews() {
   profileViewsFetchInFlight = true;
   const currentLabel = profileViews.textContent.trim();
   if (!/^\d+$/.test(currentLabel)) {
-    setProfileViewsLabel("...", "Profile views loading");
+    setProfileViewsLabel("...", UI_TEXT.profileViewsLoading);
   }
 
   try {
@@ -132,6 +169,34 @@ function setProfileViewsLabel(visibleLabel, spokenLabel) {
   }
 }
 
+function applyStaticUiText() {
+  if (profileViewsText) {
+    profileViewsText.textContent = UI_TEXT.profileViewsLoading;
+  }
+
+  if (statusEyebrow) {
+    statusEyebrow.textContent = UI_TEXT.statusEyebrow;
+  }
+
+  if (activityEyebrow) {
+    activityEyebrow.textContent = UI_TEXT.activityEyebrow;
+  }
+
+  if (reactionsTitle) {
+    reactionsTitle.textContent = UI_TEXT.reactionsTitle;
+  }
+
+  if (statusText) {
+    statusText.textContent = UI_TEXT.statusUserIdMissing;
+  }
+
+  if (activityTitle) {
+    activityTitle.textContent = UI_TEXT.activityEmptyTitle;
+  }
+
+  setActivitySubtitle(UI_TEXT.activityDisconnectedSubtitle);
+}
+
 function withTimeout(promise, timeoutMs) {
   let timeoutId;
   const timeoutPromise = new Promise((_, reject) => {
@@ -143,7 +208,7 @@ function withTimeout(promise, timeoutMs) {
 
 async function fetchViewCount() {
   if (!VIEW_COUNTER_WORKER_URL.trim()) {
-    throw new Error("Set VIEW_COUNTER_WORKER_URL to load profile views.");
+    throw new Error("Set APP_CONFIG.viewCounterWorkerUrl to load profile views.");
   }
 
   return fetchViewCountFromWorker();
@@ -413,9 +478,9 @@ async function submitReaction(reactionId) {
     selectedReactionId = reactionId;
     storeReactionChoice(reactionId);
     renderReactionButtons(counts);
-    setReactionStatus("meow~");
+    setReactionStatus(UI_TEXT.reactionSaved);
   } catch {
-    setReactionStatus("Could not save reaction right now.");
+    setReactionStatus(UI_TEXT.reactionSaveFailed);
     try {
       const counts = await fetchReactionCounts();
       renderReactionButtons(counts);
@@ -445,7 +510,7 @@ async function initProfileReactions() {
     const counts = await fetchReactionCounts();
     renderReactionButtons(counts);
   } catch {
-    setReactionStatus("Reactions offline right now.");
+    setReactionStatus(UI_TEXT.reactionsOffline);
   }
 }
 
@@ -467,8 +532,8 @@ if (activityArt) {
 
 if (heroProfileImage) {
   heroProfileImage.onerror = () => {
-    if (heroProfileImage.src !== HERO_PROFILE_IMAGE_LOCAL) {
-      heroProfileImage.src = HERO_PROFILE_IMAGE_LOCAL;
+    if (heroProfileImage.src !== APP_CONFIG.heroProfileImageLocal) {
+      heroProfileImage.src = APP_CONFIG.heroProfileImageLocal;
       return;
     }
     heroProfileImage.style.opacity = "0.45";
@@ -476,7 +541,7 @@ if (heroProfileImage) {
 }
 
 function isUserIdSet() {
-  return /^\d{17,20}$/.test(DISCORD_USER_ID);
+  return /^\d{17,20}$/.test(APP_CONFIG.discordUserId);
 }
 
 function resolveSpotifyArtUrl(input) {
@@ -646,8 +711,8 @@ function setDisconnectedState(message) {
   setDiscordProfileLink("");
 
   setActivityArt("", "");
-  activityTitle.textContent = "Nothing active right now";
-  setActivitySubtitle("Once linked, this updates from your Discord activity.");
+  activityTitle.textContent = UI_TEXT.activityEmptyTitle;
+  setActivitySubtitle(UI_TEXT.activityDisconnectedSubtitle);
   stopProgress();
 }
 
@@ -661,15 +726,15 @@ function setDiscordProfileLink(userId, label = "") {
     statusLink.removeAttribute("href");
     statusLink.classList.add("is-disabled");
     statusLink.setAttribute("aria-disabled", "true");
-    statusLink.setAttribute("aria-label", "Discord profile unavailable");
+    statusLink.setAttribute("aria-label", UI_TEXT.discordProfileUnavailable);
     statusLink.tabIndex = -1;
     return;
   }
 
-  statusLink.href = `${DISCORD_PROFILE_BASE}${safeId}`;
+  statusLink.href = `${APP_CONFIG.discordProfileBase}${safeId}`;
   statusLink.classList.remove("is-disabled");
   statusLink.removeAttribute("aria-disabled");
-  statusLink.setAttribute("aria-label", label ? `Open ${label} on Discord` : "Open Discord profile");
+  statusLink.setAttribute("aria-label", label ? `Open ${label} on Discord` : UI_TEXT.openDiscordProfile);
   statusLink.tabIndex = 0;
 }
 
@@ -714,7 +779,7 @@ async function fetchDiscordApplicationIcon(activity) {
   }
 
   if (!DISCORD_APP_WORKER_URL) {
-    throw new Error("Set VIEW_COUNTER_WORKER_URL to derive the Discord app endpoint.");
+    throw new Error("Set APP_CONFIG.viewCounterWorkerUrl to derive the Discord app endpoint.");
   }
 
   const response = await withTimeout(
@@ -822,19 +887,13 @@ async function renderPresence(data) {
     ? data.activities.find((item) => item.type === 4)
     : null;
 
-  const statusMap = {
-    online: "Online",
-    idle: "Idle",
-    dnd: "Do not disturb",
-    offline: "Offline"
-  };
   const isStreaming = Array.isArray(data.activities) && data.activities.some((item) => item.type === 1);
 
-  setDiscordProfileLink(user.id || DISCORD_USER_ID, displayName);
+  setDiscordProfileLink(user.id || APP_CONFIG.discordUserId, displayName);
   discordName.textContent = displayName.toUpperCase();
   statusAvatar.src = avatarUrl;
   setStatusDot(isStreaming ? "streaming" : data.discord_status || "offline");
-  setStatusText(customStatus, statusMap[data.discord_status] || "Offline");
+  setStatusText(customStatus, UI_TEXT.discordStatusMap[data.discord_status] || UI_TEXT.discordStatusMap.offline);
 
   if (data.listening_to_spotify && data.spotify) {
     const spotify = data.spotify;
@@ -842,7 +901,7 @@ async function renderPresence(data) {
     const spotifyArtUrl = resolveSpotifyArtUrl(albumArtId);
 
     setActivityArt(spotifyArtUrl, spotify.song || "Spotify");
-    activityTitle.textContent = spotify.song || "Listening on Spotify";
+    activityTitle.textContent = spotify.song || UI_TEXT.spotifyFallbackTitle;
     setActivitySubtitle(`${spotify.artist || "Unknown artist"} - ${spotify.album || "Unknown album"}`);
     startProgress(spotify.timestamps?.start, spotify.timestamps?.end);
     return;
@@ -850,7 +909,7 @@ async function renderPresence(data) {
 
   const richActivity = pickRichActivity(data.activities);
   if (richActivity) {
-    const titleText = richActivity.name || richActivity.details || richActivity.state || "Active on Discord";
+    const titleText = richActivity.name || richActivity.details || richActivity.state || UI_TEXT.activityFallbackTitle;
     const subtitleParts = [richActivity.details, richActivity.state]
       .map((value) => String(value || "").trim())
       .filter((value, index, parts) => value && value !== titleText && parts.indexOf(value) === index);
@@ -865,8 +924,8 @@ async function renderPresence(data) {
   }
 
   setActivityArt("", "");
-  activityTitle.textContent = "Nothing active right now";
-  setActivitySubtitle("Open a game or Spotify and this card will update.");
+  activityTitle.textContent = UI_TEXT.activityEmptyTitle;
+  setActivitySubtitle(UI_TEXT.activityInactiveSubtitle);
   stopProgress();
 }
 
@@ -886,13 +945,13 @@ async function fetchPresence() {
   presenceFetchInFlight = true;
 
   if (!isUserIdSet()) {
-    setDisconnectedState("Set your Discord user ID in script.js to load live presence.");
+    setDisconnectedState(UI_TEXT.statusUserIdMissing);
     presenceFetchInFlight = false;
     return;
   }
 
   try {
-    const response = await fetch(`${LANYARD_BASE}${DISCORD_USER_ID}`, {
+    const response = await fetch(`${APP_CONFIG.lanyardBase}${APP_CONFIG.discordUserId}`, {
       cache: "no-store"
     });
 
@@ -907,7 +966,7 @@ async function fetchPresence() {
 
     await renderPresence(payload.data);
   } catch {
-    setDisconnectedState("Could not reach Discord presence feed right now.");
+    setDisconnectedState(UI_TEXT.statusUnavailable);
   } finally {
     presenceFetchInFlight = false;
   }
@@ -917,7 +976,7 @@ renderSocialLinks();
 initProfileReactions();
 updateProfileViews();
 fetchPresence();
-setInterval(fetchPresence, 20000);
+setInterval(fetchPresence, APP_CONFIG.presenceRefreshIntervalMs);
 
 document.addEventListener("visibilitychange", () => {
   if (!document.hidden) {
