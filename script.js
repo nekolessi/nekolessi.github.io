@@ -575,6 +575,16 @@ function setStatusText(customStatus, fallbackText) {
   statusText.appendChild(wrapper);
 }
 
+function setActivitySubtitle(text) {
+  if (!activitySubtitle) {
+    return;
+  }
+
+  const safeText = String(text || "").trim();
+  activitySubtitle.textContent = safeText;
+  activitySubtitle.hidden = !safeText;
+}
+
 function startProgress(startMs, endMs) {
   stopProgress();
 
@@ -639,7 +649,7 @@ function setDisconnectedState(message) {
 
   activityArt.src = DEFAULT_ACTIVITY_ART;
   activityTitle.textContent = "Nothing active right now";
-  activitySubtitle.textContent = "Once linked, this updates from your Discord activity.";
+  setActivitySubtitle("Once linked, this updates from your Discord activity.");
   stopProgress();
 }
 
@@ -835,7 +845,7 @@ async function renderPresence(data) {
 
     activityArt.src = spotifyArtUrl || DEFAULT_ACTIVITY_ART;
     activityTitle.textContent = spotify.song || "Listening on Spotify";
-    activitySubtitle.textContent = `${spotify.artist || "Unknown artist"} - ${spotify.album || "Unknown album"}`;
+    setActivitySubtitle(`${spotify.artist || "Unknown artist"} - ${spotify.album || "Unknown album"}`);
     startProgress(spotify.timestamps?.start, spotify.timestamps?.end);
     return;
   }
@@ -851,14 +861,14 @@ async function renderPresence(data) {
 
     activityArt.src = richImage || DEFAULT_ACTIVITY_ART;
     activityTitle.textContent = titleText;
-    activitySubtitle.textContent = subText;
+    setActivitySubtitle(subText);
     startProgress(richActivity.timestamps?.start, richActivity.timestamps?.end);
     return;
   }
 
   activityArt.src = DEFAULT_ACTIVITY_ART;
   activityTitle.textContent = "Nothing active right now";
-  activitySubtitle.textContent = "Open a game or Spotify and this card will update.";
+  setActivitySubtitle("Open a game or Spotify and this card will update.");
   stopProgress();
 }
 
