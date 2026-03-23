@@ -856,7 +856,7 @@ async function renderPresence(data) {
     const subtitleParts = [richActivity.details, richActivity.state]
       .map((value) => String(value || "").trim())
       .filter((value, index, parts) => value && value !== titleText && parts.indexOf(value) === index);
-    const subText = subtitleParts.join(" - ") || "Running now";
+    const subText = subtitleParts.join(" - ");
     const richImage = await resolveActivityArt(richActivity);
 
     activityArt.src = richImage || DEFAULT_ACTIVITY_ART;
