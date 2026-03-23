@@ -13,8 +13,23 @@ A goth-neko profile site for GitHub Pages with live Discord status, social links
 - `index.html`: page markup
 - `styles.css`: layout, visuals, and responsiveness
 - `script.js`: profile config and live data logic
+- `scripts/check.mjs`: static site and config validation
+- `scripts/worker.test.mjs`: worker behavior tests
 - `images/`: local assets such as `background.jpg` and `profile.png`
 - `cloudflare-worker/src/index.js`: `/views` and `/reactions` API backed by a Durable Object
+
+## Local Verification
+
+Run the full repo check before pushing:
+
+```powershell
+npm run verify
+```
+
+This runs:
+
+- static site/config validation
+- worker behavior tests
 
 ## Quick Config In `script.js`
 
@@ -86,11 +101,19 @@ Important behavior:
 - reaction posts require an allowed site origin and are rate-limited per client IP
 - missing Durable Object bindings return a clear JSON error
 
+After deploy, useful smoke checks are:
+
+```powershell
+curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/views
+curl.exe -i https://your-worker.workers.dev/reactions
+```
+
 ## Troubleshooting
 
 - Counter blank:
   - check that `VIEW_COUNTER_WORKER_URL` ends with `/views`
-  - check that the worker is deployed and KV is bound
+  - check that the worker is deployed and the `PROFILE_COUNTER` Durable Object binding exists
+  - check that `ALLOWED_ORIGINS` includes your site origin
 - Discord status not updating:
   - check `DISCORD_USER_ID`
   - confirm Lanyard can see that user

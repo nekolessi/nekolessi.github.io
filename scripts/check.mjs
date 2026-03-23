@@ -90,11 +90,54 @@ assertFileExists("index.html");
 assertFileExists("styles.css");
 assertFileExists("script.js");
 assertFileExists("cloudflare-worker/src/index.js", "Cloudflare worker entry");
+assertFileExists("cloudflare-worker/wrangler.toml", "Cloudflare worker config");
+
+function readFile(relativePath) {
+  return readFileSync(path.resolve(rootDir, relativePath), "utf8");
+}
+
+function checkWorkerUrlConfig() {
+  const scriptContents = readFile("script.js");
+  const match = scriptContents.match(/const VIEW_COUNTER_WORKER_URL = "([^"]*)"/);
+  const configuredUrl = match?.[1]?.trim() || "";
+
+  if (configuredUrl && !/\/views\/?$/i.test(configuredUrl)) {
+    reportError("VIEW_COUNTER_WORKER_URL must be empty or end with /views in script.js");
+  }
+}
+
+function checkWranglerConfig() {
+  const wranglerContents = readFile("cloudflare-worker/wrangler.toml");
+
+  const requiredSnippets = [
+    'name = "PROFILE_COUNTER"',
+    'class_name = "ProfileCounterDurableObject"',
+    'new_sqlite_classes = ["ProfileCounterDurableObject"]'
+  ];
+
+  for (const snippet of requiredSnippets) {
+    if (!wranglerContents.includes(snippet)) {
+      reportError(`wrangler.toml is missing required setting: ${snippet}`);
+    }
+  }
+
+  const allowedOriginsMatch = wranglerContents.match(/^ALLOWED_ORIGINS = "([^"]+)"/m);
+  if (!allowedOriginsMatch?.[1]?.trim()) {
+    reportError("wrangler.toml must define a non-empty ALLOWED_ORIGINS value");
+  }
+
+  const intervalMatch = wranglerContents.match(/^REACTION_MIN_INTERVAL_MS = "([^"]+)"/m);
+  if (!intervalMatch?.[1] || !/^\d+$/.test(intervalMatch[1])) {
+    reportError("wrangler.toml must define REACTION_MIN_INTERVAL_MS as a numeric string");
+  }
+}
 
 checkNodeSyntax("script.js");
 checkNodeSyntax("cloudflare-worker/src/index.js");
 checkRelativeAssets("index.html");
 checkRelativeAssets("styles.css");
+checkWorkerUrlConfig();
+checkWranglerConfig();
 
 if (errors.length > 0) {
   console.error("Static site check failed:\n");
