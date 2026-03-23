@@ -649,21 +649,75 @@ function activityImageFromDiscord(activity) {
     return "";
   }
 
-  const { large_image: largeImage } = activity.assets;
+  const largeImage = activity.assets.large_image || activity.assets.small_image || "";
 
   if (!largeImage) {
     return "";
+  }
+
+  if (largeImage.startsWith("http://") || largeImage.startsWith("https://")) {
+    return largeImage;
   }
 
   if (largeImage.startsWith("mp:")) {
     return `https://media.discordapp.net/${largeImage.slice(3)}`;
   }
 
+  if (largeImage.startsWith("spotify:")) {
+    return resolveSpotifyArtUrl(largeImage.slice("spotify:".length));
+  }
+
   if (!activity.application_id) {
     return "";
   }
 
-  return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${largeImage}.png`;
+  return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${largeImage}.png?size=256`;
+}
+
+function activityDisplayScore(activity) {
+  if (!activity || activity.type === 4 || !activity.name) {
+    return -1;
+  }
+
+  const name = activity.name.trim().toLowerCase();
+  const hasLargeImage = Boolean(activity.assets?.large_image);
+  const hasSmallImage = Boolean(activity.assets?.small_image);
+  const hasDetails = Boolean((activity.details || activity.state || "").trim());
+  const hasTimestamps = Boolean(activity.timestamps?.start || activity.timestamps?.end);
+  const isDiscordHostedActivity =
+    name === "discord" ||
+    name === "on-together" ||
+    name === "watch together" ||
+    name === "youtube" ||
+    name === "poker night";
+
+  let score = 0;
+
+  if (hasLargeImage) {
+    score += 5;
+  }
+
+  if (hasSmallImage) {
+    score += 2;
+  }
+
+  if (hasDetails) {
+    score += 3;
+  }
+
+  if (hasTimestamps) {
+    score += 1;
+  }
+
+  if (activity.application_id) {
+    score += 1;
+  }
+
+  if (isDiscordHostedActivity) {
+    score -= 4;
+  }
+
+  return score;
 }
 
 function pickRichActivity(activities) {
@@ -671,7 +725,15 @@ function pickRichActivity(activities) {
     return null;
   }
 
-  return activities.find((item) => item.type !== 4 && item.name) || null;
+  const candidates = activities.filter((item) => item.type !== 4 && item.name);
+
+  if (!candidates.length) {
+    return null;
+  }
+
+  return candidates.reduce((best, current) =>
+    activityDisplayScore(current) > activityDisplayScore(best) ? current : best
+  );
 }
 
 function renderPresence(data) {
