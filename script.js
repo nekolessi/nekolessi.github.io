@@ -8,6 +8,7 @@ const VIEW_COUNTER_WORKER_URL = "https://nekolessi-view-counter.nekolessi.worker
 const REACTIONS_WORKER_URL = deriveReactionsWorkerUrl();
 const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
 const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
+const JSON_PROXY_BASE = "https://api.allorigins.win/raw?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
 const DISCORD_PROFILE_BASE = "https://discord.com/users/";
 const DEFAULT_STATUS_AVATAR = HERO_PROFILE_IMAGE_LOCAL;
@@ -72,6 +73,7 @@ let reactionsFetchInFlight = false;
 let presenceFetchInFlight = false;
 let selectedReactionId = readStoredReactionChoice();
 let reactionCounts = defaultReactionCounts();
+const discordApplicationIconCache = new Map();
 
 if (heroProfileImage) {
   heroProfileImage.src = HERO_PROFILE_IMAGE;
@@ -674,6 +676,51 @@ function activityImageFromDiscord(activity) {
   return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${largeImage}.png?size=256`;
 }
 
+async function fetchDiscordApplicationIcon(activity) {
+  const applicationId = String(activity?.application_id || "").trim();
+  if (!applicationId) {
+    return "";
+  }
+
+  if (discordApplicationIconCache.has(applicationId)) {
+    return discordApplicationIconCache.get(applicationId);
+  }
+
+  const endpoint = `https://discord.com/api/v10/oauth2/applications/${applicationId}/rpc`;
+  const response = await withTimeout(
+    fetch(`${JSON_PROXY_BASE}${encodeURIComponent(endpoint)}`, {
+      cache: "force-cache"
+    }),
+    VIEW_FETCH_TIMEOUT_MS
+  );
+
+  if (!response.ok) {
+    throw new Error(`Discord application lookup failed (${response.status})`);
+  }
+
+  const payload = await response.json();
+  const iconHash = String(payload?.icon || "").trim();
+  const iconUrl = iconHash
+    ? `https://cdn.discordapp.com/app-icons/${applicationId}/${iconHash}.png?size=256`
+    : "";
+
+  discordApplicationIconCache.set(applicationId, iconUrl);
+  return iconUrl;
+}
+
+async function resolveActivityArt(activity) {
+  const richAssetUrl = activityImageFromDiscord(activity);
+  if (richAssetUrl) {
+    return richAssetUrl;
+  }
+
+  try {
+    return (await fetchDiscordApplicationIcon(activity)) || "";
+  } catch {
+    return "";
+  }
+}
+
 function activityDisplayScore(activity) {
   if (!activity || activity.type === 4 || !activity.name) {
     return -1;
@@ -736,7 +783,7 @@ function pickRichActivity(activities) {
   );
 }
 
-function renderPresence(data) {
+async function renderPresence(data) {
   const user = data.discord_user || {};
   const displayName = user.global_name || user.display_name || user.username || "Discord User";
   const avatarHash = user.avatar;
@@ -778,7 +825,7 @@ function renderPresence(data) {
   if (richActivity) {
     const detailText = richActivity.details || richActivity.state || "Active on Discord";
     const subText = richActivity.name || "Activity";
-    const richImage = activityImageFromDiscord(richActivity);
+    const richImage = await resolveActivityArt(richActivity);
 
     activityArt.src = richImage || DEFAULT_ACTIVITY_ART;
     activityTitle.textContent = detailText;
@@ -828,7 +875,7 @@ async function fetchPresence() {
       throw new Error("Invalid Lanyard payload");
     }
 
-    renderPresence(payload.data);
+    await renderPresence(payload.data);
   } catch {
     setDisconnectedState("Could not reach Discord presence feed right now.");
   } finally {
