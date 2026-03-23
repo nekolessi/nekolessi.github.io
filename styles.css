@@ -581,7 +581,7 @@ h1 {
   height: 10px;
   border-radius: 50%;
   background: rgba(20, 10, 35, 0.95);
-  transform: translate(2px, -2px);
+  transform: translate(-2px, -2px);
 }
 
 .status-dot.dnd {
