@@ -144,11 +144,17 @@ async function fetchDiscordApplication(applicationId) {
   const payload = await response.json();
   const iconHash = String(payload?.icon || "").trim();
 
-  return jsonResponse({
-    id: applicationId,
-    name: String(payload?.name || "").trim(),
-    iconUrl: iconHash ? `https://cdn.discordapp.com/app-icons/${applicationId}/${iconHash}.png?size=256` : ""
-  });
+  return jsonResponse(
+    {
+      id: applicationId,
+      name: String(payload?.name || "").trim(),
+      iconUrl: iconHash ? `https://cdn.discordapp.com/app-icons/${applicationId}/${iconHash}.png?size=256` : ""
+    },
+    200,
+    {
+      "Cache-Control": "public, max-age=86400"
+    }
+  );
 }
 
 function getClientIp(request) {

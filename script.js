@@ -34,6 +34,9 @@ const PROFILE_REACTIONS = [
   { id: "heart", emoji: "💗", label: "Like catgirls" }
 ];
 const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
+const REACTION_EMOJI_BY_ID = {
+  heart: "\u{1F497}"
+};
 
 const heroProfileImage = document.getElementById("heroProfileImage");
 const heroBio = document.getElementById("heroBio");
@@ -351,7 +354,7 @@ function renderReactionButtons(counts = reactionCounts) {
 
     const emoji = document.createElement("span");
     emoji.className = "reaction-emoji";
-    emoji.textContent = reaction.emoji;
+    emoji.textContent = REACTION_EMOJI_BY_ID[reaction.id] || reaction.emoji;
 
     const count = document.createElement("span");
     count.className = "reaction-count";

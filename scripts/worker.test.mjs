@@ -202,6 +202,7 @@ test("discord app lookup proxies Discord metadata through the worker", async () 
 
     assert.equal(response.status, 200);
     assert.equal(response.headers.get("Access-Control-Allow-Origin"), "https://nekolessi.github.io");
+    assert.equal(response.headers.get("Cache-Control"), "public, max-age=86400");
     assert.deepEqual(await readJson(response), {
       id: applicationId,
       name: "On-Together",
