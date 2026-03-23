@@ -8,21 +8,16 @@ class MemoryStorage {
     this.values = new Map();
   }
 
-  async get(key, type) {
+  async get(key) {
     if (!this.values.has(key)) {
       return null;
     }
 
-    const value = this.values.get(key);
-    if (type === "json") {
-      return typeof value === "string" ? JSON.parse(value) : structuredClone(value);
-    }
-
-    return value;
+    return structuredClone(this.values.get(key));
   }
 
   async put(key, value) {
-    this.values.set(key, value);
+    this.values.set(key, structuredClone(value));
   }
 }
 

@@ -155,7 +155,7 @@ export class ProfileCounterDurableObject {
 
     if (url.pathname === "/reactions") {
       if (request.method === "GET") {
-        const raw = await this.state.storage.get(REACTIONS_KEY, "json");
+        const raw = await this.state.storage.get(REACTIONS_KEY);
         return jsonResponse({ counts: normalizeReactions(raw) });
       }
 
@@ -191,11 +191,11 @@ export class ProfileCounterDurableObject {
           );
         }
 
-        const raw = await this.state.storage.get(REACTIONS_KEY, "json");
+        const raw = await this.state.storage.get(REACTIONS_KEY);
         const counts = normalizeReactions(raw);
         counts[reaction] += 1;
 
-        await this.state.storage.put(REACTIONS_KEY, JSON.stringify(counts));
+        await this.state.storage.put(REACTIONS_KEY, counts);
         await this.state.storage.put(rateKey, `${now}`);
         return jsonResponse({ counts });
       }
