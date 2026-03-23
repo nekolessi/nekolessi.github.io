@@ -5,8 +5,6 @@ const HERO_PROFILE_IMAGE_URL = ""; // Optional: set a full image URL here if you
 const HERO_PROFILE_IMAGE = HERO_PROFILE_IMAGE_URL || HERO_PROFILE_IMAGE_LOCAL;
 const VIEW_COUNTER_WORKER_URL = "https://nekolessi-view-counter.nekolessi.workers.dev/views"; // Optional: set to your Cloudflare Worker URL, e.g. https://your-worker.workers.dev/views
 const REACTIONS_WORKER_URL = deriveReactionsWorkerUrl();
-const VIEW_BADGE_URL = "https://visitor-badge.laobi.icu/badge?page_id=nekolessi.nekolessi.github.io&left_text=%20";
-const VIEW_BADGE_PROXY_BASE = "https://api.allorigins.win/get?url=";
 const JSON_PROXY_BASE = "https://api.allorigins.win/raw?url=";
 const VIEW_FETCH_TIMEOUT_MS = 4500;
 const DISCORD_PROFILE_BASE = "https://discord.com/users/";
@@ -140,30 +138,12 @@ function withTimeout(promise, timeoutMs) {
   return Promise.race([promise, timeoutPromise]).finally(() => clearTimeout(timeoutId));
 }
 
-function parseViewCountFromSvg(svgText) {
-  if (typeof svgText !== "string" || !svgText.length) {
-    return "";
-  }
-
-  const ariaMatch = svgText.match(/aria-label="[^"]*?(\d[\d,]*)"/i);
-  if (ariaMatch?.[1]) {
-    return ariaMatch[1].replace(/\D/g, "");
-  }
-
-  const textMatches = [...svgText.matchAll(/>(\d[\d,]*)<\/text>/g)];
-  if (textMatches.length) {
-    return textMatches[textMatches.length - 1][1].replace(/\D/g, "");
-  }
-
-  return "";
-}
-
 async function fetchViewCount() {
-  if (VIEW_COUNTER_WORKER_URL.trim()) {
-    return fetchViewCountFromWorker();
+  if (!VIEW_COUNTER_WORKER_URL.trim()) {
+    throw new Error("Set VIEW_COUNTER_WORKER_URL to load profile views.");
   }
 
-  return fetchViewCountFromBadgeProxy();
+  return fetchViewCountFromWorker();
 }
 
 async function fetchViewCountFromWorker() {
@@ -182,45 +162,6 @@ async function fetchViewCountFromWorker() {
   const count = String(payload?.count ?? "").replace(/\D/g, "");
   if (!count) {
     throw new Error("Worker counter payload missing count");
-  }
-
-  return count;
-}
-
-async function fetchViewCountFromBadgeProxy() {
-  const url = `${VIEW_BADGE_PROXY_BASE}${encodeURIComponent(VIEW_BADGE_URL)}`;
-  const response = await withTimeout(
-    fetch(url, {
-      cache: "no-store"
-    }),
-    VIEW_FETCH_TIMEOUT_MS
-  );
-
-  if (!response.ok) {
-    throw new Error(`Counter request failed (${response.status})`);
-  }
-
-  const bodyTextRaw = await response.text();
-  let bodyText = bodyTextRaw;
-
-  // allorigins /get returns JSON with the upstream body in `contents`.
-  try {
-    const payload = JSON.parse(bodyTextRaw);
-    if (typeof payload?.contents === "string" && payload.contents.length) {
-      bodyText = payload.contents;
-    }
-  } catch {
-    // If it's not JSON, continue with raw body as-is.
-  }
-
-  const base64Prefix = "data:image/svg+xml;base64,";
-  if (bodyText.startsWith(base64Prefix)) {
-    bodyText = atob(bodyText.slice(base64Prefix.length));
-  }
-
-  const count = parseViewCountFromSvg(bodyText);
-  if (!count) {
-    throw new Error("Could not parse counter value");
   }
 
   return count;
