@@ -139,6 +139,14 @@ h1 {
   color: #ddd3e7;
 }
 
+.bio-block {
+  display: block;
+}
+
+.bio-block + .bio-block {
+  margin-top: 0.85em;
+}
+
 .socials {
   margin-top: 22px;
   padding-top: 16px;
