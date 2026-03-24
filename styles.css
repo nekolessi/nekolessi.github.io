@@ -193,7 +193,7 @@ h1 {
 .socials a {
   width: auto;
   height: auto;
-  display: inline-flex;
+  display: flex;
   align-items: center;
   justify-content: center;
   text-decoration: none;
@@ -201,6 +201,7 @@ h1 {
   background: transparent;
   border: none;
   font-size: 1.95rem;
+  line-height: 1;
   transition: transform 170ms ease, color 170ms ease, filter 180ms ease;
 }
 
