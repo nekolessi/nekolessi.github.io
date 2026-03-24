@@ -378,7 +378,7 @@ function renderSocialLinks() {
       image.src = simpleIconUrl(link.simpleIcon, link.iconColor);
       image.alt = "";
       image.setAttribute("aria-hidden", "true");
-      image.loading = "lazy";
+      image.loading = "eager";
       image.decoding = "async";
       anchor.appendChild(image);
     } else {
