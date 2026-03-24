@@ -115,7 +115,7 @@ body {
 }
 
 .hero {
-  padding: 30px 34px 30px;
+  padding: 30px 34px 16px;
   position: relative;
   isolation: isolate;
   background: var(--card-surface);
@@ -755,7 +755,7 @@ h1 {
   }
 
   .hero {
-    padding: 22px 14px 18px;
+    padding: 22px 14px 13px;
   }
 
   .hero-topline {
