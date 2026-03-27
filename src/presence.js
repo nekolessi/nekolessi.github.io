@@ -13,6 +13,64 @@ import {
   withTimeout,
 } from "./helpers.js";
 
+/**
+ * @typedef {Object} PresenceEmoji
+ * @property {string} [id]
+ * @property {string} [name]
+ * @property {boolean} [animated]
+ */
+
+/**
+ * @typedef {Object} PresenceActivityAssets
+ * @property {string} [large_image]
+ * @property {string} [small_image]
+ */
+
+/**
+ * @typedef {Object} PresenceTimestamps
+ * @property {number} [start]
+ * @property {number} [end]
+ */
+
+/**
+ * @typedef {Object} PresenceActivity
+ * @property {number} [type]
+ * @property {string} [name]
+ * @property {string} [details]
+ * @property {string} [state]
+ * @property {string} [application_id]
+ * @property {PresenceEmoji} [emoji]
+ * @property {PresenceActivityAssets} [assets]
+ * @property {PresenceTimestamps} [timestamps]
+ */
+
+/**
+ * @typedef {Object} SpotifyPresence
+ * @property {string} [song]
+ * @property {string} [artist]
+ * @property {string} [album]
+ * @property {string} [album_art_url]
+ * @property {PresenceTimestamps} [timestamps]
+ */
+
+/**
+ * @typedef {Object} DiscordUser
+ * @property {string} [id]
+ * @property {string} [username]
+ * @property {string} [display_name]
+ * @property {string} [global_name]
+ * @property {string} [avatar]
+ */
+
+/**
+ * @typedef {Object} LanyardPresenceData
+ * @property {DiscordUser} [discord_user]
+ * @property {string} [discord_status]
+ * @property {boolean} [listening_to_spotify]
+ * @property {SpotifyPresence} [spotify]
+ * @property {PresenceActivity[]} [activities]
+ */
+
 function isUserIdSet() {
   return /^\d{17,20}$/.test(APP_CONFIG.discordUserId);
 }
@@ -21,6 +79,9 @@ function isDocumentHidden(documentRef) {
   return typeof documentRef?.hidden === "boolean" && documentRef.hidden;
 }
 
+/**
+ * @param {PresenceActivity | null | undefined} activity
+ */
 function activityImageFromDiscord(activity) {
   if (!activity || !activity.assets) {
     return "";
@@ -51,6 +112,9 @@ function activityImageFromDiscord(activity) {
   return `https://cdn.discordapp.com/app-assets/${activity.application_id}/${largeImage}.png?size=256`;
 }
 
+/**
+ * @param {PresenceActivity | null | undefined} activity
+ */
 function activityDisplayScore(activity) {
   if (!activity || activity.type === 4 || !activity.name) {
     return -1;
@@ -99,6 +163,10 @@ function activityDisplayScore(activity) {
   return score;
 }
 
+/**
+ * @param {PresenceActivity[] | null | undefined} activities
+ * @returns {PresenceActivity | null}
+ */
 function pickRichActivity(activities) {
   if (!Array.isArray(activities)) {
     return null;
@@ -321,6 +389,9 @@ export function createPresenceController({
     stopProgress();
   }
 
+  /**
+   * @param {PresenceActivity | null | undefined} activity
+   */
   async function fetchDiscordApplicationIcon(activity) {
     const applicationId = String(activity?.application_id || "").trim();
     if (!applicationId) {
@@ -354,6 +425,9 @@ export function createPresenceController({
     return iconUrl;
   }
 
+  /**
+   * @param {PresenceActivity | null | undefined} activity
+   */
   async function resolveActivityArt(activity) {
     const richAssetUrl = activityImageFromDiscord(activity);
     if (richAssetUrl) {
@@ -367,6 +441,9 @@ export function createPresenceController({
     }
   }
 
+  /**
+   * @param {LanyardPresenceData} data
+   */
   async function renderPresence(data) {
     const user = data.discord_user || {};
     const displayName =

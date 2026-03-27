@@ -1,3 +1,30 @@
+/**
+ * @typedef {"email"} ProfileLinkType
+ */
+
+/**
+ * @typedef {Object} ProfileLink
+ * @property {string} label
+ * @property {string} simpleIcon
+ * @property {string} iconColor
+ * @property {string} href
+ * @property {ProfileLinkType} [type]
+ */
+
+/**
+ * @typedef {Object} ProfileConfig
+ * @property {string} location
+ * @property {string[]} bioBlocks
+ * @property {ProfileLink[]} links
+ */
+
+/**
+ * @typedef {Object} ProfileReaction
+ * @property {string} id
+ * @property {string} emoji
+ * @property {string} label
+ */
+
 export const APP_CONFIG = {
   discordUserId: "1116207043544612985",
   lanyardBase: "https://api.lanyard.rest/v1/users/",
@@ -38,6 +65,7 @@ export const UI_TEXT = {
   },
 };
 
+/** @type {ProfileConfig} */
 export const PROFILE = {
   location: "USA",
   bioBlocks: [
@@ -92,6 +120,7 @@ export const PROFILE = {
   ],
 };
 
+/** @type {ProfileReaction[]} */
 export const PROFILE_REACTIONS = [
   { id: "heart", emoji: "\u{1F497}", label: "Like catgirls" },
 ];
