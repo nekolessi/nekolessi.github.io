@@ -26,6 +26,8 @@ A goth-neko profile site for GitHub Pages with live Discord status, social links
 
 ## Local Verification
 
+Use Node `>=20.19.0`.
+
 Run the full repo check before pushing:
 
 ```powershell
@@ -47,7 +49,9 @@ Update these values:
 - `APP_CONFIG.discordUserId`
 - `APP_CONFIG.heroProfileImageUrl`
 - `APP_CONFIG.viewCounterWorkerUrl`
+- `APP_CONFIG.viewFetchTimeoutMs`
 - `APP_CONFIG.presenceRefreshIntervalMs`
+- `PROFILE_REACTIONS`
 - `PROFILE.location`
 - `PROFILE.bioBlocks`
 - `PROFILE.links`
@@ -100,9 +104,14 @@ const PROFILE = {
 ```js
 const APP_CONFIG = {
   discordUserId: "1116207043544612985",
+  lanyardBase: "https://api.lanyard.rest/v1/users/",
+  heroProfileImageLocal: "images/profile.png",
   heroProfileImageUrl: "",
   viewCounterWorkerUrl: "https://your-worker.workers.dev/views",
-  presenceRefreshIntervalMs: 20000,
+  viewFetchTimeoutMs: 4500,
+  presenceRefreshIntervalMs: 20_000,
+  discordProfileBase: "https://discord.com/users/",
+  defaultActivityArt: "images/activity-fallback.svg",
 };
 ```
 
@@ -116,6 +125,20 @@ const UI_TEXT = {
   activityEmptyTitle: "Nothing active right now",
 };
 ```
+
+### `PROFILE_REACTIONS` shape
+
+```js
+const PROFILE_REACTIONS = [
+  { id: "heart", emoji: "\\u{1F497}", label: "Like catgirls" },
+];
+```
+
+Notes:
+
+- each reaction needs a stable `id`
+- `emoji` is the button glyph shown in the UI
+- `label` is used for accessible text and status copy
 
 ## Publish On GitHub Pages
 
