@@ -1,3 +1,5 @@
+// @ts-check
+
 import {
   APP_CONFIG,
   DEFAULT_ACTIVITY_ART,
