@@ -247,7 +247,7 @@ export class ProfileCounterDurableObject {
       }
 
       if (request.method === "POST") {
-        let payload = {};
+        let payload;
         try {
           payload = await request.json();
         } catch {
