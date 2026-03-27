@@ -7,7 +7,17 @@
   },
   "scripts": {
     "check": "node scripts/check.mjs",
+    "lint": "eslint .",
+    "format": "prettier --write .",
+    "format:check": "prettier --check .",
     "test": "node --test scripts/*.test.mjs",
-    "verify": "npm run check && npm run test"
+    "verify": "npm run check && npm run lint && npm run format:check && npm run test"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.39.1",
+    "eslint": "^9.39.1",
+    "globals": "^16.4.0",
+    "linkedom": "^0.18.12",
+    "prettier": "^3.6.2"
   }
 }

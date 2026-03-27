@@ -12,8 +12,14 @@ A goth-neko profile site for GitHub Pages with live Discord status, social links
 
 - `index.html`: page markup
 - `styles.css`: layout, visuals, and responsiveness
-- `script.js`: profile config and live data logic
+- `script.js`: browser entrypoint that boots the site app
+- `src/config.js`: profile content and site config
+- `src/app.js`: app bootstrap and shared page wiring
+- `src/presence.js`: Discord/Lanyard presence rendering
+- `src/reactions.js`: view counter and reaction UI logic
+- `src/helpers.js`: small shared helpers for URLs, timing, and formatting
 - `scripts/check.mjs`: static site and config validation
+- `scripts/site.test.mjs`: browser-side DOM behavior tests
 - `scripts/worker.test.mjs`: worker behavior tests
 - `images/`: local assets such as `background.jpg` and `profile.png`
 - `cloudflare-worker/src/index.js`: `/views`, `/reactions`, and `/discord-app/:id` APIs
@@ -29,9 +35,12 @@ npm run verify
 This runs:
 
 - static site/config validation
+- ESLint
+- Prettier format check
+- browser-side DOM tests
 - worker behavior tests
 
-## Quick Config In `script.js`
+## Quick Config In `src/config.js`
 
 Update these values:
 
@@ -80,9 +89,9 @@ const PROFILE = {
       label: "Ko-fi",
       simpleIcon: "kofi",
       iconColor: "72A5F2",
-      href: "ko-fi.com/nekolessi"
-    }
-  ]
+      href: "ko-fi.com/nekolessi",
+    },
+  ],
 };
 ```
 
@@ -93,7 +102,7 @@ const APP_CONFIG = {
   discordUserId: "1116207043544612985",
   heroProfileImageUrl: "",
   viewCounterWorkerUrl: "https://your-worker.workers.dev/views",
-  presenceRefreshIntervalMs: 20000
+  presenceRefreshIntervalMs: 20000,
 };
 ```
 
@@ -104,7 +113,7 @@ const UI_TEXT = {
   statusEyebrow: "DISCORD STATUS",
   activityEyebrow: "NOW PLAYING / LISTENING",
   reactionsTitle: "click if you like catgirls",
-  activityEmptyTitle: "Nothing active right now"
+  activityEmptyTitle: "Nothing active right now",
 };
 ```
 
@@ -133,10 +142,10 @@ Worker files live in `cloudflare-worker/`.
    cd cloudflare-worker
    npx wrangler deploy
    ```
-4. Set the worker URL in `script.js`:
+4. Set the worker URL in `src/config.js`:
    ```js
    const APP_CONFIG = {
-     viewCounterWorkerUrl: "https://your-worker.workers.dev/views"
+     viewCounterWorkerUrl: "https://your-worker.workers.dev/views",
    };
    ```
 

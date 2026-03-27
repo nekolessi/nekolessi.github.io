@@ -10,11 +10,11 @@ const DISCORD_APP_ROUTE_PREFIX = "/discord-app/";
 const DISCORD_RPC_BASE = "https://discord.com/api/v10/oauth2/applications/";
 const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type"
+  "Access-Control-Allow-Headers": "Content-Type",
 };
 const JSON_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
-  "Cache-Control": "no-store"
+  "Cache-Control": "no-store",
 };
 
 function jsonResponse(body, status = 200, headers = {}) {
@@ -22,8 +22,8 @@ function jsonResponse(body, status = 200, headers = {}) {
     status,
     headers: {
       ...JSON_HEADERS,
-      ...headers
-    }
+      ...headers,
+    },
   });
 }
 
@@ -36,12 +36,14 @@ function mergeCorsHeaders(response, request, env) {
     headers.set("Vary", "Origin");
   }
 
-  Object.entries(CORS_HEADERS).forEach(([key, value]) => headers.set(key, value));
+  Object.entries(CORS_HEADERS).forEach(([key, value]) =>
+    headers.set(key, value),
+  );
 
   return new Response(response.body, {
     status: response.status,
     statusText: response.statusText,
-    headers
+    headers,
   });
 }
 
@@ -110,7 +112,11 @@ function requiresAllowedOrigin(pathname, method) {
 }
 
 function isKnownPath(pathname) {
-  return pathname === "/views" || pathname === "/reactions" || isDiscordAppPath(pathname);
+  return (
+    pathname === "/views" ||
+    pathname === "/reactions" ||
+    isDiscordAppPath(pathname)
+  );
 }
 
 function parseDiscordApplicationId(pathname) {
@@ -125,12 +131,12 @@ function parseDiscordApplicationId(pathname) {
 async function fetchDiscordApplication(applicationId) {
   const response = await fetch(`${DISCORD_RPC_BASE}${applicationId}/rpc`, {
     headers: {
-      Accept: "application/json"
+      Accept: "application/json",
     },
     cf: {
       cacheTtl: 86_400,
-      cacheEverything: true
-    }
+      cacheEverything: true,
+    },
   });
 
   if (response.status === 404) {
@@ -138,7 +144,10 @@ async function fetchDiscordApplication(applicationId) {
   }
 
   if (!response.ok) {
-    return jsonResponse({ error: `Discord application lookup failed (${response.status})` }, 502);
+    return jsonResponse(
+      { error: `Discord application lookup failed (${response.status})` },
+      502,
+    );
   }
 
   const payload = await response.json();
@@ -148,18 +157,22 @@ async function fetchDiscordApplication(applicationId) {
     {
       id: applicationId,
       name: String(payload?.name || "").trim(),
-      iconUrl: iconHash ? `https://cdn.discordapp.com/app-icons/${applicationId}/${iconHash}.png?size=256` : ""
+      iconUrl: iconHash
+        ? `https://cdn.discordapp.com/app-icons/${applicationId}/${iconHash}.png?size=256`
+        : "",
     },
     200,
     {
-      "Cache-Control": "public, max-age=86400"
-    }
+      "Cache-Control": "public, max-age=86400",
+    },
   );
 }
 
 function getClientIp(request) {
   const headerValue =
-    request.headers.get("CF-Connecting-IP") || request.headers.get("X-Forwarded-For") || "";
+    request.headers.get("CF-Connecting-IP") ||
+    request.headers.get("X-Forwarded-For") ||
+    "";
   return headerValue.split(",")[0].trim();
 }
 
@@ -169,7 +182,10 @@ function parsePositiveInteger(value, fallback) {
 }
 
 function getReactionMinIntervalMs(env) {
-  return parsePositiveInteger(env?.REACTION_MIN_INTERVAL_MS, DEFAULT_REACTION_MIN_INTERVAL_MS);
+  return parsePositiveInteger(
+    env?.REACTION_MIN_INTERVAL_MS,
+    DEFAULT_REACTION_MIN_INTERVAL_MS,
+  );
 }
 
 function createCounterStub(env) {
@@ -198,7 +214,7 @@ function createDurableObjectRequest(request, pathname, env, bodyText) {
   return new Request(`https://profile-counter${pathname}`, {
     method: request.method,
     headers,
-    body: bodyText
+    body: bodyText,
   });
 }
 
@@ -216,7 +232,8 @@ export class ProfileCounterDurableObject {
       }
 
       const currentRaw = await this.state.storage.get(COUNTER_KEY);
-      const current = Number.parseInt(currentRaw ?? `${COUNTER_INIT}`, 10) || COUNTER_INIT;
+      const current =
+        Number.parseInt(currentRaw ?? `${COUNTER_INIT}`, 10) || COUNTER_INIT;
       const next = current + 1;
 
       await this.state.storage.put(COUNTER_KEY, `${next}`);
@@ -245,19 +262,22 @@ export class ProfileCounterDurableObject {
         const clientIp = request.headers.get("X-Client-IP") || "unknown";
         const minIntervalMs = parsePositiveInteger(
           request.headers.get("X-Reaction-Min-Interval-Ms"),
-          DEFAULT_REACTION_MIN_INTERVAL_MS
+          DEFAULT_REACTION_MIN_INTERVAL_MS,
         );
         const rateKey = `${REACTION_RATE_LIMIT_PREFIX}${clientIp}`;
         const now = Date.now();
-        const lastReactionAt = parsePositiveInteger(await this.state.storage.get(rateKey), 0);
+        const lastReactionAt = parsePositiveInteger(
+          await this.state.storage.get(rateKey),
+          0,
+        );
 
         if (lastReactionAt && now - lastReactionAt < minIntervalMs) {
           return jsonResponse(
             {
               error: "Too many reactions. Try again shortly.",
-              retryAfterMs: minIntervalMs - (now - lastReactionAt)
+              retryAfterMs: minIntervalMs - (now - lastReactionAt),
             },
-            429
+            429,
           );
         }
 
@@ -282,30 +302,61 @@ export default {
     const url = new URL(request.url);
 
     if (request.method === "OPTIONS") {
-      const requestedMethod = request.headers.get("Access-Control-Request-Method") || "GET";
-      if (requiresAllowedOrigin(url.pathname, requestedMethod) && !isAllowedOrigin(request.headers.get("Origin"), env)) {
-        return mergeCorsHeaders(jsonResponse({ error: "Forbidden origin" }, 403), request, env);
+      const requestedMethod =
+        request.headers.get("Access-Control-Request-Method") || "GET";
+      if (
+        requiresAllowedOrigin(url.pathname, requestedMethod) &&
+        !isAllowedOrigin(request.headers.get("Origin"), env)
+      ) {
+        return mergeCorsHeaders(
+          jsonResponse({ error: "Forbidden origin" }, 403),
+          request,
+          env,
+        );
       }
 
-      return mergeCorsHeaders(new Response(null, { status: 204 }), request, env);
+      return mergeCorsHeaders(
+        new Response(null, { status: 204 }),
+        request,
+        env,
+      );
     }
 
     if (!isKnownPath(url.pathname)) {
-      return mergeCorsHeaders(jsonResponse({ error: "Not found" }, 404), request, env);
+      return mergeCorsHeaders(
+        jsonResponse({ error: "Not found" }, 404),
+        request,
+        env,
+      );
     }
 
-    if (requiresAllowedOrigin(url.pathname, request.method) && !isAllowedOrigin(request.headers.get("Origin"), env)) {
-      return mergeCorsHeaders(jsonResponse({ error: "Forbidden origin" }, 403), request, env);
+    if (
+      requiresAllowedOrigin(url.pathname, request.method) &&
+      !isAllowedOrigin(request.headers.get("Origin"), env)
+    ) {
+      return mergeCorsHeaders(
+        jsonResponse({ error: "Forbidden origin" }, 403),
+        request,
+        env,
+      );
     }
 
     if (isDiscordAppPath(url.pathname)) {
       if (request.method !== "GET") {
-        return mergeCorsHeaders(jsonResponse({ error: "Method not allowed" }, 405), request, env);
+        return mergeCorsHeaders(
+          jsonResponse({ error: "Method not allowed" }, 405),
+          request,
+          env,
+        );
       }
 
       const applicationId = parseDiscordApplicationId(url.pathname);
       if (!applicationId) {
-        return mergeCorsHeaders(jsonResponse({ error: "Invalid Discord application id" }, 400), request, env);
+        return mergeCorsHeaders(
+          jsonResponse({ error: "Invalid Discord application id" }, 400),
+          request,
+          env,
+        );
       }
 
       const response = await fetchDiscordApplication(applicationId);
@@ -315,16 +366,25 @@ export default {
     const counterStub = createCounterStub(env);
     if (!counterStub) {
       return mergeCorsHeaders(
-        jsonResponse({ error: "Durable Object binding missing: PROFILE_COUNTER" }, 500),
+        jsonResponse(
+          { error: "Durable Object binding missing: PROFILE_COUNTER" },
+          500,
+        ),
         request,
-        env
+        env,
       );
     }
 
-    const bodyText = request.method === "POST" ? await request.text() : undefined;
-    const durableObjectRequest = createDurableObjectRequest(request, url.pathname, env, bodyText);
+    const bodyText =
+      request.method === "POST" ? await request.text() : undefined;
+    const durableObjectRequest = createDurableObjectRequest(
+      request,
+      url.pathname,
+      env,
+      bodyText,
+    );
     const response = await counterStub.fetch(durableObjectRequest);
 
     return mergeCorsHeaders(response, request, env);
-  }
+  },
 };
