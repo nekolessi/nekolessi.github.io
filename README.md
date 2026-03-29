@@ -1,50 +1,51 @@
-# Nekolessi Profile (GitHub Pages)
+# Nekolessi Profile ♡
 
-A goth-neko profile site for GitHub Pages with live Discord status, social links, and a tiny Cloudflare-powered reaction counter tucked under the lace.
+A purrfectly cute catgirl profile page for GitHub Pages, with live Discord status, pretty social links, and a tiny Cloudflare-powered reaction counter tucked underneath it all. 🎀
 
-## What The Site Includes
+## What This Little Site Has ✨
 
-- hero card and social links
-- live Discord status and activity through Lanyard
-- Cloudflare Worker page views and reactions
+- a cute hero card with social links
+- live Discord status and activity powered by Lanyard
+- Cloudflare Worker-backed page views and reactions
+- easy profile text + link editing from `src/config.js`
 
-## Project Structure
+## Project Map 🗺️
 
-- `index.html`: page markup
-- `styles.css`: layout, visuals, and responsiveness
+- `index.html`: page markup and metadata
+- `styles.css`: layout, visuals, and responsive styling
 - `script.js`: browser entrypoint that boots the site app
-- `src/config.js`: profile content and site config
+- `src/config.js`: profile content and site settings
 - `src/app.js`: app bootstrap and shared page wiring
 - `src/presence.js`: Discord/Lanyard presence rendering
-- `src/reactions.js`: view counter and reaction UI logic
-- `src/helpers.js`: small shared helpers for URLs, timing, and formatting
+- `src/reactions.js`: reaction UI and counter behavior
+- `src/helpers.js`: shared helpers for URLs, timing, and formatting
 - `scripts/check.mjs`: static site and config validation
 - `scripts/site.test.mjs`: browser-side DOM behavior tests
 - `scripts/worker.test.mjs`: worker behavior tests
-- `images/`: local assets such as `background.jpg` and `profile.png`
+- `images/`: local assets like `background.jpg` and `profile.png`
 - `cloudflare-worker/src/index.js`: `/views`, `/reactions`, and `/discord-app/:id` APIs
 
-## Local Verification
+## Verify Before You Push 🧁
 
 Use Node `>=20.19.0`.
 
-Run the full repo check before pushing:
+Run the full check with:
 
 ```powershell
 npm run verify
 ```
 
-This runs:
+That runs:
 
-- static site/config validation
+- static site and config validation
 - ESLint
 - Prettier format check
 - browser-side DOM tests
 - worker behavior tests
 
-## Quick Config In `src/config.js`
+## Quick Config In `src/config.js` 💖
 
-Update these values:
+The main things you will probably want to customize are:
 
 - `APP_CONFIG.discordUserId`
 - `APP_CONFIG.heroProfileImageUrl`
@@ -57,13 +58,13 @@ Update these values:
 - `PROFILE.links`
 - `UI_TEXT`
 
-Notes:
+Helpful notes:
 
-- if `APP_CONFIG.heroProfileImageUrl` is empty, the site uses `images/profile.png`
+- if `APP_CONFIG.heroProfileImageUrl` is empty, the site falls back to `images/profile.png`
 - the reactions endpoint is auto-derived from `APP_CONFIG.viewCounterWorkerUrl`
-- the Discord app icon endpoint is auto-derived from `APP_CONFIG.viewCounterWorkerUrl`
+- the Discord app icon endpoint is also auto-derived from `APP_CONFIG.viewCounterWorkerUrl`
 - social links use **Simple Icons only**
-- `UI_TEXT` holds section labels, fallback copy, and small status messages so you can retheme wording without digging through logic
+- `UI_TEXT` holds section labels, fallback copy, and tiny status messages so you can retheme wording without digging through the logic
 
 ### `PROFILE.links` shape
 
@@ -134,13 +135,13 @@ const PROFILE_REACTIONS = [
 ];
 ```
 
-Notes:
+Little notes:
 
 - each reaction needs a stable `id`
 - `emoji` is the button glyph shown in the UI
 - `label` is used for accessible text and status copy
 
-## Publish On GitHub Pages
+## Publish On GitHub Pages 🌷
 
 1. Open repo `Settings`.
 2. Go to `Pages`.
@@ -148,39 +149,46 @@ Notes:
 4. Set branch to `main` and folder to `/ (root)`.
 5. Save and wait for deployment.
 
-## Cloudflare Worker Setup
+## Cloudflare Worker Setup ☁️
 
 Worker files live in `cloudflare-worker/`.
 
 1. Login:
-   ```powershell
-   npx wrangler login
-   npx wrangler whoami
-   ```
+
+```powershell
+npx wrangler login
+npx wrangler whoami
+```
+
 2. Review `cloudflare-worker/wrangler.toml`:
-   - set `ALLOWED_ORIGINS` to your site origin if you use a custom domain
-   - adjust `REACTION_MIN_INTERVAL_MS` if you want a looser or stricter reaction cooldown
+
+- set `ALLOWED_ORIGINS` to your site origin if you use a custom domain
+- adjust `REACTION_MIN_INTERVAL_MS` if you want a looser or stricter reaction cooldown
+
 3. Deploy:
-   ```powershell
-   cd cloudflare-worker
-   npx wrangler deploy
-   ```
+
+```powershell
+cd cloudflare-worker
+npx wrangler deploy
+```
+
 4. Set the worker URL in `src/config.js`:
-   ```js
-   const APP_CONFIG = {
-     viewCounterWorkerUrl: "https://your-worker.workers.dev/views",
-   };
-   ```
+
+```js
+const APP_CONFIG = {
+  viewCounterWorkerUrl: "https://your-worker.workers.dev/views",
+};
+```
 
 Important behavior:
 
 - page views and reactions are stored through a Durable Object so concurrent requests do not lose counts
 - view increments require an allowed site origin
 - reaction posts require an allowed site origin and are rate-limited per client IP
-- Discord app icon lookups are proxied through the worker to avoid relying on `allorigins`
+- Discord app icon lookups are proxied through the worker so the site does not need to rely on `allorigins`
 - missing Durable Object bindings return a clear JSON error
 
-After deploy, useful smoke checks are:
+After deploy, these are nice little smoke checks:
 
 ```powershell
 curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/views
@@ -188,14 +196,19 @@ curl.exe -i https://your-worker.workers.dev/reactions
 curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/discord-app/1445976703066443846
 ```
 
-## Troubleshooting
+## Troubleshooting 🐾
 
-- Counter blank:
-  - check that `APP_CONFIG.viewCounterWorkerUrl` ends with `/views`
-  - check that the worker is deployed and the `PROFILE_COUNTER` Durable Object binding exists
-  - check that `ALLOWED_ORIGINS` includes your site origin
-- Discord status not updating:
-  - check `APP_CONFIG.discordUserId`
-  - confirm Lanyard can see that user
-- Style not updating:
-  - hard refresh with `Ctrl+F5` after Pages deploy finishes
+### Counter is blank
+
+- check that `APP_CONFIG.viewCounterWorkerUrl` ends with `/views`
+- check that the worker is deployed and the `PROFILE_COUNTER` Durable Object binding exists
+- check that `ALLOWED_ORIGINS` includes your site origin
+
+### Discord status is not updating
+
+- check `APP_CONFIG.discordUserId`
+- confirm Lanyard can see that user
+
+### Styles are not updating
+
+- hard refresh with `Ctrl+F5` after GitHub Pages finishes deploying
