@@ -106,6 +106,26 @@ test("views reject requests from unapproved origins", async () => {
   assert.deepEqual(await readJson(response), { error: "Forbidden origin" });
 });
 
+test("views allow configured origins even when env values include trailing slashes", async () => {
+  const env = createEnv({
+    ALLOWED_ORIGINS: "https://nekolessi.github.io/, https://cute.example/",
+  });
+
+  const response = await worker.fetch(
+    new Request("https://worker.example/views", {
+      headers: { Origin: "https://cute.example" },
+    }),
+    env,
+  );
+
+  assert.equal(response.status, 200);
+  assert.equal(
+    response.headers.get("Access-Control-Allow-Origin"),
+    "https://cute.example",
+  );
+  assert.deepEqual(await readJson(response), { count: 1 });
+});
+
 test("reaction posts require an approved origin and are rate limited per IP", async () => {
   const env = createEnv();
   const allowedHeaders = {

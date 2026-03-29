@@ -29,6 +29,14 @@ function storeReactionChoice(localStorageImpl, reactionId) {
   }
 }
 
+function formatRateLimitMessage(retryAfterMs) {
+  const retrySeconds = Math.max(
+    1,
+    Math.ceil(Number.parseInt(retryAfterMs, 10) / 1000 || 0),
+  );
+  return `Please wait ${retrySeconds}s before reacting again.`;
+}
+
 export function createReactionsController({
   elements,
   fetchImpl,
@@ -129,7 +137,19 @@ export function createReactionsController({
       );
 
       if (!response.ok) {
-        throw new Error(`Reaction update failed (${response.status})`);
+        let errorMessage = "";
+        try {
+          const payload = await response.json();
+          if (response.status === 429) {
+            errorMessage = formatRateLimitMessage(payload?.retryAfterMs);
+          }
+        } catch {
+          // Fall back to the generic UI copy below.
+        }
+
+        throw new Error(
+          errorMessage || `Reaction update failed (${response.status})`,
+        );
       }
 
       const payload = await response.json();
@@ -137,8 +157,12 @@ export function createReactionsController({
       storeReactionChoice(localStorageImpl, reactionId);
       renderReactionButtons(normalizeReactionCounts(payload?.counts));
       setReactionStatus(UI_TEXT.reactionSaved);
-    } catch {
-      setReactionStatus(UI_TEXT.reactionSaveFailed);
+    } catch (error) {
+      setReactionStatus(
+        error instanceof Error && error.message.startsWith("Please wait ")
+          ? error.message
+          : UI_TEXT.reactionSaveFailed,
+      );
       try {
         renderReactionButtons(await fetchReactionCounts());
       } catch {

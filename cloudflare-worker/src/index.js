@@ -82,21 +82,35 @@ function readStoredReactions(raw) {
   return normalizeReactions(raw);
 }
 
+function normalizeOriginValue(value) {
+  const trimmed = String(value || "").trim();
+  if (!trimmed) {
+    return "";
+  }
+
+  try {
+    return new URL(trimmed).origin;
+  } catch {
+    return trimmed.replace(/\/+$/, "");
+  }
+}
+
 function parseAllowedOrigins(env) {
   const raw = String(env?.ALLOWED_ORIGINS || env?.ALLOWED_ORIGIN || "")
     .split(",")
-    .map((origin) => origin.trim())
+    .map((origin) => normalizeOriginValue(origin))
     .filter(Boolean);
 
   return raw.length ? raw : DEFAULT_ALLOWED_ORIGINS;
 }
 
 function isAllowedOrigin(origin, env) {
-  if (!origin) {
+  const normalizedOrigin = normalizeOriginValue(origin);
+  if (!normalizedOrigin) {
     return false;
   }
 
-  return parseAllowedOrigins(env).includes(origin);
+  return parseAllowedOrigins(env).includes(normalizedOrigin);
 }
 
 function isDiscordAppPath(pathname) {

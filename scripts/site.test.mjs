@@ -30,6 +30,10 @@ function createDocument() {
   return document;
 }
 
+function flushAsyncUi() {
+  return new Promise((resolve) => setTimeout(resolve, 0));
+}
+
 test("site app renders config-driven profile content and live data", async () => {
   const documentRef = createDocument();
   const intervals = [];
@@ -163,6 +167,62 @@ test("site app falls back cleanly when Discord presence cannot be loaded", async
     documentRef.getElementById("activitySubtitle").textContent,
     UI_TEXT.activityDisconnectedSubtitle,
   );
+
+  app.destroy();
+});
+
+test("site app shows a cooldown message when reactions are rate limited", async () => {
+  const documentRef = createDocument();
+  const fetchImpl = async (input, init = {}) => {
+    const url = String(input);
+    const method = String(init?.method || "GET").toUpperCase();
+
+    if (url.endsWith("/views")) {
+      return Response.json({ count: 12 });
+    }
+
+    if (url.endsWith("/reactions") && method === "GET") {
+      return Response.json({ counts: { heart: 2 } });
+    }
+
+    if (url.endsWith("/reactions") && method === "POST") {
+      return Response.json(
+        {
+          error: "Too many reactions. Try again shortly.",
+          retryAfterMs: 2200,
+        },
+        { status: 429 },
+      );
+    }
+
+    if (url.includes("api.lanyard.rest")) {
+      throw new Error("Lanyard offline");
+    }
+
+    throw new Error(`Unexpected fetch: ${url}`);
+  };
+
+  const app = createSiteApp({
+    documentRef,
+    fetchImpl,
+    setIntervalImpl() {
+      return 1;
+    },
+    clearIntervalImpl() {},
+    localStorageImpl: createStorage(),
+  });
+
+  await app.init();
+
+  documentRef.querySelector(".reaction-btn").click();
+  await flushAsyncUi();
+  await flushAsyncUi();
+
+  assert.equal(
+    documentRef.getElementById("reactionStatus").textContent,
+    "Please wait 3s before reacting again.",
+  );
+  assert.equal(documentRef.querySelector(".reaction-count").textContent, "2");
 
   app.destroy();
 });

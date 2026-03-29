@@ -293,6 +293,15 @@ export function createPresenceController({
   }
 
   function stopProgress() {
+    if (
+      !elements.timeline ||
+      !elements.progressFill ||
+      !elements.currentTime ||
+      !elements.totalTime
+    ) {
+      return;
+    }
+
     progressState = null;
     if (progressTimer) {
       clearIntervalImpl(progressTimer);
