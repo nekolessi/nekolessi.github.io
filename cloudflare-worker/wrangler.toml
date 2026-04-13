@@ -4,6 +4,7 @@ compatibility_date = "2026-03-13"
 
 [vars]
 ALLOWED_ORIGINS = "https://nekolessi.github.io"
+VIEW_MIN_INTERVAL_MS = "120000"
 REACTION_MIN_INTERVAL_MS = "10000"
 
 [[durable_objects.bindings]]

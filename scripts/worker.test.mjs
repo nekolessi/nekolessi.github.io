@@ -57,6 +57,7 @@ class DurableObjectNamespaceStub {
 function createEnv(overrides = {}) {
   return {
     ALLOWED_ORIGINS: "https://nekolessi.github.io",
+    VIEW_MIN_INTERVAL_MS: "120000",
     REACTION_MIN_INTERVAL_MS: "10000",
     ADMIN_API_TOKEN: "super-secret-token",
     PROFILE_COUNTER: new DurableObjectNamespaceStub(
@@ -72,7 +73,10 @@ async function readJson(response) {
 
 test("views increment through the Durable Object and return CORS headers", async () => {
   const env = createEnv();
-  const requestHeaders = { Origin: "https://nekolessi.github.io" };
+  const requestHeaders = {
+    Origin: "https://nekolessi.github.io",
+    "CF-Connecting-IP": "203.0.113.1",
+  };
 
   const firstResponse = await worker.fetch(
     new Request("https://worker.example/views", { headers: requestHeaders }),
@@ -86,11 +90,41 @@ test("views increment through the Durable Object and return CORS headers", async
   assert.deepEqual(await readJson(firstResponse), { count: 1 });
 
   const secondResponse = await worker.fetch(
-    new Request("https://worker.example/views", { headers: requestHeaders }),
+    new Request("https://worker.example/views", {
+      headers: {
+        ...requestHeaders,
+        "CF-Connecting-IP": "203.0.113.2",
+      },
+    }),
     env,
   );
   assert.equal(secondResponse.status, 200);
   assert.deepEqual(await readJson(secondResponse), { count: 2 });
+});
+
+test("views do not increment repeatedly within the same IP cooldown window", async () => {
+  const env = createEnv();
+  const requestHeaders = {
+    Origin: "https://nekolessi.github.io",
+    "CF-Connecting-IP": "198.51.100.24",
+  };
+
+  const firstResponse = await worker.fetch(
+    new Request("https://worker.example/views", { headers: requestHeaders }),
+    env,
+  );
+  assert.equal(firstResponse.status, 200);
+  assert.deepEqual(await readJson(firstResponse), { count: 1 });
+
+  const secondResponse = await worker.fetch(
+    new Request("https://worker.example/views", { headers: requestHeaders }),
+    env,
+  );
+  assert.equal(secondResponse.status, 200);
+  const secondPayload = await readJson(secondResponse);
+  assert.equal(secondPayload.count, 1);
+  assert.equal(secondPayload.cooldownActive, true);
+  assert.match(`${secondPayload.retryAfterMs}`, /^\d+$/);
 });
 
 test("views reject requests from unapproved origins", async () => {
@@ -114,7 +148,10 @@ test("views allow configured origins even when env values include trailing slash
 
   const response = await worker.fetch(
     new Request("https://worker.example/views", {
-      headers: { Origin: "https://cute.example" },
+      headers: {
+        Origin: "https://cute.example",
+        "CF-Connecting-IP": "203.0.113.7",
+      },
     }),
     env,
   );
@@ -136,13 +173,19 @@ test("admin views can read and reset the counter with a bearer token", async () 
 
   await worker.fetch(
     new Request("https://worker.example/views", {
-      headers: { Origin: "https://nekolessi.github.io" },
+      headers: {
+        Origin: "https://nekolessi.github.io",
+        "CF-Connecting-IP": "203.0.113.10",
+      },
     }),
     env,
   );
   await worker.fetch(
     new Request("https://worker.example/views", {
-      headers: { Origin: "https://nekolessi.github.io" },
+      headers: {
+        Origin: "https://nekolessi.github.io",
+        "CF-Connecting-IP": "203.0.113.11",
+      },
     }),
     env,
   );

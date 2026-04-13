@@ -163,6 +163,7 @@ npx wrangler whoami
 2. Review `cloudflare-worker/wrangler.toml`:
 
 - set `ALLOWED_ORIGINS` to your site origin if you use a custom domain
+- adjust `VIEW_MIN_INTERVAL_MS` if you want a looser or stricter per-IP page view cooldown
 - adjust `REACTION_MIN_INTERVAL_MS` if you want a looser or stricter reaction cooldown
 - set an `ADMIN_API_TOKEN` secret if you want to read or reset the view counter safely
 
@@ -191,6 +192,7 @@ Important behavior:
 
 - page views and reactions are stored through a Durable Object so concurrent requests do not lose counts
 - view increments require an allowed site origin
+- page views are rate-limited per client IP, so repeated refreshes inside the cooldown window return the current count without incrementing it
 - reaction posts require an allowed site origin and are rate-limited per client IP
 - admin counter reads/resets require a bearer token from `ADMIN_API_TOKEN`
 - Discord app icon lookups are proxied through the worker so the site does not need to rely on `allorigins`
@@ -203,6 +205,12 @@ curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers
 curl.exe -i https://your-worker.workers.dev/reactions
 curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/discord-app/1445976703066443846
 ```
+
+The default page view cooldown is 2 minutes per IP:
+
+- set `VIEW_MIN_INTERVAL_MS = "120000"` to keep the current behavior
+- lower it if you want refreshes to count again sooner
+- raise it if you want stricter spam resistance
 
 To read or reset the stored view count:
 

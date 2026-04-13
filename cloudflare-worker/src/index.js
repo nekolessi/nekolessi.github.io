@@ -2,9 +2,11 @@ const COUNTER_OBJECT_NAME = "profile-counter";
 const COUNTER_KEY = "profile_views_total";
 const COUNTER_INIT = 0;
 const REACTIONS_KEY = "profile_reactions_counts";
+const VIEW_RATE_LIMIT_PREFIX = "view_rate_limit:";
 const REACTION_RATE_LIMIT_PREFIX = "reaction_rate_limit:";
 const REACTION_IDS = ["heart"];
 const DEFAULT_ALLOWED_ORIGINS = ["https://nekolessi.github.io"];
+const DEFAULT_VIEW_MIN_INTERVAL_MS = 120_000;
 const DEFAULT_REACTION_MIN_INTERVAL_MS = 10_000;
 const DISCORD_APP_ROUTE_PREFIX = "/discord-app/";
 const ADMIN_VIEWS_PATH = "/admin/views";
@@ -223,6 +225,13 @@ function getReactionMinIntervalMs(env) {
   );
 }
 
+function getViewMinIntervalMs(env) {
+  return parsePositiveInteger(
+    env?.VIEW_MIN_INTERVAL_MS,
+    DEFAULT_VIEW_MIN_INTERVAL_MS,
+  );
+}
+
 function createCounterStub(env) {
   if (!env?.PROFILE_COUNTER) {
     return null;
@@ -245,6 +254,7 @@ function createDurableObjectRequest(request, pathname, env, bodyText) {
   }
 
   headers.set("X-Reaction-Min-Interval-Ms", `${getReactionMinIntervalMs(env)}`);
+  headers.set("X-View-Min-Interval-Ms", `${getViewMinIntervalMs(env)}`);
 
   return new Request(`https://profile-counter${pathname}`, {
     method: request.method,
@@ -269,9 +279,35 @@ export class ProfileCounterDurableObject {
       const currentRaw = await this.state.storage.get(COUNTER_KEY);
       const current =
         Number.parseInt(currentRaw ?? `${COUNTER_INIT}`, 10) || COUNTER_INIT;
+      const clientIp = request.headers.get("X-Client-IP") || "";
+      const minIntervalMs = parsePositiveInteger(
+        request.headers.get("X-View-Min-Interval-Ms"),
+        DEFAULT_VIEW_MIN_INTERVAL_MS,
+      );
+      const rateKey = clientIp ? `${VIEW_RATE_LIMIT_PREFIX}${clientIp}` : "";
+      const now = Date.now();
+
+      if (rateKey) {
+        const lastViewAt = parsePositiveInteger(
+          await this.state.storage.get(rateKey),
+          0,
+        );
+
+        if (lastViewAt && now - lastViewAt < minIntervalMs) {
+          return jsonResponse({
+            count: current,
+            cooldownActive: true,
+            retryAfterMs: minIntervalMs - (now - lastViewAt),
+          });
+        }
+      }
+
       const next = current + 1;
 
       await this.state.storage.put(COUNTER_KEY, `${next}`);
+      if (rateKey) {
+        await this.state.storage.put(rateKey, `${now}`);
+      }
       return jsonResponse({ count: next });
     }
 
