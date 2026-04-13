@@ -127,6 +127,30 @@ test("views do not increment repeatedly within the same IP cooldown window", asy
   assert.match(`${secondPayload.retryAfterMs}`, /^\d+$/);
 });
 
+test("views still cooldown when IP headers are unavailable but user agent matches", async () => {
+  const env = createEnv();
+  const requestHeaders = {
+    Origin: "https://nekolessi.github.io",
+    "User-Agent": "CooldownSmokeTest/1.0",
+  };
+
+  const firstResponse = await worker.fetch(
+    new Request("https://worker.example/views", { headers: requestHeaders }),
+    env,
+  );
+  assert.equal(firstResponse.status, 200);
+  assert.deepEqual(await readJson(firstResponse), { count: 1 });
+
+  const secondResponse = await worker.fetch(
+    new Request("https://worker.example/views", { headers: requestHeaders }),
+    env,
+  );
+  assert.equal(secondResponse.status, 200);
+  const secondPayload = await readJson(secondResponse);
+  assert.equal(secondPayload.count, 1);
+  assert.equal(secondPayload.cooldownActive, true);
+});
+
 test("views reject requests from unapproved origins", async () => {
   const env = createEnv();
 

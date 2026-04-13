@@ -210,7 +210,17 @@ function getClientIp(request) {
     request.headers.get("CF-Connecting-IP") ||
     request.headers.get("X-Forwarded-For") ||
     "";
-  return headerValue.split(",")[0].trim();
+  const ip = headerValue.split(",")[0].trim();
+  if (ip) {
+    return ip;
+  }
+
+  const userAgent = String(request.headers.get("User-Agent") || "").trim();
+  if (userAgent) {
+    return `ua:${encodeURIComponent(userAgent)}`;
+  }
+
+  return "";
 }
 
 function parsePositiveInteger(value, fallback) {
