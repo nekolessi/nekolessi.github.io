@@ -7,10 +7,11 @@ const REACTION_IDS = ["heart"];
 const DEFAULT_ALLOWED_ORIGINS = ["https://nekolessi.github.io"];
 const DEFAULT_REACTION_MIN_INTERVAL_MS = 10_000;
 const DISCORD_APP_ROUTE_PREFIX = "/discord-app/";
+const ADMIN_VIEWS_PATH = "/admin/views";
 const DISCORD_RPC_BASE = "https://discord.com/api/v10/oauth2/applications/";
 const CORS_HEADERS = {
   "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-  "Access-Control-Allow-Headers": "Content-Type",
+  "Access-Control-Allow-Headers": "Content-Type, Authorization",
 };
 const JSON_HEADERS = {
   "Content-Type": "application/json; charset=utf-8",
@@ -129,8 +130,28 @@ function isKnownPath(pathname) {
   return (
     pathname === "/views" ||
     pathname === "/reactions" ||
+    pathname === ADMIN_VIEWS_PATH ||
     isDiscordAppPath(pathname)
   );
+}
+
+function getAdminToken(env) {
+  return String(env?.ADMIN_API_TOKEN || "").trim();
+}
+
+function isAuthorizedAdminRequest(request, env) {
+  const expectedToken = getAdminToken(env);
+  if (!expectedToken) {
+    return false;
+  }
+
+  const authorization = String(request.headers.get("Authorization") || "");
+  const match = authorization.match(/^Bearer\s+(.+)$/i);
+  if (!match) {
+    return false;
+  }
+
+  return match[1].trim() === expectedToken;
 }
 
 function parseDiscordApplicationId(pathname) {
@@ -254,6 +275,34 @@ export class ProfileCounterDurableObject {
       return jsonResponse({ count: next });
     }
 
+    if (url.pathname === ADMIN_VIEWS_PATH) {
+      if (request.method === "GET") {
+        const currentRaw = await this.state.storage.get(COUNTER_KEY);
+        const current =
+          Number.parseInt(currentRaw ?? `${COUNTER_INIT}`, 10) || COUNTER_INIT;
+        return jsonResponse({ count: current });
+      }
+
+      if (request.method === "POST") {
+        let payload;
+        try {
+          payload = await request.json();
+        } catch {
+          return jsonResponse({ error: "Invalid JSON payload" }, 400);
+        }
+
+        const next = Number.parseInt(payload?.count, 10);
+        if (!Number.isFinite(next) || next < 0) {
+          return jsonResponse({ error: "Invalid count" }, 400);
+        }
+
+        await this.state.storage.put(COUNTER_KEY, `${next}`);
+        return jsonResponse({ count: next });
+      }
+
+      return jsonResponse({ error: "Method not allowed" }, 405);
+    }
+
     if (url.pathname === "/reactions") {
       if (request.method === "GET") {
         const raw = await this.state.storage.get(REACTIONS_KEY);
@@ -353,6 +402,24 @@ export default {
         request,
         env,
       );
+    }
+
+    if (url.pathname === ADMIN_VIEWS_PATH) {
+      if (!getAdminToken(env)) {
+        return mergeCorsHeaders(
+          jsonResponse({ error: "Admin API not configured" }, 503),
+          request,
+          env,
+        );
+      }
+
+      if (!isAuthorizedAdminRequest(request, env)) {
+        return mergeCorsHeaders(
+          jsonResponse({ error: "Unauthorized" }, 401),
+          request,
+          env,
+        );
+      }
     }
 
     if (isDiscordAppPath(url.pathname)) {

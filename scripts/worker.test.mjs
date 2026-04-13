@@ -58,6 +58,7 @@ function createEnv(overrides = {}) {
   return {
     ALLOWED_ORIGINS: "https://nekolessi.github.io",
     REACTION_MIN_INTERVAL_MS: "10000",
+    ADMIN_API_TOKEN: "super-secret-token",
     PROFILE_COUNTER: new DurableObjectNamespaceStub(
       () => new ProfileCounterDurableObject(new MemoryDurableObjectState()),
     ),
@@ -124,6 +125,85 @@ test("views allow configured origins even when env values include trailing slash
     "https://cute.example",
   );
   assert.deepEqual(await readJson(response), { count: 1 });
+});
+
+test("admin views can read and reset the counter with a bearer token", async () => {
+  const env = createEnv();
+  const adminHeaders = {
+    Authorization: `Bearer ${env.ADMIN_API_TOKEN}`,
+    "Content-Type": "application/json",
+  };
+
+  await worker.fetch(
+    new Request("https://worker.example/views", {
+      headers: { Origin: "https://nekolessi.github.io" },
+    }),
+    env,
+  );
+  await worker.fetch(
+    new Request("https://worker.example/views", {
+      headers: { Origin: "https://nekolessi.github.io" },
+    }),
+    env,
+  );
+
+  const readResponse = await worker.fetch(
+    new Request("https://worker.example/admin/views", {
+      headers: adminHeaders,
+    }),
+    env,
+  );
+  assert.equal(readResponse.status, 200);
+  assert.deepEqual(await readJson(readResponse), { count: 2 });
+
+  const resetResponse = await worker.fetch(
+    new Request("https://worker.example/admin/views", {
+      method: "POST",
+      headers: adminHeaders,
+      body: JSON.stringify({ count: 300 }),
+    }),
+    env,
+  );
+  assert.equal(resetResponse.status, 200);
+  assert.deepEqual(await readJson(resetResponse), { count: 300 });
+
+  const confirmResponse = await worker.fetch(
+    new Request("https://worker.example/admin/views", {
+      headers: adminHeaders,
+    }),
+    env,
+  );
+  assert.equal(confirmResponse.status, 200);
+  assert.deepEqual(await readJson(confirmResponse), { count: 300 });
+});
+
+test("admin views reject missing or invalid tokens", async () => {
+  const env = createEnv();
+
+  const unauthorizedResponse = await worker.fetch(
+    new Request("https://worker.example/admin/views"),
+    env,
+  );
+  assert.equal(unauthorizedResponse.status, 401);
+  assert.deepEqual(await readJson(unauthorizedResponse), {
+    error: "Unauthorized",
+  });
+
+  const invalidCountResponse = await worker.fetch(
+    new Request("https://worker.example/admin/views", {
+      method: "POST",
+      headers: {
+        Authorization: `Bearer ${env.ADMIN_API_TOKEN}`,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ count: -1 }),
+    }),
+    env,
+  );
+  assert.equal(invalidCountResponse.status, 400);
+  assert.deepEqual(await readJson(invalidCountResponse), {
+    error: "Invalid count",
+  });
 });
 
 test("reaction posts require an approved origin and are rate limited per IP", async () => {

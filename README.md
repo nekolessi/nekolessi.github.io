@@ -23,7 +23,7 @@ A purrfectly cute catgirl profile page for GitHub Pages, with live Discord statu
 - `scripts/site.test.mjs`: browser-side DOM behavior tests
 - `scripts/worker.test.mjs`: worker behavior tests
 - `images/`: local assets like `background.jpg` and `profile.png`
-- `cloudflare-worker/src/index.js`: `/views`, `/reactions`, and `/discord-app/:id` APIs
+- `cloudflare-worker/src/index.js`: `/views`, `/reactions`, `/admin/views`, and `/discord-app/:id` APIs
 
 ## Verify Before You Push 🧁
 
@@ -164,12 +164,19 @@ npx wrangler whoami
 
 - set `ALLOWED_ORIGINS` to your site origin if you use a custom domain
 - adjust `REACTION_MIN_INTERVAL_MS` if you want a looser or stricter reaction cooldown
+- set an `ADMIN_API_TOKEN` secret if you want to read or reset the view counter safely
 
 3. Deploy:
 
 ```powershell
 cd cloudflare-worker
 npx wrangler deploy
+```
+
+If you want admin reset access, set the secret before or after deploy:
+
+```powershell
+npx wrangler secret put ADMIN_API_TOKEN
 ```
 
 4. Set the worker URL in `src/config.js`:
@@ -185,6 +192,7 @@ Important behavior:
 - page views and reactions are stored through a Durable Object so concurrent requests do not lose counts
 - view increments require an allowed site origin
 - reaction posts require an allowed site origin and are rate-limited per client IP
+- admin counter reads/resets require a bearer token from `ADMIN_API_TOKEN`
 - Discord app icon lookups are proxied through the worker so the site does not need to rely on `allorigins`
 - missing Durable Object bindings return a clear JSON error
 
@@ -195,6 +203,15 @@ curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers
 curl.exe -i https://your-worker.workers.dev/reactions
 curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/discord-app/1445976703066443846
 ```
+
+To read or reset the stored view count:
+
+```powershell
+curl.exe -i -H "Authorization: Bearer YOUR_ADMIN_API_TOKEN" https://your-worker.workers.dev/admin/views
+curl.exe -i -X POST -H "Authorization: Bearer YOUR_ADMIN_API_TOKEN" -H "Content-Type: application/json" https://your-worker.workers.dev/admin/views -d "{\"count\":299}"
+```
+
+Set the counter to `299` if you want the next real page load to show about `300`, because `/views` increments before it returns the count.
 
 ## Troubleshooting 🐾
 
