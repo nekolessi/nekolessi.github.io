@@ -76,12 +76,12 @@ export const PROFILE = {
     "I'M SHY, DUMB, A LITTLE NEEDY, AND A TINY BIT BRATTY~ SO PLS BE NICE TO ME OR I'LL POUT AND MAYBE CRY A LITTLE...",
   ],
   links: [
-    {
+    /**{
       label: "Oshi Card",
       simpleIcon: "premid",
       iconColor: "CC5CC1",
       href: "oshi.to/nekolessi",
-    },
+    },*/
     {
       label: "Email",
       simpleIcon: "gmail",
