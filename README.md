@@ -1,51 +1,52 @@
-# Nekolessi Profile ♡
+# nekolessi dot github dot io ♡
 
-A purrfectly cute catgirl profile page for GitHub Pages, with live Discord status, pretty social links, and a tiny Cloudflare-powered reaction counter tucked underneath it all. 🎀
+> a very serious website made by a very serious girl who definitely knew what she was doing the whole time
 
-## What This Little Site Has ✨
+this is my little catgirl profile page!! it has live discord stuff, links, reactions, a page counter, and several technologies i introduced to each other and then begged to get along. somehow it works. mostly 🎀
 
-- a cute hero card with social links
-- live Discord status and activity powered by Lanyard
-- Cloudflare Worker-backed page views and reactions
-- easy profile text + link editing from `src/config.js`
+[look at her live](https://nekolessi.github.io/) · [look at the code if u must](https://github.com/nekolessi/nekolessi.github.io)
 
-## Project Map 🗺️
+## whats in here
 
-- `index.html`: page markup and metadata
-- `styles.css`: layout, visuals, and responsive styling
-- `script.js`: browser entrypoint that boots the site app
-- `src/config.js`: profile content and site settings
-- `src/app.js`: app bootstrap and shared page wiring
-- `src/presence.js`: Discord/Lanyard presence rendering
-- `src/reactions.js`: reaction UI and counter behavior
-- `src/helpers.js`: shared helpers for URLs, timing, and formatting
-- `scripts/check.mjs`: static site and config validation
-- `scripts/site.test.mjs`: browser-side DOM behavior tests
-- `scripts/worker.test.mjs`: worker behavior tests
-- `images/`: local assets like `background.jpg` and `profile.png`
-- `cloudflare-worker/src/index.js`: `/views`, `/reactions`, `/admin/views`, and `/discord-app/:id` APIs
+- a cute profile card with my links
+- live discord status/activity via [Lanyard](https://github.com/Phineas/lanyard)
+- page views + little reaction buttons powered by a Cloudflare Worker
+- everything important-ish lives in `src/config.js` so u dont have to go spelunking
+- responsive styling because apparently people own phones
+- hopes. dreams. javascript
 
-## Verify Before You Push 🧁
+## the file situation
 
-Use Node `>=20.19.0`.
+```text
+index.html                 the bones
+styles.css                 the outfit
+script.js                  presses the big start button
+src/config.js              words, links, ids, little settings, etc
+src/app.js                 wires the page together (emotionally unavailable)
+src/presence.js            discord/lanyard stuff
+src/reactions.js           the clicky heart situation
+src/helpers.js             tiny useful guys
+scripts/check.mjs          checks if i broke anything obvious
+scripts/site.test.mjs      tests the browser-y bits
+scripts/worker.test.mjs    tests the cloudy bits
+images/                    png containment zone
+cloudflare-worker/         views, reactions, admin api + discord app icons
+```
 
-Run the full check with:
+## running it without crying
 
-```powershell
+you need Node `>=20.19.0`.
+
+```bash
+npm install
 npm run verify
 ```
 
-That runs:
+`npm run verify` does validation, linting, formatting checks, site tests, and worker tests. if it passes then congrats the computer has forgiven u.
 
-- static site and config validation
-- ESLint
-- Prettier format check
-- browser-side DOM tests
-- worker behavior tests
+## changing the profile stuff
 
-## Quick Config In `src/config.js` 💖
-
-The main things you will probably want to customize are:
+open `src/config.js`. this is where most of the things you actually care about are hiding:
 
 - `APP_CONFIG.discordUserId`
 - `APP_CONFIG.heroProfileImageUrl`
@@ -58,15 +59,9 @@ The main things you will probably want to customize are:
 - `PROFILE.links`
 - `UI_TEXT`
 
-Helpful notes:
+if `heroProfileImageUrl` is empty it uses `images/profile.png`, which is very considerate of her. reaction and discord app-icon URLs are worked out from `viewCounterWorkerUrl`. `UI_TEXT` has all the little labels/fallback messages so u can change the vibe without touching the scary logic.
 
-- if `APP_CONFIG.heroProfileImageUrl` is empty, the site falls back to `images/profile.png`
-- the reactions endpoint is auto-derived from `APP_CONFIG.viewCounterWorkerUrl`
-- the Discord app icon endpoint is also auto-derived from `APP_CONFIG.viewCounterWorkerUrl`
-- social links use **Simple Icons only**
-- `UI_TEXT` holds section labels, fallback copy, and tiny status messages so you can retheme wording without digging through the logic
-
-### `PROFILE.links` shape
+### adding a link
 
 ```js
 {
@@ -77,13 +72,9 @@ Helpful notes:
 }
 ```
 
-Tips:
+`simpleIcon` is the slug from `cdn.simpleicons.org/<slug>`. colors are hex without the `#` because of reasons. for email links add `type: "email"` and it becomes a `mailto:` link automagically.
 
-- `simpleIcon` is the Simple Icons slug from `cdn.simpleicons.org/<slug>`
-- `iconColor` is a hex color without `#`
-- use `type: "email"` for email links so they become `mailto:`
-
-### `PROFILE` shape
+### the profile-shaped object
 
 ```js
 const PROFILE = {
@@ -100,7 +91,7 @@ const PROFILE = {
 };
 ```
 
-### `APP_CONFIG` shape
+### app config (danger drawer)
 
 ```js
 const APP_CONFIG = {
@@ -116,7 +107,7 @@ const APP_CONFIG = {
 };
 ```
 
-### `UI_TEXT` shape
+### changing the tiny words
 
 ```js
 const UI_TEXT = {
@@ -127,7 +118,7 @@ const UI_TEXT = {
 };
 ```
 
-### `PROFILE_REACTIONS` shape
+### adding reactions (free dopamine)
 
 ```js
 const PROFILE_REACTIONS = [
@@ -135,52 +126,48 @@ const PROFILE_REACTIONS = [
 ];
 ```
 
-Little notes:
+each reaction needs a stable `id`. `emoji` is what people mash and `label` is the accessible text/status copy. accessibility is cute actually.
 
-- each reaction needs a stable `id`
-- `emoji` is the button glyph shown in the UI
-- `label` is used for accessible text and status copy
+## putting her on github pages
 
-## Publish On GitHub Pages 🌷
+1. go to the repo's **Settings**
+2. click **Pages**
+3. choose **Deploy from a branch**
+4. pick `main` and `/ (root)`
+5. save and stare at the Actions tab until something happens
 
-1. Open repo `Settings`.
-2. Go to `Pages`.
-3. Choose `Deploy from a branch`.
-4. Set branch to `main` and folder to `/ (root)`.
-5. Save and wait for deployment.
+## cloudflare worker setup (ominous)
 
-## Cloudflare Worker Setup ☁️
+the worker lives in `cloudflare-worker/` and handles `/views`, `/reactions`, `/admin/views`, and `/discord-app/:id`.
 
-Worker files live in `cloudflare-worker/`.
+first, log in:
 
-1. Login:
-
-```powershell
+```bash
 npx wrangler login
 npx wrangler whoami
 ```
 
-2. Review `cloudflare-worker/wrangler.toml`:
+then check `cloudflare-worker/wrangler.toml`:
 
 - set `ALLOWED_ORIGINS` to your site origin if you use a custom domain
-- adjust `VIEW_MIN_INTERVAL_MS` if you want a looser or stricter per-IP page view cooldown
-- adjust `REACTION_MIN_INTERVAL_MS` if you want a looser or stricter reaction cooldown
-- set an `ADMIN_API_TOKEN` secret if you want to read or reset the view counter safely
+- change `VIEW_MIN_INTERVAL_MS` if you want a different per-IP view cooldown
+- change `REACTION_MIN_INTERVAL_MS` for the reaction cooldown
+- add an `ADMIN_API_TOKEN` secret if you want to read/reset the counter without letting every random creature on the internet do it too
 
-3. Deploy:
+deploy the beast:
 
-```powershell
+```bash
 cd cloudflare-worker
 npx wrangler deploy
 ```
 
-If you want admin reset access, set the secret before or after deploy:
+for admin access:
 
-```powershell
+```bash
 npx wrangler secret put ADMIN_API_TOKEN
 ```
 
-4. Set the worker URL in `src/config.js`:
+and put the resulting URL in `src/config.js`:
 
 ```js
 const APP_CONFIG = {
@@ -188,17 +175,16 @@ const APP_CONFIG = {
 };
 ```
 
-Important behavior:
+important things i learned against my will:
 
-- page views and reactions are stored through a Durable Object so concurrent requests do not lose counts
-- view increments require an allowed site origin
-- page views are rate-limited per client IP, so repeated refreshes inside the cooldown window return the current count without incrementing it
-- reaction posts require an allowed site origin and are rate-limited per client IP
-- admin counter reads/resets require a bearer token from `ADMIN_API_TOKEN`
-- Discord app icon lookups are proxied through the worker so the site does not need to rely on `allorigins`
-- missing Durable Object bindings return a clear JSON error
+- views and reactions use a Durable Object so simultaneous requests dont eat each other
+- view increments and reaction posts need an allowed origin
+- both are rate-limited by client IP
+- admin reads/resets need the bearer token from `ADMIN_API_TOKEN`
+- discord app icons go through the worker instead of relying on `allorigins`
+- a missing Durable Object binding returns an actual JSON error instead of silently evaporating
 
-After deploy, these are nice little smoke checks:
+### poke it with a stick
 
 ```powershell
 curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/views
@@ -206,34 +192,37 @@ curl.exe -i https://your-worker.workers.dev/reactions
 curl.exe -i -H "Origin: https://nekolessi.github.io" https://your-worker.workers.dev/discord-app/1445976703066443846
 ```
 
-The default page view cooldown is 2 minutes per IP:
+the default view cooldown is 2 minutes per IP (`VIEW_MIN_INTERVAL_MS = "120000"`). lower it if refreshes should count sooner. raise it if u wish to become more powerful than the spammers.
 
-- set `VIEW_MIN_INTERVAL_MS = "120000"` to keep the current behavior
-- lower it if you want refreshes to count again sooner
-- raise it if you want stricter spam resistance
-
-To read or reset the stored view count:
+read or reset the stored view count:
 
 ```powershell
 curl.exe -i -H "Authorization: Bearer YOUR_ADMIN_API_TOKEN" https://your-worker.workers.dev/admin/views
 curl.exe -i -X POST -H "Authorization: Bearer YOUR_ADMIN_API_TOKEN" -H "Content-Type: application/json" https://your-worker.workers.dev/admin/views -d "{\"count\":299}"
 ```
 
-Set the counter to `299` if you want the next real page load to show about `300`, because `/views` increments before it returns the count.
+setting it to `299` makes the next real page load show about `300` because `/views` increments before returning. yes this is slightly haunted.
 
-## Troubleshooting 🐾
+## she isnt working help
 
-### Counter is blank
+### the counter is blank
 
-- check that `APP_CONFIG.viewCounterWorkerUrl` ends with `/views`
-- check that the worker is deployed and the `PROFILE_COUNTER` Durable Object binding exists
-- check that `ALLOWED_ORIGINS` includes your site origin
+- make sure `APP_CONFIG.viewCounterWorkerUrl` ends in `/views`
+- make sure the worker is deployed and the `PROFILE_COUNTER` Durable Object binding exists
+- make sure your origin is in `ALLOWED_ORIGINS`
+- whisper “please” near the router (optional)
 
-### Discord status is not updating
+### discord status is lying / frozen
 
 - check `APP_CONFIG.discordUserId`
-- confirm Lanyard can see that user
+- make sure Lanyard can see that user
+- discord may simply be having a moment. relatable
 
-### Styles are not updating
+### the css refuses to acknowledge my changes
 
-- hard refresh with `Ctrl+F5` after GitHub Pages finishes deploying
+wait for GitHub Pages to deploy, then hard refresh with `Ctrl+F5`. browsers love keeping an old stylesheet around like an emotional support ex.
+
+## ok thats all
+
+made with pink pixels, avoidable complexity, and the unearned confidence of someone typing `git push` at 2am ♡
+
