@@ -225,4 +225,3 @@ wait for GitHub Pages to deploy, then hard refresh with `Ctrl+F5`. browsers love
 ## ok thats all
 
 made with pink pixels, avoidable complexity, and the unearned confidence of someone typing `git push` at 2am ♡
-
