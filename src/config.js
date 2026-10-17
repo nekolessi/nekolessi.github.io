@@ -89,12 +89,14 @@ export const PROFILE = {
       href: "nekolessi.july916@passinbox.com",
       type: "email",
     },
+    /*
     {
       label: "Twitch",
       simpleIcon: "twitch",
       iconColor: "9146FF",
       href: "twitch.tv/nekolessi",
     },
+    */
     {
       label: "Spotify",
       simpleIcon: "spotify",
@@ -107,12 +109,14 @@ export const PROFILE = {
       iconColor: "26A5E4",
       href: "t.me/nekolessi",
     },
+    /*
     {
       label: "Ko-fi",
       simpleIcon: "kofi",
       iconColor: "72A5F2",
       href: "ko-fi.com/nekolessi",
     },
+    */
     {
       label: "Throne",
       simpleIcon: "ilovepdf",
