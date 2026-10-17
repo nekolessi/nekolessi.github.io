@@ -76,6 +76,12 @@ export const PROFILE = {
     "I'M SHY, AWKWARD, DUMB, LEWD, AND COULD PROBABLY BE FIXED WITH ENOUGH HEADPATS...",
   ],
   links: [
+    {
+      label: "Guestbook",
+      simpleIcon: "gleam",
+      iconColor: "FF9ACB",
+      href: "https://nekolessi.straw.page/",
+    },
     /**{
       label: "Oshi Card",
       simpleIcon: "premid",
