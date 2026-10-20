@@ -43,9 +43,9 @@ export const APP_CONFIG = {
 export const UI_TEXT = {
   statusEyebrow: "DISCORD STATUS",
   activityEyebrow: "NOW PLAYING / LISTENING",
-  reactionsTitle: "click if you love catgirls :3",
+  reactionsTitle: "click if you love catgirls",
   profileViewsLoading: "Profile views loading",
-  reactionSaved: "nya I love you more!! mwah",
+  reactionSaved: "I love you more!! mwah",
   reactionsOffline: "Reactions offline right now.",
   reactionSaveFailed: "Could not save reaction right now.",
   statusUserIdMissing:
