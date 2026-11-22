@@ -290,7 +290,9 @@ test("reaction posts require an approved origin and are rate limited per IP", as
     env,
   );
   assert.equal(firstResponse.status, 200);
-  assert.deepEqual(await readJson(firstResponse), { counts: { heart: 1 } });
+  assert.deepEqual(await readJson(firstResponse), {
+    counts: { heart: 1, pat: 0, sparkle: 0, coffee: 0 },
+  });
 
   const rateLimitedResponse = await worker.fetch(
     new Request("https://worker.example/reactions", {
@@ -347,7 +349,9 @@ test("reaction counts can still be read after a successful post", async () => {
     env,
   );
   assert.equal(response.status, 200);
-  assert.deepEqual(await readJson(response), { counts: { heart: 1 } });
+  assert.deepEqual(await readJson(response), {
+    counts: { heart: 1, pat: 0, sparkle: 0, coffee: 0 },
+  });
 });
 
 test("discord app lookup proxies Discord metadata through the worker", async () => {
