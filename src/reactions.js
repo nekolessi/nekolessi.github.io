@@ -208,7 +208,8 @@ export function createReactionsController({
           if (response.status === 429) {
             errorMessage = formatRateLimitMessage(payload?.retryAfterMs);
             const retryMs =
-              Number.parseInt(payload?.retryAfterMs, 10) || REACTION_COOLDOWN_MS;
+              Number.parseInt(payload?.retryAfterMs, 10) ||
+              REACTION_COOLDOWN_MS;
             storeLastReactionTime(
               localStorageImpl,
               Date.now() - (REACTION_COOLDOWN_MS - retryMs),
