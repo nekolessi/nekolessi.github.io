@@ -490,7 +490,7 @@ h1 {
   margin: 0;
   border-radius: var(--radius-avatar);
   overflow: visible;
-  background: #ffffff;
+  background: var(--accent);
   box-shadow: 0 0 24px rgba(180, 130, 200, 0.3);
   z-index: 3;
 }
@@ -537,7 +537,7 @@ h1 {
   height: 100%;
   padding: 2px;
   border-radius: inherit;
-  background: #ffffff;
+  background: var(--accent);
   object-fit: cover;
 }
 
@@ -669,7 +669,7 @@ h1 {
   border-radius: var(--radius-avatar);
   flex-shrink: 0;
   overflow: visible;
-  background: #ffffff;
+  background: var(--accent);
   box-shadow: 0 0 24px rgba(180, 130, 200, 0.3);
 }
 
@@ -717,7 +717,7 @@ h1 {
   padding: 2px;
   border: none;
   object-fit: cover;
-  background: #ffffff;
+  background: var(--accent);
 }
 
 .status-avatar-wrap {
@@ -900,7 +900,7 @@ h1 {
   align-items: center;
   justify-content: center;
   border-radius: 50%;
-  border: 3px solid #ffffff;
+  border: 3px solid var(--accent);
   box-shadow: 0 0 8px rgba(0, 0, 0, 0.2);
   z-index: 3;
 }
@@ -922,7 +922,7 @@ h1 {
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background: #ffffff;
+  background: var(--accent);
   transform: translate(-2px, -2px);
 }
 
