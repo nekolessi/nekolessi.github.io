@@ -1,3 +1,27 @@
+@property --border-angle {
+  syntax: "<angle>";
+  inherits: false;
+  initial-value: 0deg;
+}
+
+@keyframes laser-spin {
+  to {
+    --border-angle: 360deg;
+  }
+}
+
+@keyframes avatar-glow-pulse {
+  0%,
+  100% {
+    opacity: 0.65;
+    transform: scale(0.98);
+  }
+  50% {
+    opacity: 0.95;
+    transform: scale(1.03);
+  }
+}
+
 :root {
   --bg-0: #08040f;
   --bg-1: #12071f;
@@ -109,6 +133,8 @@ body {
 }
 
 .card {
+  position: relative;
+  isolation: isolate;
   background:
     linear-gradient(120deg, rgba(38, 18, 57, 0.45), rgba(12, 7, 20, 0.28)),
     var(--card);
@@ -122,24 +148,19 @@ body {
   -webkit-backdrop-filter: blur(13px);
 }
 
-.hero {
-  padding: 30px 34px 16px;
-  position: relative;
-  isolation: isolate;
-  background: var(--card-surface);
-}
-
-.hero::before {
+.card::before {
   content: "";
   position: absolute;
   inset: -1px;
   border-radius: inherit;
-  padding: 1px;
-  background: linear-gradient(
-    120deg,
-    rgba(255, 84, 208, 0.5),
-    rgba(103, 230, 255, 0.3),
-    rgba(199, 116, 255, 0.5)
+  padding: 1.2px;
+  background: conic-gradient(
+    from var(--border-angle, 0deg),
+    transparent 0%,
+    rgba(255, 84, 208, 0.85) 12%,
+    rgba(103, 230, 255, 0.8) 24%,
+    transparent 36%,
+    transparent 100%
   );
   -webkit-mask:
     linear-gradient(#000 0 0) content-box,
@@ -150,7 +171,43 @@ body {
   -webkit-mask-composite: xor;
   mask-composite: exclude;
   pointer-events: none;
-  z-index: -1;
+  z-index: 1;
+  animation: laser-spin 8s linear infinite;
+  opacity: 0.9;
+  transition:
+    opacity 200ms ease,
+    filter 200ms ease;
+}
+
+.hero::before {
+  animation-duration: 9s;
+}
+
+.live-card::before {
+  animation-duration: 6.5s;
+  animation-delay: -2s;
+}
+
+.activity-card::before {
+  animation-duration: 7.2s;
+  animation-delay: -4s;
+}
+
+.live-card:hover::before {
+  opacity: 1;
+  filter: drop-shadow(0 0 6px rgba(255, 84, 208, 0.6));
+}
+
+.card > * {
+  position: relative;
+  z-index: 2;
+}
+
+.hero {
+  padding: 30px 34px 16px;
+  position: relative;
+  isolation: isolate;
+  background: var(--card-surface);
 }
 
 h1 {
@@ -366,6 +423,7 @@ h1 {
   overflow: visible;
   background: #140a23;
   box-shadow: 0 0 24px rgba(0, 0, 0, 0.35);
+  z-index: 3;
 }
 
 .hero-avatar::before {
@@ -374,13 +432,14 @@ h1 {
   inset: -2px;
   border-radius: inherit;
   background: conic-gradient(
-    from 0deg,
+    from var(--border-angle, 0deg),
     rgba(255, 84, 208, 0.95),
     rgba(199, 116, 255, 0.9),
     rgba(103, 230, 255, 0.92),
     rgba(255, 84, 208, 0.95)
   );
   z-index: 0;
+  animation: laser-spin 4s linear infinite;
 }
 
 .hero-avatar::after {
@@ -397,6 +456,7 @@ h1 {
   );
   filter: blur(6px);
   opacity: 0.85;
+  animation: avatar-glow-pulse 3s ease-in-out infinite;
 }
 
 .hero-avatar img {
@@ -521,13 +581,14 @@ h1 {
   inset: -2px;
   border-radius: inherit;
   background: conic-gradient(
-    from 0deg,
+    from var(--border-angle, 0deg),
     rgba(255, 84, 208, 0.95),
     rgba(199, 116, 255, 0.9),
     rgba(103, 230, 255, 0.92),
     rgba(255, 84, 208, 0.95)
   );
   z-index: 0;
+  animation: laser-spin 4s linear infinite;
 }
 
 .fancy-avatar-wrap::after {
@@ -544,6 +605,7 @@ h1 {
   );
   filter: blur(6px);
   opacity: 0.7;
+  animation: avatar-glow-pulse 3s ease-in-out infinite;
 }
 
 .status-avatar,
@@ -1084,7 +1146,12 @@ h1 {
   .socials a,
   .live-card,
   .reaction-btn,
-  .timeline.elapsed-only .bar-fill {
+  .timeline.elapsed-only .bar-fill,
+  .card::before,
+  .hero-avatar::before,
+  .fancy-avatar-wrap::before,
+  .hero-avatar::after,
+  .fancy-avatar-wrap::after {
     transition: none;
     animation: none;
   }
