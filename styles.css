@@ -1007,7 +1007,15 @@ h1 {
 
 .timeline.elapsed-only .bar-fill {
   width: 100%;
-  opacity: 0.9;
+  opacity: 0.92;
+  background: linear-gradient(
+    90deg,
+    var(--accent-hot) 0%,
+    var(--accent) 25%,
+    var(--accent-cool) 50%,
+    var(--accent) 75%,
+    var(--accent-hot) 100%
+  );
   background-size: 200% 100%;
   animation: elapsed-sheen 4.8s linear infinite;
 }
