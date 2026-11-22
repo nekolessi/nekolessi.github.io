@@ -274,12 +274,12 @@ h1 {
   background: var(--card-surface);
   color: #f4ebff;
   border-radius: 999px;
-  min-width: 84px;
-  padding: 6px 15px;
+  min-width: 0;
+  padding: 7px 14px;
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  gap: 6px;
+  gap: 7px;
   font-family: "Silkscreen", sans-serif;
   font-size: 0.7rem;
   line-height: 1;
@@ -320,10 +320,25 @@ h1 {
   font-size: 0.96rem;
 }
 
+.reaction-label {
+  font-family: "Silkscreen", sans-serif;
+  font-size: 0.62rem;
+  letter-spacing: 0.04em;
+  text-transform: lowercase;
+  color: #ebdcfc;
+  white-space: nowrap;
+}
+
 .reaction-count {
-  min-width: 1.35em;
+  min-width: 1.2em;
   text-align: center;
   font-variant-numeric: tabular-nums;
+  font-size: 0.62rem;
+  color: #ff9ee8;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 2px 7px;
+  border-radius: 999px;
+  margin-left: 2px;
 }
 
 .reactions-status {
@@ -969,9 +984,19 @@ h1 {
   }
 
   .reaction-btn {
-    min-width: 74px;
-    padding: 5px 12px;
+    min-width: 0;
+    padding: 5px 10px;
     font-size: 0.64rem;
+    gap: 5px;
+  }
+
+  .reaction-label {
+    font-size: 0.55rem;
+  }
+
+  .reaction-count {
+    font-size: 0.55rem;
+    padding: 1px 5px;
   }
 
   .reaction-emoji {

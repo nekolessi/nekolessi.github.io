@@ -112,11 +112,16 @@ export function createReactionsController({
       emoji.className = "reaction-emoji";
       emoji.textContent = REACTION_EMOJI_BY_ID[reaction.id] || reaction.emoji;
 
+      const label = elements.documentRef.createElement("span");
+      label.className = "reaction-label";
+      label.textContent = reaction.label;
+
       const count = elements.documentRef.createElement("span");
       count.className = "reaction-count";
       count.textContent = String(reactionCounts[reaction.id] ?? 0);
 
       button.appendChild(emoji);
+      button.appendChild(label);
       button.appendChild(count);
       button.addEventListener("click", () => {
         void submitReaction(reaction.id);
