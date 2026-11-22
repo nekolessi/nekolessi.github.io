@@ -27,8 +27,8 @@
   --bg-1: #150a24;
   --bg-2: #281242;
   --bg-photo: url("images/background.jpg");
-  --card: rgba(255, 255, 255, 0.12);
-  --card-edge: rgba(255, 182, 225, 0.45);
+  --card: rgba(255, 255, 255, 0.06);
+  --card-edge: rgba(255, 182, 225, 0.4);
   --text-main: #fff0f7;
   --text-soft: #d6bdec;
   --accent: #d8b4f8;
@@ -38,7 +38,7 @@
   --idle: #f0b232;
   --dnd: #f23f43;
   --offline: #7f8494;
-  --card-surface: linear-gradient(135deg, #ffffff22, #ffedf90d);
+  --card-surface: linear-gradient(135deg, #ffffff14, #ffedf905);
   --radius-card: 22px;
   --radius-avatar: 16px;
 }
@@ -138,8 +138,8 @@ body {
   border: 1px solid var(--card-edge);
   box-shadow:
     0 16px 48px rgba(0, 0, 0, 0.35),
-    inset 0 1px 0 rgba(255, 255, 255, 0.55),
-    inset 0 0 32px rgba(255, 182, 225, 0.1);
+    inset 0 1px 0 rgba(255, 255, 255, 0.45),
+    inset 0 0 32px rgba(255, 182, 225, 0.08);
   backdrop-filter: blur(14px);
   -webkit-backdrop-filter: blur(14px);
 }
@@ -273,14 +273,14 @@ h1 {
   justify-content: center;
   text-decoration: none;
   color: #fff0f7;
-  background: rgba(255, 255, 255, 0.14);
-  border: 1px solid rgba(255, 182, 225, 0.45);
+  background: rgba(20, 10, 30, 0.65);
+  border: 1px solid rgba(255, 182, 225, 0.5);
   border-radius: 12px;
   backdrop-filter: blur(8px);
   -webkit-backdrop-filter: blur(8px);
   box-shadow:
-    0 4px 14px rgba(0, 0, 0, 0.25),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    0 4px 14px rgba(0, 0, 0, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition:
     transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
     border-color 200ms ease,
@@ -290,12 +290,12 @@ h1 {
 
 .socials a:hover {
   transform: translateY(-3px) scale(1.08);
-  background: rgba(255, 255, 255, 0.32);
+  background: rgba(38, 18, 56, 0.85);
   border-color: var(--glow-color, rgba(255, 182, 225, 0.85));
   box-shadow:
-    0 8px 24px rgba(0, 0, 0, 0.35),
-    0 0 16px var(--glow-color, rgba(255, 182, 225, 0.45)),
-    inset 0 1px 0 rgba(255, 255, 255, 0.7);
+    0 8px 24px rgba(0, 0, 0, 0.5),
+    0 0 16px var(--glow-color, rgba(255, 182, 225, 0.55)),
+    inset 0 1px 0 rgba(255, 255, 255, 0.35);
 }
 
 .socials a:active {
@@ -391,8 +391,8 @@ h1 {
 
 .reaction-btn {
   appearance: none;
-  border: 1px solid rgba(255, 182, 225, 0.65);
-  background: rgba(255, 255, 255, 0.14);
+  border: 1px solid rgba(255, 182, 225, 0.55);
+  background: rgba(20, 10, 30, 0.65);
   color: #fff0f7;
   border-radius: 999px;
   min-width: 0;
@@ -408,8 +408,8 @@ h1 {
   backdrop-filter: blur(13px);
   -webkit-backdrop-filter: blur(13px);
   box-shadow:
-    0 3px 10px rgba(0, 0, 0, 0.2),
-    inset 0 1px 0 rgba(255, 255, 255, 0.5);
+    0 3px 10px rgba(0, 0, 0, 0.35),
+    inset 0 1px 0 rgba(255, 255, 255, 0.2);
   transition:
     transform 160ms ease,
     border-color 170ms ease,
@@ -419,11 +419,11 @@ h1 {
 
 .reaction-btn:hover {
   transform: translateY(-1px);
-  background: rgba(255, 255, 255, 0.32);
+  background: rgba(38, 18, 56, 0.85);
   border-color: rgba(255, 182, 225, 0.95);
   box-shadow:
-    0 8px 20px rgba(0, 0, 0, 0.3),
-    0 0 14px rgba(255, 182, 225, 0.4);
+    0 8px 20px rgba(0, 0, 0, 0.5),
+    0 0 14px rgba(255, 182, 225, 0.45);
 }
 
 .reaction-btn:focus-visible {
@@ -432,9 +432,9 @@ h1 {
 }
 
 .reaction-btn.active {
-  background: rgba(255, 255, 255, 0.38);
+  background: rgba(48, 22, 70, 0.9);
   border-color: #ffb6e1;
-  box-shadow: 0 0 14px rgba(255, 182, 225, 0.45);
+  box-shadow: 0 0 14px rgba(255, 182, 225, 0.55);
 }
 
 .reaction-btn:disabled {
@@ -461,7 +461,7 @@ h1 {
   font-variant-numeric: tabular-nums;
   font-size: 0.62rem;
   color: #ffb6e1;
-  background: rgba(255, 255, 255, 0.15);
+  background: rgba(255, 182, 225, 0.22);
   padding: 2px 7px;
   border-radius: 999px;
   margin-left: 2px;
@@ -624,12 +624,12 @@ h1 {
 
 .live-card:hover {
   transform: translateY(-3px) scale(1.012);
-  background: linear-gradient(135deg, #ffffff38, #ffedf91c);
+  background: linear-gradient(135deg, #ffffff20, #ffedf90d);
   border-color: rgba(255, 182, 225, 0.85);
   box-shadow:
     0 18px 46px rgba(0, 0, 0, 0.4),
     0 0 24px rgba(255, 182, 225, 0.45),
-    inset 0 1px 0 rgba(255, 255, 255, 0.8);
+    inset 0 1px 0 rgba(255, 255, 255, 0.6);
 }
 
 .live-card:active {
