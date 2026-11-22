@@ -15,7 +15,7 @@ export function initSparkleEffects(documentRef = document) {
   }
 
   const symbols = ["♡", "✧", "🌸", "✦", "✨", "💗"];
-  const colors = ["#ff7ad9", "#e2a9ff", "#7ce8ff", "#ffe17d", "#ffb4ea"];
+  const colors = ["#ffb6e1", "#ffffff", "#d8b4f8", "#ffe3f3", "#ffd1ea"];
 
   /**
    * @param {PointerEvent} event
