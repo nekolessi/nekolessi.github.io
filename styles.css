@@ -195,7 +195,7 @@ body {
 
 .live-card:hover::before {
   opacity: 1;
-  filter: drop-shadow(0 0 6px rgba(255, 84, 208, 0.6));
+  filter: drop-shadow(0 0 10px rgba(255, 84, 208, 0.75));
 }
 
 .card > * {
@@ -600,10 +600,14 @@ h1 {
 .live-card {
   text-decoration: none;
   color: inherit;
+  box-shadow:
+    0 16px 56px rgba(0, 0, 0, 0.52),
+    inset 0 1px 0 rgba(255, 255, 255, 0.08);
   transition:
-    transform 180ms ease,
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
     border-color 200ms ease,
-    box-shadow 220ms ease;
+    background 200ms ease,
+    box-shadow 200ms ease;
 }
 
 .live-card.is-disabled {
@@ -615,11 +619,38 @@ h1 {
 }
 
 .live-card:hover {
-  transform: translateY(-2px);
-  border-color: rgba(219, 184, 246, 0.46);
+  transform: translateY(-3px) scale(1.012);
+  background: rgba(44, 22, 68, 0.85);
+  border-color: rgba(255, 84, 208, 0.65);
   box-shadow:
-    0 16px 42px rgba(0, 0, 0, 0.5),
-    0 0 22px rgba(184, 152, 212, 0.2);
+    0 18px 46px rgba(0, 0, 0, 0.55),
+    0 0 24px rgba(255, 84, 208, 0.4),
+    inset 0 1px 0 rgba(255, 255, 255, 0.18);
+}
+
+.live-card:active {
+  transform: translateY(-1px) scale(0.995);
+}
+
+.live-card .status-avatar-wrap {
+  transition: transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1);
+}
+
+.live-card:hover .status-avatar-wrap {
+  transform: scale(1.05);
+}
+
+.live-card .external {
+  transition:
+    transform 200ms cubic-bezier(0.34, 1.56, 0.64, 1),
+    color 200ms ease,
+    text-shadow 200ms ease;
+}
+
+.live-card:hover .external {
+  transform: translate(3px, -3px) scale(1.1);
+  color: #fff;
+  text-shadow: 0 0 10px rgba(255, 84, 208, 0.7);
 }
 
 .live-card:focus-visible {
@@ -1231,6 +1262,8 @@ h1 {
   .socials a:hover .social-icon-image,
   .socials a:hover .social-tooltip,
   .live-card:hover,
+  .live-card:hover .status-avatar-wrap,
+  .live-card:hover .external,
   .reaction-btn:hover {
     transform: none;
     filter: none;
