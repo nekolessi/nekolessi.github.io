@@ -7,8 +7,9 @@
 /**
  * @typedef {Object} ProfileLink
  * @property {string} label
- * @property {string} simpleIcon
- * @property {string} iconColor
+ * @property {string} [simpleIcon]
+ * @property {string} [iconSrc]
+ * @property {string} [iconColor]
  * @property {string} href
  * @property {ProfileLinkType} [type]
  */
@@ -104,8 +105,8 @@ export const PROFILE = {
     },
     {
       label: "Throne",
-      simpleIcon: "ilovepdf",
-      iconColor: "FFDD00",
+      iconSrc: "images/throne.png",
+      iconColor: "FFB347",
       href: "throne.com/nekolessi",
     },
   ],

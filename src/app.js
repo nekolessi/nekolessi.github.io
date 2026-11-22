@@ -140,12 +140,16 @@ export function createSiteApp({
 
     PROFILE.links.forEach((link) => {
       const finalHref = normalizeHref(link);
-      if (!finalHref || !link.simpleIcon) {
+      const iconUrl =
+        link.iconSrc ||
+        (link.simpleIcon ? simpleIconUrl(link.simpleIcon, link.iconColor) : "");
+      if (!finalHref || !iconUrl) {
         return;
       }
 
       const anchor = documentRef.createElement("a");
       anchor.href = finalHref;
+      anchor.className = "social-link-item";
       anchor.title = link.label;
       anchor.setAttribute("aria-label", link.label);
 
@@ -154,15 +158,27 @@ export function createSiteApp({
         anchor.rel = "noreferrer noopener";
       }
 
+      if (link.iconColor) {
+        const hex = link.iconColor.replace(/[^a-fA-F0-9]/g, "");
+        anchor.style.setProperty("--glow-color", `#${hex}`);
+      }
+
       const image = documentRef.createElement("img");
       image.className = "social-icon-image";
-      image.src = simpleIconUrl(link.simpleIcon, link.iconColor);
+      image.src = iconUrl;
       image.alt = "";
       image.setAttribute("aria-hidden", "true");
       image.loading = "eager";
       image.decoding = "async";
 
       anchor.appendChild(image);
+
+      const tooltip = documentRef.createElement("span");
+      tooltip.className = "social-tooltip";
+      tooltip.textContent = link.label;
+      tooltip.setAttribute("aria-hidden", "true");
+      anchor.appendChild(tooltip);
+
       elements.socialLinksRoot.appendChild(anchor);
     });
   }
