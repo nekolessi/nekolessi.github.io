@@ -1,0 +1,21 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 164 164" role="img" aria-labelledby="title desc">
+  <title id="title">Activity fallback artwork</title>
+  <desc id="desc">A pink, cyan, and purple gradient card with a stylized sparkline and stars.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#18081f" />
+      <stop offset="52%" stop-color="#4d1456" />
+      <stop offset="100%" stop-color="#112f52" />
+    </linearGradient>
+    <linearGradient id="line" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#ff7ee8" />
+      <stop offset="100%" stop-color="#76f3ff" />
+    </linearGradient>
+  </defs>
+  <rect width="164" height="164" rx="24" fill="url(#bg)" />
+  <circle cx="38" cy="42" r="10" fill="#ff7ee8" fill-opacity=".78" />
+  <circle cx="126" cy="118" r="16" fill="#76f3ff" fill-opacity=".2" />
+  <path d="M26 104c12-10 22 8 34-2s18-33 34-33 18 18 30 18 10-8 14-12" fill="none" stroke="url(#line)" stroke-linecap="round" stroke-linejoin="round" stroke-width="8"/>
+  <path d="M116 36l4 9 9 4-9 4-4 9-4-9-9-4 9-4z" fill="#fff0fb" fill-opacity=".82" />
+  <path d="M52 128l2 5 5 2-5 2-2 5-2-5-5-2 5-2z" fill="#fff0fb" fill-opacity=".68" />
+</svg>

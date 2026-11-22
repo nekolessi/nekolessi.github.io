@@ -1,0 +1,3 @@
+node_modules/
+cloudflare-worker/.wrangler/
+cloudflare-worker/.dev.vars
