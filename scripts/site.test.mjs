@@ -226,3 +226,69 @@ test("site app shows a cooldown message when reactions are rate limited", async 
 
   app.destroy();
 });
+
+test("site app enforces cooldown on subsequent reaction clicks", async () => {
+  const documentRef = createDocument();
+  let postCount = 0;
+  const fetchImpl = async (input, init = {}) => {
+    const url = String(input);
+    const method = String(init?.method || "GET").toUpperCase();
+
+    if (url.endsWith("/reactions") && method === "GET") {
+      return Response.json({
+        counts: { heart: 2, pat: 1, sparkle: 0, coffee: 0 },
+      });
+    }
+
+    if (url.endsWith("/reactions") && method === "POST") {
+      postCount += 1;
+      return Response.json(
+        {
+          error: "Invalid reaction type",
+        },
+        { status: 400 },
+      );
+    }
+
+    if (url.includes("api.lanyard.rest")) {
+      throw new Error("Lanyard offline");
+    }
+
+    throw new Error(`Unexpected fetch: ${url}`);
+  };
+
+  const app = createSiteApp({
+    documentRef,
+    fetchImpl,
+    setIntervalImpl() {
+      return 1;
+    },
+    clearIntervalImpl() {},
+    localStorageImpl: createStorage(),
+  });
+
+  await app.init();
+
+  const buttons = documentRef.querySelectorAll(".reaction-btn");
+  buttons[1].click();
+  await flushAsyncUi();
+  await flushAsyncUi();
+
+  assert.equal(postCount, 1);
+  assert.equal(
+    documentRef.getElementById("reactionStatus").textContent,
+    "*purrrrr* more headpats please! (⑅•ᴗ•⑅)",
+  );
+
+  buttons[1].click();
+  await flushAsyncUi();
+  await flushAsyncUi();
+
+  assert.equal(postCount, 1);
+  assert.match(
+    documentRef.getElementById("reactionStatus").textContent,
+    /^Please wait \d+s before reacting again\.$/,
+  );
+
+  app.destroy();
+});

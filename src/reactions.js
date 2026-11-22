@@ -1,5 +1,7 @@
 import {
   PROFILE_REACTIONS,
+  REACTION_COOLDOWN_LOCAL_KEY,
+  REACTION_COOLDOWN_MS,
   REACTION_COUNTS_LOCAL_KEY,
   REACTION_EMOJI_BY_ID,
   REACTION_FEEDBACK,
@@ -11,6 +13,23 @@ import {
   normalizeReactionCounts,
 } from "./config.js";
 import { withTimeout } from "./helpers.js";
+
+function readLastReactionTime(localStorageImpl) {
+  try {
+    const val = localStorageImpl.getItem(REACTION_COOLDOWN_LOCAL_KEY);
+    return val ? Number.parseInt(val, 10) || 0 : 0;
+  } catch {
+    return 0;
+  }
+}
+
+function storeLastReactionTime(localStorageImpl, timestamp = Date.now()) {
+  try {
+    localStorageImpl.setItem(REACTION_COOLDOWN_LOCAL_KEY, String(timestamp));
+  } catch {
+    // Ignore storage failures.
+  }
+}
 
 function readStoredReactionChoice(localStorageImpl) {
   try {
@@ -157,6 +176,15 @@ export function createReactionsController({
       return;
     }
 
+    const now = Date.now();
+    const lastReactionAt = readLastReactionTime(localStorageImpl);
+    const elapsed = now - lastReactionAt;
+    if (lastReactionAt > 0 && elapsed < REACTION_COOLDOWN_MS) {
+      const remainingMs = REACTION_COOLDOWN_MS - elapsed;
+      setReactionStatus(formatRateLimitMessage(remainingMs));
+      return;
+    }
+
     reactionsFetchInFlight = true;
     renderReactionButtons();
     setReactionStatus("");
@@ -179,6 +207,12 @@ export function createReactionsController({
           const payload = await response.json();
           if (response.status === 429) {
             errorMessage = formatRateLimitMessage(payload?.retryAfterMs);
+            const retryMs =
+              Number.parseInt(payload?.retryAfterMs, 10) || REACTION_COOLDOWN_MS;
+            storeLastReactionTime(
+              localStorageImpl,
+              Date.now() - (REACTION_COOLDOWN_MS - retryMs),
+            );
             throw new Error(errorMessage);
           }
 
@@ -188,6 +222,7 @@ export function createReactionsController({
           ) {
             selectedReactionId = reactionId;
             storeReactionChoice(localStorageImpl, reactionId);
+            storeLastReactionTime(localStorageImpl, Date.now());
             const currentCounts = { ...reactionCounts };
             currentCounts[reactionId] = (currentCounts[reactionId] || 0) + 1;
             storeReactionCounts(localStorageImpl, currentCounts);
@@ -214,6 +249,7 @@ export function createReactionsController({
       const payload = await response.json();
       selectedReactionId = reactionId;
       storeReactionChoice(localStorageImpl, reactionId);
+      storeLastReactionTime(localStorageImpl, Date.now());
       const localExtra = readStoredReactionCounts(localStorageImpl);
       const mergedCounts = mergeCounts(payload?.counts, localExtra);
       storeReactionCounts(localStorageImpl, mergedCounts);

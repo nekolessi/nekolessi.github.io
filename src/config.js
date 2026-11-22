@@ -122,6 +122,8 @@ export const PROFILE_REACTIONS = [
 
 export const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
 export const REACTION_COUNTS_LOCAL_KEY = "nekolessi_profile_reaction_counts";
+export const REACTION_COOLDOWN_LOCAL_KEY = "nekolessi_profile_reaction_last_at";
+export const REACTION_COOLDOWN_MS = 10_000;
 export const REACTION_EMOJI_BY_ID = {
   heart: "\u{1F497}",
   pat: "\u{1F43E}",
