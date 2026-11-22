@@ -27,7 +27,4 @@ jobs:
         run: npm ci
 
       - name: Run checks
-        run: |
-          npx prettier --write .
-          git diff
-          npm run verify
+        run: npm run verify

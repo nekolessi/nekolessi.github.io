@@ -39,8 +39,7 @@
   --dnd: #f23f43;
   --offline: #7f8494;
   --card-surface:
-    linear-gradient(135deg, #ffffffc4, #fff0fac4),
-    rgba(255, 255, 255, 0.52);
+    linear-gradient(135deg, #ffffffc4, #fff0fac4), rgba(255, 255, 255, 0.52);
   --radius-card: 22px;
   --radius-avatar: 16px;
 }
@@ -135,9 +134,7 @@ body {
 .card {
   position: relative;
   isolation: isolate;
-  background:
-    linear-gradient(135deg, #ffffffd0, #fff0fad0),
-    var(--card);
+  background: linear-gradient(135deg, #ffffffd0, #fff0fad0), var(--card);
   border-radius: var(--radius-card);
   border: 1px solid var(--card-edge);
   box-shadow:
