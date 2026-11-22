@@ -11,6 +11,7 @@ import {
 import { normalizeHref, simpleIconUrl, withTimeout } from "./helpers.js";
 import { createPresenceController } from "./presence.js";
 import { createReactionsController } from "./reactions.js";
+import { initSparkleEffects } from "./sparkles.js";
 
 function createFallbackStorage() {
   return {
@@ -44,6 +45,7 @@ function getElements(documentRef) {
     statusText: documentRef.getElementById("discordStatusText"),
     activityArt: documentRef.getElementById("activityArt"),
     activityEyebrow: documentRef.getElementById("activityEyebrow"),
+    equalizerBars: documentRef.getElementById("equalizerBars"),
     activityTitle: documentRef.getElementById("activityTitle"),
     activitySubtitle: documentRef.getElementById("activitySubtitle"),
     timeline: documentRef.getElementById("activityTimeline"),
@@ -91,7 +93,11 @@ export function createSiteApp({
     }
 
     if (elements.statusText) {
-      elements.statusText.textContent = UI_TEXT.statusUserIdMissing;
+      elements.statusText.textContent = /^\d{17,20}$/.test(
+        APP_CONFIG.discordUserId,
+      )
+        ? UI_TEXT.statusConnecting
+        : UI_TEXT.statusUserIdMissing;
     }
 
     if (elements.activityTitle) {
@@ -260,12 +266,15 @@ export function createSiteApp({
     clearIntervalImpl,
   });
 
+  let cleanupSparkles = () => {};
+
   async function init() {
     applyProfileConfig();
     bindImageFallbacks();
     renderHeroBio();
     renderSocialLinks();
     applyStaticUiText();
+    cleanupSparkles = initSparkleEffects(documentRef);
 
     await Promise.all([
       reactionsController.init(),
@@ -278,6 +287,7 @@ export function createSiteApp({
 
   function destroy() {
     presenceController.destroy();
+    cleanupSparkles();
   }
 
   const api = {

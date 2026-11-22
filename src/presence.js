@@ -387,6 +387,18 @@ export function createPresenceController({
     elements.statusLink.tabIndex = 0;
   }
 
+  function setEqualizerActive(active) {
+    if (!elements.equalizerBars) {
+      return;
+    }
+
+    if (active) {
+      elements.equalizerBars.classList.remove("hidden");
+    } else {
+      elements.equalizerBars.classList.add("hidden");
+    }
+  }
+
   function setDisconnectedState(message) {
     elements.discordName.textContent = "NEKOLESSI";
     setStatusText(null, message);
@@ -394,6 +406,7 @@ export function createPresenceController({
     elements.statusAvatar.src = DEFAULT_STATUS_AVATAR;
     setDiscordProfileLink("");
 
+    setEqualizerActive(false);
     setActivityArt("", "");
     elements.activityTitle.textContent = UI_TEXT.activityEmptyTitle;
     setActivitySubtitle(UI_TEXT.activityDisconnectedSubtitle);
@@ -493,6 +506,7 @@ export function createPresenceController({
       setActivitySubtitle(
         `${spotify.artist || "Unknown artist"} - ${spotify.album || "Unknown album"}`,
       );
+      setEqualizerActive(true);
       startProgress(spotify.timestamps?.start, spotify.timestamps?.end);
       return;
     }
@@ -514,6 +528,7 @@ export function createPresenceController({
       setActivityArt(await resolveActivityArt(richActivity), titleText);
       elements.activityTitle.textContent = titleText;
       setActivitySubtitle(subtitleParts.join(" - "));
+      setEqualizerActive(true);
       startProgress(
         richActivity.timestamps?.start,
         richActivity.timestamps?.end,
@@ -522,6 +537,7 @@ export function createPresenceController({
     }
 
     setActivityArt("", "");
+    setEqualizerActive(false);
     elements.activityTitle.textContent = UI_TEXT.activityEmptyTitle;
     setActivitySubtitle(UI_TEXT.activityInactiveSubtitle);
     stopProgress();

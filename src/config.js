@@ -43,11 +43,12 @@ export const APP_CONFIG = {
 export const UI_TEXT = {
   statusEyebrow: "DISCORD STATUS",
   activityEyebrow: "NOW PLAYING / LISTENING",
-  reactionsTitle: "click if you love catgirls",
+  reactionsTitle: "click for free dopamine",
   profileViewsLoading: "Profile views loading",
   reactionSaved: "I love you more!! mwah",
   reactionsOffline: "Reactions offline right now.",
   reactionSaveFailed: "Could not save reaction right now.",
+  statusConnecting: "Connecting to Discord...",
   statusUserIdMissing:
     "Set your Discord user ID in src/config.js to load live presence.",
   statusUnavailable: "Could not reach Discord presence feed right now.",
@@ -113,11 +114,25 @@ export const PROFILE = {
 /** @type {ProfileReaction[]} */
 export const PROFILE_REACTIONS = [
   { id: "heart", emoji: "\u{1F497}", label: "Like catgirls" },
+  { id: "pat", emoji: "\u{1F43E}", label: "Give headpats" },
+  { id: "sparkle", emoji: "\u{2728}", label: "Send sparkles" },
+  { id: "coffee", emoji: "\u{2615}", label: "Offer coffee" },
 ];
 
 export const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
+export const REACTION_COUNTS_LOCAL_KEY = "nekolessi_profile_reaction_counts";
 export const REACTION_EMOJI_BY_ID = {
   heart: "\u{1F497}",
+  pat: "\u{1F43E}",
+  sparkle: "\u{2728}",
+  coffee: "\u{2615}",
+};
+
+export const REACTION_FEEDBACK = {
+  heart: "I love you more!! mwah ♡",
+  pat: "*purrrrr* more headpats please! (⑅•ᴗ•⑅)",
+  sparkle: "✨ Sparkles received!! feeling magical ✨",
+  coffee: "Coffee acquired!! brain functioning now ☕",
 };
 
 export const HERO_PROFILE_IMAGE =

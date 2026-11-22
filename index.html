@@ -149,7 +149,7 @@
             <span id="discordName">NEKOLESSI</span>
           </p>
           <p id="discordStatusText" class="status-text" aria-live="polite">
-            Set your Discord user ID in src/config.js to load live presence.
+            Connecting to Discord...
           </p>
         </div>
         <span class="external" aria-hidden="true">
@@ -175,7 +175,19 @@
           />
         </div>
         <div class="activity-copy">
-          <p class="eyebrow" id="activityEyebrow">NOW PLAYING / LISTENING</p>
+          <div class="activity-eyebrow-row">
+            <p class="eyebrow" id="activityEyebrow">NOW PLAYING / LISTENING</p>
+            <div
+              class="equalizer-bars hidden"
+              id="equalizerBars"
+              aria-label="Audio active"
+            >
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+              <span class="eq-bar"></span>
+            </div>
+          </div>
           <p class="activity-title" id="activityTitle" aria-live="polite">
             Nothing active right now
           </p>

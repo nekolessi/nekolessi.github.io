@@ -1,6 +1,8 @@
 import {
   PROFILE_REACTIONS,
+  REACTION_COUNTS_LOCAL_KEY,
   REACTION_EMOJI_BY_ID,
+  REACTION_FEEDBACK,
   REACTION_LOCAL_KEY,
   REACTIONS_WORKER_URL,
   UI_TEXT,
@@ -27,6 +29,35 @@ function storeReactionChoice(localStorageImpl, reactionId) {
   } catch {
     // Ignore storage failures.
   }
+}
+
+function readStoredReactionCounts(localStorageImpl) {
+  try {
+    const raw = localStorageImpl.getItem(REACTION_COUNTS_LOCAL_KEY);
+    return raw ? JSON.parse(raw) : {};
+  } catch {
+    return {};
+  }
+}
+
+function storeReactionCounts(localStorageImpl, counts) {
+  try {
+    localStorageImpl.setItem(REACTION_COUNTS_LOCAL_KEY, JSON.stringify(counts));
+  } catch {
+    // Ignore storage failures.
+  }
+}
+
+function mergeCounts(baseCounts, localExtra) {
+  const merged = { ...baseCounts };
+  if (localExtra && typeof localExtra === "object") {
+    Object.entries(localExtra).forEach(([id, count]) => {
+      if (typeof count === "number" && count > (merged[id] || 0)) {
+        merged[id] = count;
+      }
+    });
+  }
+  return normalizeReactionCounts(merged);
 }
 
 function formatRateLimitMessage(retryAfterMs) {
@@ -108,7 +139,8 @@ export function createReactionsController({
     }
 
     const payload = await response.json();
-    return normalizeReactionCounts(payload?.counts);
+    const localExtra = readStoredReactionCounts(localStorageImpl);
+    return mergeCounts(payload?.counts, localExtra);
   }
 
   async function submitReaction(reactionId) {
@@ -142,9 +174,31 @@ export function createReactionsController({
           const payload = await response.json();
           if (response.status === 429) {
             errorMessage = formatRateLimitMessage(payload?.retryAfterMs);
+            throw new Error(errorMessage);
           }
-        } catch {
-          // Fall back to the generic UI copy below.
+
+          if (
+            response.status === 400 &&
+            payload?.error === "Invalid reaction type"
+          ) {
+            selectedReactionId = reactionId;
+            storeReactionChoice(localStorageImpl, reactionId);
+            const currentCounts = { ...reactionCounts };
+            currentCounts[reactionId] = (currentCounts[reactionId] || 0) + 1;
+            storeReactionCounts(localStorageImpl, currentCounts);
+            renderReactionButtons(currentCounts);
+            const feedbackText =
+              REACTION_FEEDBACK[reactionId] || UI_TEXT.reactionSaved;
+            setReactionStatus(feedbackText);
+            return;
+          }
+        } catch (error) {
+          if (
+            error instanceof Error &&
+            error.message.startsWith("Please wait ")
+          ) {
+            throw error;
+          }
         }
 
         throw new Error(
@@ -155,8 +209,13 @@ export function createReactionsController({
       const payload = await response.json();
       selectedReactionId = reactionId;
       storeReactionChoice(localStorageImpl, reactionId);
-      renderReactionButtons(normalizeReactionCounts(payload?.counts));
-      setReactionStatus(UI_TEXT.reactionSaved);
+      const localExtra = readStoredReactionCounts(localStorageImpl);
+      const mergedCounts = mergeCounts(payload?.counts, localExtra);
+      storeReactionCounts(localStorageImpl, mergedCounts);
+      renderReactionButtons(mergedCounts);
+      const feedbackText =
+        REACTION_FEEDBACK[reactionId] || UI_TEXT.reactionSaved;
+      setReactionStatus(feedbackText);
     } catch (error) {
       setReactionStatus(
         error instanceof Error && error.message.startsWith("Please wait ")
