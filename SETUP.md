@@ -13,7 +13,8 @@ script.js                  presses the big start button
 src/config.js              words, links, ids, little settings, etc.
 src/app.js                 wires the page together
 src/presence.js            discord/lanyard stuff
-src/reactions.js           the clicky heart situation
+src/reactions.js           interactive profile reactions & feedback
+src/sparkles.js            sparkle & heart click/tap particle effects
 src/helpers.js             useful utility functions
 scripts/check.mjs          checks if anything obvious is broken
 scripts/site.test.mjs      tests the browser-side DOM behavior
@@ -47,6 +48,8 @@ All site customizations live in `src/config.js`:
 - `PROFILE.location`: Location text (default: `"USA"`).
 - `PROFILE.bioBlocks`: Array of bio sentences.
 - `PROFILE.links`: Social/external profile link definitions.
+- `PROFILE_REACTIONS`: Profile reaction definitions (id, emoji, label).
+- `REACTION_FEEDBACK`: Cute response messages shown when each reaction is clicked.
 - `UI_TEXT`: Section labels, fallback text, and accessibility captions.
 
 ### Adding a Link
@@ -61,7 +64,8 @@ All site customizations live in `src/config.js`:
 ```
 
 - `simpleIcon`: Icon slug from [Simple Icons](https://simpleicons.org/) (`cdn.simpleicons.org/<slug>`).
-- `iconColor`: Hex color code without the `#`.
+- `iconSrc`: Relative path for custom image icons (e.g., `"images/throne.png"`).
+- `iconColor`: Hex color code without the `#` for the hover glow.
 - `type: "email"`: Optional, automatically creates a `mailto:` link.
 
 ---
@@ -99,6 +103,8 @@ Review `cloudflare-worker/wrangler.toml`:
 cd cloudflare-worker
 npx wrangler deploy
 ```
+
+> **Note:** If updating an existing worker from the single-reaction version, running `npx wrangler deploy` enables server-side persistence for the new reaction types (`heart`, `pat`, `sparkle`, `coffee`).
 
 *(Optional)* If you want admin reset access to adjust the view counter:
 
