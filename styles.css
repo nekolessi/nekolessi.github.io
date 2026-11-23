@@ -1262,7 +1262,8 @@ h1 {
   .hero-avatar::before,
   .fancy-avatar-wrap::before,
   .hero-avatar::after,
-  .fancy-avatar-wrap::after {
+  .fancy-avatar-wrap::after,
+  .eq-bar {
     transition: none;
     animation: none;
   }
