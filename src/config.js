@@ -117,7 +117,6 @@ export const PROFILE_REACTIONS = [
   { id: "heart", emoji: "\u{1F497}", label: "love me" },
   { id: "pat", emoji: "\u{1F43E}", label: "headpats" },
   { id: "sparkle", emoji: "\u{2728}", label: "good girl" },
-  { id: "coffee", emoji: "\u{2615}", label: "coffee" },
 ];
 
 export const REACTION_LOCAL_KEY = "nekolessi_profile_reaction_choice";
