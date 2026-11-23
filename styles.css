@@ -456,10 +456,10 @@ h1 {
 }
 
 .reaction-count {
-  min-width: 1.2em;
+  min-width: 1.4em;
   text-align: center;
   font-variant-numeric: tabular-nums;
-  font-size: 0.62rem;
+  font-size: 0.76rem;
   color: #ffb6e1;
   background: rgba(255, 182, 225, 0.22);
   padding: 2px 7px;
@@ -1166,8 +1166,8 @@ h1 {
   }
 
   .reaction-count {
-    font-size: 0.55rem;
-    padding: 1px 5px;
+    font-size: 0.68rem;
+    padding: 1px 6px;
   }
 
   .reaction-emoji {
