@@ -375,7 +375,7 @@ h1 {
 .reactions-title {
   margin: 0;
   font-family: "Silkscreen", sans-serif;
-  font-size: 0.66rem;
+  font-size: 0.72rem;
   letter-spacing: 0.1em;
   color: #e4c2f7;
   text-shadow: 0 1px 2px rgba(0, 0, 0, 0.4);
@@ -448,7 +448,7 @@ h1 {
 
 .reaction-label {
   font-family: "Silkscreen", sans-serif;
-  font-size: 0.62rem;
+  font-size: 0.72rem;
   letter-spacing: 0.04em;
   text-transform: lowercase;
   color: #fff0f7;
@@ -469,10 +469,10 @@ h1 {
 
 .reactions-status {
   margin: 0;
-  min-height: 0.9rem;
+  min-height: 1.15rem;
   font-family: "Silkscreen", sans-serif;
-  font-size: 0.58rem;
-  letter-spacing: 0.12em;
+  font-size: 0.7rem;
+  letter-spacing: 0.08em;
   color: #ffb6e1;
 }
 
@@ -1150,32 +1150,32 @@ h1 {
   }
 
   .reactions-title {
-    font-size: 0.58rem;
+    font-size: 0.64rem;
     letter-spacing: 0.06em;
   }
 
   .reaction-btn {
     min-width: 0;
-    padding: 5px 10px;
-    font-size: 0.64rem;
-    gap: 5px;
+    padding: 6px 11px;
+    font-size: 0.68rem;
+    gap: 6px;
   }
 
   .reaction-label {
-    font-size: 0.55rem;
+    font-size: 0.64rem;
   }
 
   .reaction-count {
-    font-size: 0.68rem;
+    font-size: 0.72rem;
     padding: 1px 6px;
   }
 
   .reaction-emoji {
-    font-size: 0.88rem;
+    font-size: 0.92rem;
   }
 
   .reactions-status {
-    font-size: 0.54rem;
+    font-size: 0.64rem;
   }
 
   .live-card,

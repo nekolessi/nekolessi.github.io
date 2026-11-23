@@ -277,7 +277,7 @@ test("site app enforces cooldown on subsequent reaction clicks", async () => {
   assert.equal(postCount, 1);
   assert.equal(
     documentRef.getElementById("reactionStatus").textContent,
-    "*purrrrr* more headpats please! (⑅•ᴗ•⑅)",
+    "*purrrrr* more headpats please!",
   );
 
   buttons[1].click();

@@ -132,8 +132,8 @@ export const REACTION_EMOJI_BY_ID = {
 
 export const REACTION_FEEDBACK = {
   heart: "I love you more!! mwah ♡",
-  pat: "*purrrrr* more headpats please! (⑅•ᴗ•⑅)",
-  sparkle: "nyaaa~ thank u for calling me a good girl! (⸝⸝ᵕᴗᵕ⸝⸝)♡",
+  pat: "*purrrrr* more headpats please!",
+  sparkle: "nyaaa~ thank u for calling me a good girl!",
   coffee: "Coffee acquired!! brain functioning now ☕",
 };
 
