@@ -115,7 +115,7 @@ export const PROFILE = {
 /** @type {ProfileReaction[]} */
 export const PROFILE_REACTIONS = [
   { id: "heart", emoji: "\u{1F497}", label: "love me" },
-  { id: "pat", emoji: "\u{1F43E}", label: "headpats" },
+  { id: "pat", emoji: "\u{1F431}", label: "headpats" },
   { id: "sparkle", emoji: "\u{2728}", label: "good girl" },
 ];
 
@@ -125,7 +125,7 @@ export const REACTION_COOLDOWN_LOCAL_KEY = "nekolessi_profile_reaction_last_at";
 export const REACTION_COOLDOWN_MS = 10_000;
 export const REACTION_EMOJI_BY_ID = {
   heart: "\u{1F497}",
-  pat: "\u{1F43E}",
+  pat: "\u{1F431}",
   sparkle: "\u{2728}",
   coffee: "\u{2615}",
 };
