@@ -1,15 +1,21 @@
-# profile-testing ♡
+# nekolessi dot github dot io ♡
 
-> this repository is used for testing out profile layouts, styles, and experiments for github pages before anything touches the real site! 🎀
+> local girlfailure builds a whole entire website just to avoid having real conversations...
+
+welcome to my little catgirl profile page! it's a cozy, sparkly corner of the web where i pretend to be a smart girl with my life together. somehow all the code works and hasn't exploded yet.
+
+[look at her live](https://nekolessi.github.io/)
 
 ---
 
-### what is this?
+### what does this little thing even do?
 
-this is a staging / sandbox repository for testing new profile layouts, visual themes, cards, and animations for GitHub Pages without breaking anything on the main profile.
-
-- **Live Profile:** [nekolessi.github.io](https://nekolessi.github.io/)
-- **Main Repo:** [nekolessi/nekolessi.github.io](https://github.com/nekolessi/nekolessi.github.io)
+- **Live Discord Status & Vibe:** stalks my current status in real time via Lanyard so you know if i'm actually awake, idling, or actively avoiding my responsibilities.
+- **Now Playing / Spotify Tracker:** publicly exposes whatever weird song or game i've been hyperfixating on for six hours straight.
+- **Cute Reactions & Sparkles:** clicky reaction buttons with floating pastel sparkles backed by a Cloudflare Worker for free, instant dopamine.
+- **Page View Counter:** counts how many people wandered onto my profile page by accident.
+- **My Links & Safe Spots:** pretty buttons to my guestbook, email, spotify, telegram, and throne wishlist so u don't have to look for them.
+- **Mobile-Friendly Outfit:** because apparently people browse websites from their little rectangular pocket devices now.
 
 ---
 
